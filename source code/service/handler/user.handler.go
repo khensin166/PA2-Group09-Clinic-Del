@@ -5,7 +5,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/model/entity"
-	"github.com/khensin166/PA2-Kel9/model/request"
 	"github.com/khensin166/PA2-Kel9/utils"
 	"log"
 )
@@ -36,7 +35,7 @@ func UserHandlerGetAll(ctx *fiber.Ctx) error {
 }
 
 func UserHandlerCreate(ctx *fiber.Ctx) error {
-	user := new(request.UserCreateRequest)
+	user := new(entity.User)
 
 	// Menangani error saat parsing request body
 	if err := ctx.BodyParser(user); err != nil {
@@ -128,7 +127,7 @@ func UserHandlerGetById(ctx *fiber.Ctx) error {
 
 func UserHandlerUpdate(ctx *fiber.Ctx) error {
 
-	userRequest := new(request.UserUpdateRequest)
+	userRequest := new(entity.User)
 	if err := ctx.BodyParser(userRequest); err != nil {
 		return ctx.Status(404).JSON(fiber.Map{"message": "bad request"})
 	}

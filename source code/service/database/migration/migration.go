@@ -10,6 +10,12 @@ import (
 func Migration() {
 	//database.DB merupakan variable yang di assign di database.go
 	err := database.DB.AutoMigrate(
+		&entity.Appointment{},
+		&entity.DoctorReport{},
+		&entity.MedicalHistory{},
+		&entity.Medicine{},
+		&entity.NurseReport{},
+		&entity.Remainder{},
 		&entity.User{},
 		&entity.Staff{},
 	)

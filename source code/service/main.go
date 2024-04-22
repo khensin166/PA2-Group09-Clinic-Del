@@ -1,10 +1,10 @@
 package main
 
 import (
+	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/database/migration"
 	"github.com/khensin166/PA2-Kel9/route"
-	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
