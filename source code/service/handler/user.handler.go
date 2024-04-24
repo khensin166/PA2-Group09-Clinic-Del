@@ -64,6 +64,7 @@ func UserHandlerCreate(ctx *fiber.Ctx) error {
 		Address:  user.Address,
 		Phone:    user.Phone,
 		Username: user.Username,
+		Role:     user.Role,
 	}
 
 	// pemanggilan hashed password
