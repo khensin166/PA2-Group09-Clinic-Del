@@ -30,7 +30,7 @@ type User struct {
 	Username       string           `json:"username" gorm:"unique"`
 	Password       string           `json:"password" gorm:"column:password"`
 	Appointments   []*Appointment   `json:"appointments" gorm:"foreignKey:RequestedID"`
-	Role           *RoleUser        `json:"role"`
+	Role           string           `json:"role"`
 	MedicalHistory []MedicalHistory `json:"medical_histories"`
 	CreatedAt      time.Time        `json:"created_at"`
 	UpdatedAt      time.Time        `json:"updated_at"`
@@ -38,5 +38,5 @@ type User struct {
 }
 
 func (U *User) TableName() string {
-	return "user"
+	return "users"
 }

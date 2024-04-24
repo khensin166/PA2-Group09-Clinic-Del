@@ -25,7 +25,7 @@ type Staff struct {
 	Phone        string         `json:"phone"`
 	Username     string         `json:"username" gorm:"unique"`
 	Password     string         `json:"password" gorm:"column:password"`
-	Role         *Role          `json:"role"`
+	Role         string         `json:"role"`
 	Appointments []*Appointment `json:"appointments" gorm:"foreignKey:ApprovedID"`
 	CreatedAt    time.Time      `json:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at"`
