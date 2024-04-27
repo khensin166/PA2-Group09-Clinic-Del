@@ -24,12 +24,6 @@ func UserHandlerGetAll(ctx *fiber.Ctx) error {
 		log.Println(result.Error)
 	}
 
-	// memanggil DB pada package database (cara 2)
-	//err := database.DB.Find(&users).Error
-	//if err != nil {
-	//	log.Println(err)
-	//}
-
 	return ctx.JSON(users)
 
 }
