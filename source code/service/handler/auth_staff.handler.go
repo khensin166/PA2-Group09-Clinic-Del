@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func LoginHandler(ctx *fiber.Ctx) error {
+func StaffLoginHandler(ctx *fiber.Ctx) error {
 	loginRequest := new(request.LoginRequest)
 
 	// Menangani error saat parsing request body
@@ -32,10 +32,10 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	}
 
 	// CHECK AVAILABLE USER
-	var user entity.User
+	var staff entity.Staff
 
-	err := database.DB.First(&user, "username = ?", loginRequest.Username).Error
-
+	err := database.DB.First(&staff, "username = ?", loginRequest.Username).Error
+	log.Println(err)
 	if err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
 			"message": "username not found",
@@ -43,7 +43,7 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	}
 
 	// CHECK VALIDATION PASSWORD
-	isValid := utils.CheckPasswordHash(loginRequest.Password, user.Password)
+	isValid := utils.CheckPasswordHash(loginRequest.Password, staff.Password)
 	if !isValid {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "wrong password",
@@ -52,19 +52,18 @@ func LoginHandler(ctx *fiber.Ctx) error {
 
 	//GENERATE JWT (don't forget to install package : github.com/dgrijalva/jwt-go)
 	claims := jwt.MapClaims{}
-	claims["name"] = user.Name
-	claims["age"] = user.Age
-	claims["weight"] = user.Weight
-	claims["height"] = user.Height
-	claims["nik"] = user.NIK
-	claims["birthday"] = user.Birthday
-	claims["gender"] = user.Gender
-	claims["address"] = user.Address
-	claims["phone"] = user.Phone
-	claims["username"] = user.Username
+	claims["name"] = staff.Name
+	claims["age"] = staff.Age
+	claims["weight"] = staff.Weight
+	claims["height"] = staff.Height
+	claims["nip"] = staff.NIP
+	claims["birthday"] = staff.Birthday
+	claims["gender"] = staff.Gender
+	claims["address"] = staff.Address
+	claims["phone"] = staff.Phone
+	claims["username"] = staff.Username
+	claims["role"] = staff.Role
 	claims["exp"] = time.Now().Add(5 * time.Minute).Unix()
-
-	claims["role"] = user.Role
 
 	token, errGenerateToken := utils.GenerateToken(&claims)
 

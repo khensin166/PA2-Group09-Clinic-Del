@@ -29,14 +29,30 @@ type User struct {
 	Phone          string           `json:"phone"`
 	Username       string           `json:"username" gorm:"unique"`
 	Password       string           `json:"password" gorm:"column:password"`
-	Appointments   []*Appointment   `json:"appointments" gorm:"foreignKey:RequestedID"`
-	Role           string           `json:"role"`
+	Role           Role             `json:"role"`
+	Appointments   []Appointment    `json:"appointments" gorm:"foreignKey:RequestedID"`
 	MedicalHistory []MedicalHistory `json:"medical_histories"`
 	CreatedAt      time.Time        `json:"created_at"`
 	UpdatedAt      time.Time        `json:"updated_at"`
 	DeletedAt      gorm.DeletedAt   `json:"-" gorm:"index,column:deleted_at"`
 }
 
-func (U *User) TableName() string {
+type UserResponse struct {
+	ID       uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	Name     string `json:"name"`
+	Age      int    `json:"age"`
+	Weight   int    `json:"weight"`
+	Height   int    `json:"height"`
+	NIK      int    `json:"nik"`
+	Birthday string `json:"birthday"`
+	Gender   string `json:"gender"`
+	Address  string `json:"address"`
+	Phone    string `json:"phone"`
+	Username string `json:"username" gorm:"unique"`
+	Password string `json:"password" gorm:"column:password"`
+	Role     Role   `json:"role"`
+}
+
+func (UserResponse) TableName() string {
 	return "users"
 }
