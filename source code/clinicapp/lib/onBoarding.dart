@@ -1,7 +1,11 @@
-import 'package:clinicapp/component/colors.dart';
+import 'package:clinicapp/Screens/login.dart';
+import 'package:clinicapp/Screens/register.dart';
+import 'package:clinicapp/Screens/test.dart';
+import 'package:clinicapp/Styles/colors.dart';
+import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 
-import 'component/mainButton.dart';
+import 'Widgets/mainButton.dart';
 
 class Onboarding extends StatefulWidget {
   const Onboarding({super.key});
@@ -15,7 +19,7 @@ class _OnboardingState extends State<Onboarding> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: AppColors.whiteColor,
+      backgroundColor: white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -37,22 +41,26 @@ class _OnboardingState extends State<Onboarding> {
               size: size,
               height: 15,
               width: 2.2,
-              onPressed: () {},
+              onPressed: () {
+                PageNavigator(ctx: context).nextPage(page: LoginPage());
+              },
               hintText: 'Login',
-              backgroundColor: AppColors.mainColor,
+              backgroundColor: primaryColor,
               foregroundColor: Colors.white,
-              borderSide: AppColors.mainColor,
+              borderSide: primaryColor,
             ),
             SizedBox(height: size.height / 70),
             MainButton(
               size: size,
               height: 15,
               width: 2.2,
-              onPressed: () {},
+              onPressed: () {
+                PageNavigator(ctx: context).nextPage(page: RegisterPage());
+              },
               hintText: "Registrasi",
               backgroundColor: Colors.white,
-              foregroundColor: AppColors.mainColor,
-              borderSide: AppColors.mainColor,
+              foregroundColor: primaryColor,
+              borderSide: primaryColor,
             )
           ],
         ),
