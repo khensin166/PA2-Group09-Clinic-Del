@@ -87,7 +87,7 @@ func UserHandlerCreate(ctx *fiber.Ctx) error {
 	}
 
 	// Mengembalikan respon sukses dengan data baru yang telah dibuat
-	return ctx.JSON(fiber.Map{
+	return ctx.Status(200).JSON(fiber.Map{
 		"message": "success",
 		"data":    newUser,
 	})

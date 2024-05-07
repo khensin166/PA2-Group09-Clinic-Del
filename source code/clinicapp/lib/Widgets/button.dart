@@ -13,8 +13,9 @@ Widget customButton(
       margin: const EdgeInsets.symmetric(vertical: 15),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: status == false ? primaryColor : grey,
-          borderRadius: BorderRadius.circular(8)),
+        color: status == false ? primaryColor : grey,
+        borderRadius: BorderRadius.circular(4),
+      ),
       width: MediaQuery.of(context!).size.width,
       child: Text(
         status == false ? text! : 'Please wait....',

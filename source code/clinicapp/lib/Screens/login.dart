@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  bool _isHidden = true;
 
   @override
   void dispose() {
@@ -46,16 +47,18 @@ class _LoginPageState extends State<LoginPage> {
             customTextField(
                 title: 'Password',
                 controller: _password,
-                hint: 'Masukkan Password',
+                hint: 'Terdiri dari huruf dan angka',
                 prefixIcon: Icons.lock,
-                obsecureText: true),
+                obsecureText: true,
+                isHidden: _isHidden,
+                tootleFieldView: _tootleFieldView),
             // button
             Consumer<AuthenticationProvider>(builder: (context, auth, child) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (auth.resMessage != '') {
                   showMessage(message: auth.resMessage, context: context);
 
-                  // bersihkan respon agar tidaj terjadi duplikasi
+                  // Clear the response message to avoid duplicate
                   auth.clear();
                 }
               });
@@ -64,7 +67,7 @@ class _LoginPageState extends State<LoginPage> {
                 tap: () {
                   if (_username.text.isEmpty || _password.text.isEmpty) {
                     showMessage(
-                        message: "Semua kolom harus diisi", context: context);
+                        message: "Semua kolom harus di isi", context: context);
                   } else {
                     auth.loginUser(
                         username: _username.text.trim(),
@@ -80,5 +83,11 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _tootleFieldView() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
   }
 }

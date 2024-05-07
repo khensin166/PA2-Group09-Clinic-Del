@@ -1,5 +1,6 @@
 import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
+import 'package:clinicapp/Widgets/birthday_fields.dart';
 import 'package:clinicapp/Widgets/button.dart';
 import 'package:clinicapp/Widgets/text_fields.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,13 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController _fullname = TextEditingController();
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
+  final TextEditingController _passwordConfirmation = TextEditingController();
+
+  bool _isHidden = true;
+  bool _isHidden2 = true;
 
   @override
   void dispose() {
@@ -35,9 +41,19 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           children: [
             customTextField(
+                title: 'Nama Lengkap',
+                controller: _fullname,
+                hint: 'Jhon Doe',
+                obsecureText: false,
+                prefixIcon: Icons.account_circle_outlined,
+                isHidden: false),
+            const SizedBox(
+              height: 20,
+            ),
+            customTextField(
                 title: 'Username',
                 controller: _username,
-                hint: 'Masukkan Nama',
+                hint: 'JhonDoe12',
                 obsecureText: false,
                 prefixIcon: Icons.account_circle_outlined),
             const SizedBox(
@@ -46,9 +62,27 @@ class _RegisterPageState extends State<RegisterPage> {
             customTextField(
                 title: 'Password',
                 controller: _password,
-                hint: 'Masukkan Password',
+                hint: 'Terdiri dari huruf dan angka',
                 prefixIcon: Icons.lock,
-                obsecureText: true),
+                obsecureText: true,
+                isHidden: _isHidden,
+                tootleFieldView: _tootleFieldView),
+            const SizedBox(
+              height: 20,
+            ),
+
+            customTextField(
+                title: 'Konfirmasi Password',
+                controller: _passwordConfirmation,
+                hint: 'Konfirmasi password',
+                prefixIcon: Icons.lock,
+                obsecureText: true,
+                isHidden: _isHidden2,
+                tootleFieldView: _tootleFieldViewConfirmation),
+            const SizedBox(
+              height: 20,
+            ),
+
             // button
             Consumer<AuthenticationProvider>(builder: (context, auth, child) {
               WidgetsBinding.instance!.addPostFrameCallback((_) {
@@ -67,9 +101,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         message: "Semua kolom harus diisi", context: context);
                   } else {
                     auth.registerUser(
-                        username: _username.text.trim(),
-                        password: _password.text.trim(),
-                        context: context);
+                      username: _username.text.trim(),
+                      password: _password.text.trim(),
+                      passwordConfirmation: _passwordConfirmation.text.trim(),
+                      fullname: _fullname.text.trim(),
+                      context: context,
+                    );
                   }
                 },
                 context: context,
@@ -80,5 +117,17 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  void _tootleFieldView() {
+    setState(() {
+      _isHidden = !_isHidden;
+    });
+  }
+
+  void _tootleFieldViewConfirmation() {
+    setState(() {
+      _isHidden2 = !_isHidden2;
+    });
   }
 }
