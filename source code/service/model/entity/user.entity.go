@@ -19,6 +19,8 @@ type User struct {
 	Username string `json:"username" gorm:"unique"`
 	Password string `json:"password" gorm:"column:password"`
 	Role     int    `json:"role"`
+	Dorm     *Dorm  `json:"dorm" gorm:"foreignKey:DormID"`
+	DormID   uint   `json:"dormID"`
 	//PROFILE PICTURE
 	Appointments   []Appointment    `json:"-" gorm:"foreignKey:RequestedID"`
 	MedicalHistory []MedicalHistory `json:"-"`
@@ -30,6 +32,7 @@ type User struct {
 
 type UserResponse struct {
 	ID       uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	DormID   uint   `json:"dormID"`
 	Name     string `json:"name"`
 	Age      int    `json:"age"`
 	Weight   int    `json:"weight"`
@@ -42,6 +45,7 @@ type UserResponse struct {
 	Username string `json:"username" gorm:"unique"`
 	Password string `json:"password" gorm:"column:password"`
 	Role     int    `json:"role"`
+	Dorm
 }
 
 func (UserResponse) TableName() string {

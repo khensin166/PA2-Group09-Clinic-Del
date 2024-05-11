@@ -17,7 +17,7 @@ func RouteInit(r *fiber.App) {
 	// USER
 	r.Get("/users", middleware.StaffAuth, handler.UserHandlerGetAll)
 	r.Get("/user/:id", middleware.StaffAuth, handler.UserHandlerGetById)
-	r.Post("/user", middleware.Auth, handler.CreateUser)
+	r.Post("/user", handler.CreateUser)
 	r.Put("/user/:id", middleware.Auth, handler.UpdateUser)
 	r.Delete("/user/:id", middleware.StaffAuth, handler.DeleteUser)
 
@@ -52,5 +52,11 @@ func RouteInit(r *fiber.App) {
 	r.Post("/doctor-report", middleware.StaffAuth, handler.CreateDoctorReport)
 	r.Put("/doctor-report/:id", middleware.StaffAuth, handler.UpdateDoctorReport)
 	r.Delete("/doctor-report/:id", middleware.StaffAuth, handler.DeleteDoctorReport)
+
+	// DORM
+	r.Get("/dorms", middleware.StaffAuth, handler.DormGetAll)
+	r.Post("/dorm", middleware.StaffAuth, handler.CreateDorm)
+	r.Put("/dorm/:id", middleware.StaffAuth, handler.UpdateDorm)
+	r.Delete("/dorm/:id", middleware.StaffAuth, handler.DeleteDorm)
 
 }
