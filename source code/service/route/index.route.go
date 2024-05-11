@@ -8,16 +8,49 @@ import (
 
 func RouteInit(r *fiber.App) {
 	// AUTHENTICATION
-	r.Post("/login", handler.LoginHandler)
+	r.Post("/userLogin", handler.LoginHandler)
+	r.Post("/userLogout", handler.LogoutHandler)
+
+	r.Post("/staffLogin", handler.StaffLoginHandler)
+	r.Post("/staffLogout", handler.StaffLogoutHandler)
 
 	// USER
-	r.Get("/user", middleware.Auth, handler.UserHandlerGetAll)
-	r.Get("/user/:id", handler.UserHandlerGetById)
-	r.Post("/user", handler.UserHandlerCreate)
-	r.Put("/user/:id", handler.UserHandlerUpdate)
+	r.Get("/users", middleware.StaffAuth, handler.UserHandlerGetAll)
+	r.Get("/user/:id", middleware.StaffAuth, handler.UserHandlerGetById)
+	r.Post("/user", middleware.Auth, handler.CreateUser)
+	r.Put("/user/:id", middleware.Auth, handler.UpdateUser)
+	r.Delete("/user/:id", middleware.StaffAuth, handler.DeleteUser)
 
 	// APPOINTMENT
-	r.Get("/appointment", handler.AppointmentGetAll)
-	r.Post("/appointment", handler.CreateAppointment)
+	r.Get("/appointments", middleware.StaffAuth, handler.AppointmentGetAll)
+	r.Post("/appointment", middleware.Auth, handler.CreateAppointment)
+	r.Put("/appointment/:id/approve", middleware.StaffAuth, handler.UpdateApprovedID)
+	r.Put("/appointment/:id", middleware.Auth, handler.UpdateAppointment)
+	r.Delete("/appointment/:id", middleware.Auth, handler.DeleteAppointment)
+
+	// STAFF
+	r.Get("/staffs", middleware.StaffAuth, handler.StaffHandlerGetAll)
+	r.Get("/staff/:id", middleware.StaffAuth, handler.StaffHandlerGetById)
+	r.Post("/staff", middleware.StaffAuth, handler.CreateStaff)
+	r.Put("/staff/:id", middleware.StaffAuth, handler.UpdateStaff)
+	r.Delete("/staff/:id", middleware.StaffAuth, handler.DeleteStaff)
+
+	// MEDICINE
+	r.Get("/medicines", middleware.StaffAuth, handler.MedicineGetAll)
+	r.Post("/medicine", middleware.StaffAuth, handler.CreateMedicine)
+	r.Put("/medicine/:id", middleware.StaffAuth, handler.UpdateMedicine)
+	r.Delete("/medicine/:id", middleware.StaffAuth, handler.DeleteMedicine)
+
+	// NURSE REPORT
+	r.Get("/nurse-reports", middleware.StaffAuth, handler.NurseReportGetAll)
+	r.Post("/nurse-report", middleware.StaffAuth, handler.CreateNurseReport)
+	r.Put("/nurse-report/:id", middleware.StaffAuth, handler.UpdateNurseReport)
+	r.Delete("/nurse-report/:id", middleware.StaffAuth, handler.DeleteNurseReport)
+
+	// DOCTOR REPORT
+	r.Get("/doctor-reports", middleware.StaffAuth, handler.DoctorReportGetAll)
+	r.Post("/doctor-report", middleware.StaffAuth, handler.CreateDoctorReport)
+	r.Put("/doctor-report/:id", middleware.StaffAuth, handler.UpdateDoctorReport)
+	r.Delete("/doctor-report/:id", middleware.StaffAuth, handler.DeleteDoctorReport)
 
 }
