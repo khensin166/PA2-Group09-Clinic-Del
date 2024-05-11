@@ -24,17 +24,11 @@ func UserHandlerGetAll(ctx *fiber.Ctx) error {
 		log.Println(result.Error)
 	}
 
-	// memanggil DB pada package database (cara 2)
-	//err := database.DB.Find(&users).Error
-	//if err != nil {
-	//	log.Println(err)
-	//}
-
-	return ctx.JSON(users)
+	return ctx.Status(200).JSON(users)
 
 }
 
-func UserHandlerCreate(ctx *fiber.Ctx) error {
+func CreateUser(ctx *fiber.Ctx) error {
 	user := new(entity.User)
 
 	// Menangani error saat parsing request body
@@ -48,8 +42,8 @@ func UserHandlerCreate(ctx *fiber.Ctx) error {
 
 	if err != nil {
 		return ctx.Status(400).JSON(fiber.Map{
-			"mesage": "failed",
-			"error":  err.Error(),
+			"message": "failed",
+			"error":   err.Error(),
 		})
 	}
 
@@ -64,6 +58,7 @@ func UserHandlerCreate(ctx *fiber.Ctx) error {
 		Address:  user.Address,
 		Phone:    user.Phone,
 		Username: user.Username,
+		Role:     user.Role,
 	}
 
 	// pemanggilan hashed password
@@ -109,23 +104,13 @@ func UserHandlerGetById(ctx *fiber.Ctx) error {
 		})
 	}
 
-	//userResponse := response.UserResponse{
-	//	ID:        user.ID,
-	//	Name:      user.Name,
-	//	Email:     user.Email,
-	//	Address:   user.Address,
-	//	Phone:     user.Phone,
-	//	CreatedAt: user.CreatedAt,
-	//	UpdatedAt: user.UpdatedAt,
-	//}
-
 	return ctx.JSON(fiber.Map{
 		"message": "success",
 		"data":    user,
 	})
 }
 
-func UserHandlerUpdate(ctx *fiber.Ctx) error {
+func UpdateUser(ctx *fiber.Ctx) error {
 
 	userRequest := new(entity.User)
 	if err := ctx.BodyParser(userRequest); err != nil {
@@ -158,8 +143,30 @@ func UserHandlerUpdate(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(fiber.Map{
+	return ctx.Status(200).JSON(fiber.Map{
 		"message": "success",
 		"data":    user,
+	})
+}
+
+func DeleteUser(c *fiber.Ctx) error {
+	id := c.Params("id")
+
+	var user entity.User
+	if err := database.DB.First(&user, id).Error; err != nil {
+		log.Println(err)
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "User not found",
+		})
+	}
+
+	if err := database.DB.Delete(&user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to delete user",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "User deleted successfully",
 	})
 }

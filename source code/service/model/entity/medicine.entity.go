@@ -5,8 +5,7 @@ type Medicine struct {
 	Name    string `json:"name"`
 	Amount  int    `json:"amount"`
 	Expired string `json:"expired"`
-	StaffID uint   `json:"staff_id"`
-	Staff   Staff  `json:"staff" gorm:"foreignKey:StaffID"`
+	//	MEDICINE PICTURE
 }
 
 func (m *Medicine) TableName() string {

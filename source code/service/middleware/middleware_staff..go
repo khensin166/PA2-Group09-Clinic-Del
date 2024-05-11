@@ -3,11 +3,10 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/utils"
+	"log"
 )
 
-var ActiveTokens = make(map[string]bool)
-
-func Auth(ctx *fiber.Ctx) error {
+func StaffAuth(ctx *fiber.Ctx) error {
 	// membuat token
 	token := ctx.Get("Authorization")
 	if token == "" {
@@ -24,10 +23,12 @@ func Auth(ctx *fiber.Ctx) error {
 		})
 	}
 
-	// Cek apakah token ada dalam daftar token aktif
-	if _, ok := ActiveTokens[token]; !ok {
-		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "unauthenticated",
+	role := int(claims["role"].(float64))
+	log.Println(role)
+
+	if role != 1 && role != 2 {
+		return ctx.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"message": "forbidden access",
 		})
 	}
 
