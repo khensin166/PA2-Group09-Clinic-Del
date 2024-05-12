@@ -8,13 +8,19 @@ import (
 )
 
 func AppointmentGetAll(ctx *fiber.Ctx) error {
-	var appointment []entity.Appointment
+	var appointments []entity.Appointment
 
-	database.DB.Preload("User").Find(&appointment)
+	// Memuat entitas terkait menggunakan Preload
+	result := database.DB.Preload("Approved").Preload("Requested").Find(&appointments)
+	if result.Error != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch appointments",
+		})
+	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"success":     "get data success",
-		"appointment": appointment,
+		"success":      "get data success",
+		"appointments": appointments,
 	})
 }
 

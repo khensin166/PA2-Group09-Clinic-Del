@@ -47,20 +47,6 @@ func CreateUser(ctx *fiber.Ctx) error {
 		})
 	}
 
-	newUser := entity.User{
-		Name:     user.Name,
-		Age:      user.Age,
-		Weight:   user.Weight,
-		Height:   user.Height,
-		NIK:      user.NIK,
-		Birthday: user.Birthday,
-		Gender:   user.Gender,
-		Address:  user.Address,
-		Phone:    user.Phone,
-		Username: user.Username,
-		Role:     user.Role,
-	}
-
 	// pemanggilan hashed password
 	hashedPassword, err := utils.HashingPassword(user.Password)
 	if err != nil {
@@ -70,10 +56,10 @@ func CreateUser(ctx *fiber.Ctx) error {
 		})
 	}
 	// passing password yang sudah di hasing ke entity user (JSON)
-	newUser.Password = hashedPassword
+	user.Password = hashedPassword
 
 	// Mencoba membuat entitas baru dan menangani errornya
-	if err := database.DB.Create(&newUser).Error; err != nil {
+	if err := database.DB.Create(&user).Error; err != nil {
 		// Mengembalikan respon error 500 dengan pesan yang sesuai
 		return ctx.Status(500).JSON(fiber.Map{
 			"message": "failed to store data",
@@ -84,7 +70,7 @@ func CreateUser(ctx *fiber.Ctx) error {
 	// Mengembalikan respon sukses dengan data baru yang telah dibuat
 	return ctx.Status(200).JSON(fiber.Map{
 		"message": "success",
-		"data":    newUser,
+		"data":    user,
 	})
 }
 

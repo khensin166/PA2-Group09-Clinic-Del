@@ -1,16 +1,16 @@
 package entity
 
 type MedicalHistory struct {
-	ID              uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
-	Indication      string `json:"indication"`
-	BodyTemperature string `json:"body_temperature"`
-	Medicine        string `json:"medicine"`
-	Diagnose        string `json:"diagnose"`
-	DoctorID        uint   `json:"doctor_id"`
-	Doctor          Staff  `json:"doctor" gorm:"foreignKey:DoctorID"`
-	Date            string `json:"date"`
-	UserID          uint   `json:"user_id"`
-	User            User   `json:"user" gorm:"foreignKey:UserID"`
+	ID             uint         `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	UserID         uint         `json:"UserID"`
+	DoctorReportID uint         `json:"DoctorReportID"`
+	DoctorReport   DoctorReport `json:"doctorReport" gorm:"foreignKey:DoctorReportID"`
+	User           User         `json:"user" gorm:"foreignKey:UserID"`
+}
+
+type MedicalHistoryResponse struct {
+	UserID         uint `json:"UserID"`
+	DoctorReportID uint `json:"DoctorReportID"`
 }
 
 func (m *MedicalHistory) TableName() string {
