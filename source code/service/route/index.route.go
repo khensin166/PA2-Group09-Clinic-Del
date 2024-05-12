@@ -60,6 +60,7 @@ func RouteInit(r *fiber.App) {
 	r.Delete("/dorm/:id", middleware.StaffAuth, handler.DeleteDorm)
 
 	// MEDICAL HISTORY
-	r.Get("/medical-histories", middleware.Auth, handler.GetAllMedicalHistory)
+	r.Get("/medical-histories", middleware.Auth, handler.GetAllMedicalHistoryByToken)
+	r.Post("/medical-history", middleware.StaffAuth, handler.CreateMedicalHistory)
 
 }

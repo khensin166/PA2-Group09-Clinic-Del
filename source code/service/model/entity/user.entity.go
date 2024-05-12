@@ -23,7 +23,7 @@ type User struct {
 	Dorm     *Dorm  `json:"dorm" gorm:"foreignKey:DormID"`
 	//PROFILE PICTURE
 	Appointments   []Appointment    `json:"-" gorm:"foreignKey:RequestedID"`
-	MedicalHistory []MedicalHistory `json:"-"`
+	MedicalHistory []MedicalHistory `json:"-" gorm:"foreignKey:UserID"`
 	NurseReport    *NurseReport     `json:"-" gorm:"foreignKey:PatientID"`
 	CreatedAt      time.Time        `json:"created_at"`
 	UpdatedAt      time.Time        `json:"updated_at"`
