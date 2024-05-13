@@ -105,7 +105,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   child: Text(entry.key),
                 );
               }).toList(),
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Select Dorm Name',
               ),
             ),

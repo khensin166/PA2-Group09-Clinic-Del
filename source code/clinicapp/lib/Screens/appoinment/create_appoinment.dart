@@ -16,7 +16,7 @@ class _CreateAppoinmentPageState extends State<CreateAppoinmentPage> {
         title: Text('Buat Janji Temu'),
       ),
       body: SingleChildScrollView(
-          padding: EdgeInsets.all(10),
+          padding: const EdgeInsets.all(10),
           child: Column(
             children: [customTextField(), customTextField()],
           )),

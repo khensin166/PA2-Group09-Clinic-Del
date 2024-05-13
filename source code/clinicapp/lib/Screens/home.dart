@@ -24,13 +24,13 @@ class _HomePageState extends State<HomePage> {
     });
 
     if (index == 1) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ProfilePage()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const AppoinmentPage()));
     } else
     // Jika index adalah 2 (Profil), navigasikan ke halaman profil
     if (index == 2) {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => ProfilePage()));
+          .push(MaterialPageRoute(builder: (context) => const ProfilePage()));
     }
   }
 
@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 10,
                       ),
                       Padding(
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                               onTap: () {
                                 // Navigasi ke halaman profil saat gambar profil diklik
                                 Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => ProfilePage()));
+                                    builder: (context) => const ProfilePage()));
                               },
                               child: Row(
                                 children: [
@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   Text(
@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Container(
                               alignment: Alignment.topRight,
-                              child: Icon(
+                              child: const Icon(
                                 Icons.notifications_active,
                                 color: Colors.white,
                                 size: 30,
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 15,
                       ),
                       Padding(
@@ -135,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                             cursorHeight: 20,
                             autofocus: false,
                             decoration: InputDecoration(
-                              hintText: "Cari Obat dan Article",
+                              hintText: "Cari Obat dan Article...",
                               prefixIcon: Icon(Icons.search),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -190,8 +190,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(15),
+              const Padding(
+                padding: EdgeInsets.all(15),
                 child: Text(
                   "Article",
                 ),
