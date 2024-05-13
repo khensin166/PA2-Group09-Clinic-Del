@@ -16,7 +16,7 @@ type AppointmentResponse struct {
 	Date        string `json:"date" form:"date"`
 	Time        string `json:"time" form:"time"`
 	Complaint   string `json:"complaint" form:"complaint"`
-	ApprovedID  *uint  `json:"approved_id" form:"approved_id"` // Changed to *uint
+	ApprovedID  *uint  `json:"approved_id" form:"approved_id"`
 	RequestedID uint   `json:"requested_id" form:"requested_id"`
 }
 
