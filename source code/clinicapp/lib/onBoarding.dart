@@ -1,5 +1,5 @@
-import 'package:clinicapp/Screens/login.dart';
-import 'package:clinicapp/Screens/register.dart';
+import 'package:clinicapp/Screens/authentication/login.dart';
+import 'package:clinicapp/Screens/authentication/register.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,7 @@ class _OnboardingState extends State<Onboarding> {
               height: 15,
               width: 2.2,
               onPressed: () {
-                PageNavigator(ctx: context).nextPage(page: LoginPage());
+                PageNavigator(ctx: context).nextPage(page: const LoginPage());
               },
               hintText: 'Login',
               backgroundColor: primaryColor,

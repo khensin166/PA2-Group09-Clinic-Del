@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
+import 'package:clinicapp/Screens/authentication/login.dart';
 import 'package:clinicapp/Screens/home.dart';
-import 'package:clinicapp/Screens/login.dart';
-import 'package:clinicapp/Screens/register.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +26,8 @@ class AuthenticationProvider extends ChangeNotifier {
       required String password,
       required String passwordConfirmation,
       required String fullname,
-      BuildContext? context}) async {
+      BuildContext? context,
+      required int dorm}) async {
     _isLoading = true;
     notifyListeners();
 
@@ -46,7 +46,8 @@ class AuthenticationProvider extends ChangeNotifier {
       'name': fullname,
       'username': username,
       'password': password,
-      'role': "siswa",
+      'role': 1.toString(),
+      'dormID': dorm.toString()
     };
 
     print(body);
@@ -114,7 +115,7 @@ class AuthenticationProvider extends ChangeNotifier {
     _isLoading = true;
     notifyListeners();
 
-    String url = "$requestBaseUrl/login";
+    String url = "$requestBaseUrl/userLogin";
 
     final body = {'username': username, 'password': password};
     print(body);
@@ -140,9 +141,11 @@ class AuthenticationProvider extends ChangeNotifier {
 
         ///Save users data and then navigate to homepage
 
-        final token = res['token'];
+        final token = res['token'] as String;
+        final UserID = res['data']['id'].toString();
         print(token);
-
+        DatabaseProvider().saveToken(token);
+        DatabaseProvider().saveUserId(UserID);
         PageNavigator(ctx: context).nextPageOnly(page: const HomePage());
       } else {
         final res = json.decode(req.body);

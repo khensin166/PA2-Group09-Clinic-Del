@@ -1,6 +1,10 @@
+import 'package:clinicapp/Screens/authentication/login.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/onBoarding.dart';
 import 'package:flutter/material.dart';
+
+import 'Provider/Database/db_provider.dart';
+import 'Screens/home.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -30,7 +34,13 @@ class _SplashScreenState extends State<SplashScreen> {
 
   void navigate() {
     Future.delayed(const Duration(seconds: 3), () {
-      PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
+      DatabaseProvider().getToken().then((value) {
+        if (value == '') {
+          PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
+        } else {
+          PageNavigator(ctx: context).nextPageOnly(page: const HomePage());
+        }
+      });
     });
   }
 }
