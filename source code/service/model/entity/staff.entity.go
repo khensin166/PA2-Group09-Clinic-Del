@@ -20,7 +20,7 @@ type Staff struct {
 	Password string `json:"password" gorm:"column:password"`
 	Role     int    `json:"role"`
 	// PROFILE PICTURE
-	Appointments *Appointment   `json:"appointments" gorm:"foreignKey:RequestedID"`
+	Appointments *Appointment   `json:"appointments" gorm:"foreignKey:ApprovedID"`
 	NurseReports []NurseReport  `json:"nurse_reports" gorm:"foreignKey:StaffNurseID"`
 	DoctorReport []DoctorReport `json:"doctorReport" gorm:"foreignKey:StaffDoctorID"`
 	CreatedAt    time.Time      `json:"created_at"`
