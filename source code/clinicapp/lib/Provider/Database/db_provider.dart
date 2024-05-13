@@ -1,3 +1,5 @@
+import 'package:clinicapp/Screens/authentication/login.dart';
+import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -37,5 +39,28 @@ class DatabaseProvider extends ChangeNotifier {
       notifyListeners();
       return '';
     }
+  }
+
+  Future<String> getUserId() async {
+    SharedPreferences value = await _pref;
+
+    if (value.containsKey('id')) {
+      String data = value.getString('id')!;
+      _userId = data;
+      notifyListeners();
+      return data;
+    } else {
+      _userId = '';
+      notifyListeners();
+      return '';
+    }
+  }
+
+  void logOut(BuildContext context) async {
+    final value = await _pref;
+
+    value.clear();
+
+    PageNavigator(ctx: context).nextPageOnly(page: const LoginPage());
   }
 }

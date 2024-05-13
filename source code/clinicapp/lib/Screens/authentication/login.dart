@@ -1,26 +1,23 @@
 import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
+import 'package:clinicapp/Screens/authentication/register.dart';
+import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
-import 'package:clinicapp/Widgets/birthday_fields.dart';
 import 'package:clinicapp/Widgets/button.dart';
 import 'package:clinicapp/Widgets/text_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController _fullname = TextEditingController();
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  final TextEditingController _passwordConfirmation = TextEditingController();
-
   bool _isHidden = true;
-  bool _isHidden2 = true;
 
   @override
   void dispose() {
@@ -34,26 +31,16 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registrasi'),
+        title: Text('Login'),
       ),
       body: Container(
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
             customTextField(
-                title: 'Nama Lengkap',
-                controller: _fullname,
-                hint: 'Jhon Doe',
-                obsecureText: false,
-                prefixIcon: Icons.account_circle_outlined,
-                isHidden: false),
-            const SizedBox(
-              height: 20,
-            ),
-            customTextField(
                 title: 'Username',
                 controller: _username,
-                hint: 'JhonDoe12',
+                hint: 'Masukkan Nama',
                 obsecureText: false,
                 prefixIcon: Icons.account_circle_outlined),
             const SizedBox(
@@ -67,52 +54,38 @@ class _RegisterPageState extends State<RegisterPage> {
                 obsecureText: true,
                 isHidden: _isHidden,
                 tootleFieldView: _tootleFieldView),
-            const SizedBox(
-              height: 20,
-            ),
-
-            customTextField(
-                title: 'Konfirmasi Password',
-                controller: _passwordConfirmation,
-                hint: 'Konfirmasi password',
-                prefixIcon: Icons.lock,
-                obsecureText: true,
-                isHidden: _isHidden2,
-                tootleFieldView: _tootleFieldViewConfirmation),
-            const SizedBox(
-              height: 20,
-            ),
-
             // button
             Consumer<AuthenticationProvider>(builder: (context, auth, child) {
-              WidgetsBinding.instance!.addPostFrameCallback((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (auth.resMessage != '') {
                   showMessage(message: auth.resMessage, context: context);
 
-                  // bersihkan respon agar tidaj terjadi duplikasi
+                  // Clear the response message to avoid duplicate
                   auth.clear();
                 }
               });
               return customButton(
-                text: "Registrasi",
+                text: 'Login',
                 tap: () {
                   if (_username.text.isEmpty || _password.text.isEmpty) {
                     showMessage(
-                        message: "Semua kolom harus diisi", context: context);
+                        message: "Semua kolom harus di isi", context: context);
                   } else {
-                    auth.registerUser(
-                      username: _username.text.trim(),
-                      password: _password.text.trim(),
-                      passwordConfirmation: _passwordConfirmation.text.trim(),
-                      fullname: _fullname.text.trim(),
-                      context: context,
-                    );
+                    auth.loginUser(
+                        username: _username.text.trim(),
+                        password: _password.text.trim(),
+                        context: context);
                   }
                 },
                 context: context,
                 status: auth.isLoading,
               );
-            })
+            }),
+            TextButton(
+                onPressed: () {
+                  PageNavigator(ctx: context).nextPage(page: const RegisterPage());
+                },
+                child: const Text('registrasi'))
           ],
         ),
       ),
@@ -122,12 +95,6 @@ class _RegisterPageState extends State<RegisterPage> {
   void _tootleFieldView() {
     setState(() {
       _isHidden = !_isHidden;
-    });
-  }
-
-  void _tootleFieldViewConfirmation() {
-    setState(() {
-      _isHidden2 = !_isHidden2;
     });
   }
 }
