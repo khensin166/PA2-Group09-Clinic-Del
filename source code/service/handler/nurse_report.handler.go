@@ -160,7 +160,7 @@ func UpdateNurseReport(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "success",
+		"message": "success adding data",
 		"data":    report,
 	})
 }
