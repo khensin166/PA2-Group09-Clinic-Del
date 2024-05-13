@@ -74,6 +74,10 @@ func LoginHandler(ctx *fiber.Ctx) error {
 			"message": "wrong credentials",
 		})
 	}
+
+	// Set the Authorization header with the Bearer token
+	ctx.Set("Authorization", "Bearer "+token)
+
 	cookie := fiber.Cookie{
 		Name:     "jwt",
 		Value:    token,
@@ -91,7 +95,6 @@ func LoginHandler(ctx *fiber.Ctx) error {
 		"data":    claims,
 		"token":   token,
 	})
-
 }
 
 func LogoutHandler(ctx *fiber.Ctx) error {
