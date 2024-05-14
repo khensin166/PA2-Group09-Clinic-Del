@@ -1,6 +1,6 @@
 package entity
 
-type Remainder struct {
+type Reminder struct {
 	ID         uint     `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
 	Date       string   `json:"date"`
 	Time       string   `json:"time"`
@@ -10,6 +10,6 @@ type Remainder struct {
 	Medicine   Medicine `json:"medicine" gorm:"foreignKey:MedicineID"`
 }
 
-func (r *Remainder) TableName() string {
-	return "remainders"
+func (r *Reminder) TableName() string {
+	return "reminders"
 }

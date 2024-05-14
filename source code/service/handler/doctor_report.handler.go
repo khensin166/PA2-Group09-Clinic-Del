@@ -9,12 +9,22 @@ import (
 )
 
 func DoctorReportGetAll(ctx *fiber.Ctx) error {
-	var doctorReport []entity.DoctorReport
+	var doctorReports []entity.DoctorReport
 
-	database.DB.Preload("NurseReport").Preload("NurseReport.Patient").Preload("NurseReport.StaffNurse").Preload("StaffDoctor").Preload("Medicine").Find(&doctorReport)
+	if err := database.DB.Preload("NurseReport").
+		Preload("NurseReport.Patient").
+		Preload("NurseReport.StaffNurse").
+		Preload("StaffDoctor").
+		Preload("Medicines"). // Preload medicines association
+		Find(&doctorReports).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "failed to fetch doctor reports",
+			"error":   err.Error(),
+		})
+	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"doctor_report": doctorReport,
+		"doctor_reports": doctorReports,
 	})
 }
 
@@ -56,24 +66,49 @@ func CreateDoctorReport(ctx *fiber.Ctx) error {
 		})
 	}
 
-	database.DB.Create(&doctorReport)
+	// Create the DoctorReport
+	if err := database.DB.Create(&doctorReport).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "failed to store data",
+			"error":   err.Error(),
+		})
+	}
 
-	var medicine entity.Medicine
-	database.DB.First(&medicine, doctorReport.MedicineID)
-	if medicine.Amount > 0 {
-		medicine.Amount -= doctorReport.Amount
-		if medicine.Amount > 0 {
-			database.DB.Save(&medicine)
-		} else {
+	// Update Medicine stock
+	for _, medicine := range doctorReport.Medicines {
+		var dbMedicine entity.Medicine
+		if err := database.DB.First(&dbMedicine, medicine.ID).Error; err != nil {
+			return ctx.Status(400).SendString("Obat tidak ditemukan")
+		}
+
+		if dbMedicine.Amount < medicine.Amount {
 			return ctx.Status(400).SendString("Stok obat tidak cukup")
 		}
 
-	} else {
-		return ctx.Status(400).SendString("Stok obat tidak cukup")
+		dbMedicine.Amount -= medicine.Amount
+		if err := database.DB.Save(&dbMedicine).Error; err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"message": "failed to update medicine stock",
+				"error":   err.Error(),
+			})
+		}
+
+		// Assign medicine to the current doctor report
+		if err := database.DB.Model(&doctorReport).Association("Medicines").Append(&dbMedicine); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"message": "failed to associate medicine with doctor report",
+				"error":   err.Error(),
+			})
+		}
 	}
 
 	// Load relations
-	database.DB.Preload("NurseReport").Preload("StaffDoctor").Preload("Medicine").First(&doctorReport, doctorReport.ID)
+	if err := database.DB.Preload("NurseReport").Preload("StaffDoctor").Preload("Medicines").First(&doctorReport, doctorReport.ID).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "failed to load relations",
+			"error":   err.Error(),
+		})
+	}
 
 	return ctx.Status(200).JSON(doctorReport)
 }
@@ -103,9 +138,6 @@ func UpdateDoctorReport(ctx *fiber.Ctx) error {
 		report.NurseReportID = reportRequest.NurseReportID
 	}
 
-	if reportRequest.MedicineID != 0 {
-		report.MedicineID = reportRequest.MedicineID
-	}
 	if reportRequest.StaffDoctorID != 0 {
 		report.StaffDoctorID = reportRequest.StaffDoctorID
 	}

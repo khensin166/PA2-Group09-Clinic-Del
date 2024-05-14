@@ -15,7 +15,7 @@ func Migration() {
 		&entity.MedicalHistory{},
 		&entity.Medicine{},
 		&entity.NurseReport{},
-		&entity.Remainder{},
+		&entity.Reminder{},
 		&entity.User{},
 		&entity.Staff{},
 	)

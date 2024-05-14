@@ -4,8 +4,47 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/model/entity"
+	"github.com/khensin166/PA2-Kel9/utils"
 	"log"
 )
+
+func AppointmentGetByAuth(ctx *fiber.Ctx) error {
+
+	token := ctx.Get("Authorization")
+	if token == "" {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	//_, err := utils.VerifyToken(token)
+	claims, err := utils.DecodeToken(token)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated err",
+		})
+	}
+
+	id := int(claims["id"].(float64))
+	log.Println(id)
+
+	// mendeklarasikan variabel user dengan tipe data userEntity
+	var appointment entity.AppointmentByAuth
+
+	// Query Statement dengan GORM
+	err = database.DB.Find(&appointment, "?", id).Error
+	if err != nil {
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "appointment not found",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    appointment,
+	})
+
+}
 
 func AppointmentGetAll(ctx *fiber.Ctx) error {
 	var appointments []entity.Appointment

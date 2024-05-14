@@ -15,7 +15,6 @@ func NurseReportGetAll(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(fiber.Map{
 		"nurse_reports": nurseReport,
 	})
-
 }
 
 func CreateNurseReport(ctx *fiber.Ctx) error {

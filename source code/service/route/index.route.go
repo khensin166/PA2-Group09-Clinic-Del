@@ -22,7 +22,8 @@ func RouteInit(r *fiber.App) {
 	r.Delete("/user/:id", middleware.StaffAuth, handler.DeleteUser)
 
 	// APPOINTMENT
-	r.Get("/appointments", middleware.StaffAuth, handler.AppointmentGetAll)
+	r.Get("/appointments", handler.AppointmentGetAll)
+	r.Get("/appointments-auth", middleware.Auth, handler.AppointmentGetByAuth)
 	r.Post("/appointment", middleware.Auth, handler.CreateAppointment)
 	r.Put("/appointment/:id/approve", middleware.StaffAuth, handler.UpdateApprovedID)
 	r.Put("/appointment/:id", middleware.Auth, handler.UpdateAppointment)
@@ -62,5 +63,11 @@ func RouteInit(r *fiber.App) {
 	// MEDICAL HISTORY
 	r.Get("/medical-histories", middleware.Auth, handler.GetAllMedicalHistoryByToken)
 	r.Post("/medical-history", middleware.StaffAuth, handler.CreateMedicalHistory)
+
+	// REMINDER
+	r.Get("/reminders", middleware.Auth, handler.ReminderGetAll)
+	r.Post("/reminder", middleware.Auth, handler.CreateReminder)
+	r.Put("/reminder/:id", middleware.Auth, handler.UpdateReminder)
+	r.Delete("/reminder/:id", middleware.Auth, handler.DeleteReminder)
 
 }

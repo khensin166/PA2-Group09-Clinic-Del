@@ -46,18 +46,21 @@ func CreateMedicine(ctx *fiber.Ctx) error {
 		})
 	}
 
+	// Create the Medicine
 	if err := database.DB.Create(medicine).Error; err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
 			"message": "failed to store data",
 			"error":   err.Error(),
 		})
 	}
+
 	response := entity.Medicine{
 		ID:      medicine.ID,
 		Name:    medicine.Name,
 		Amount:  medicine.Amount,
 		Expired: medicine.Expired,
 	}
+
 	return ctx.Status(200).JSON(fiber.Map{
 		"message": "success",
 		"data":    response,
@@ -130,7 +133,7 @@ func DeleteMedicine(ctx *fiber.Ctx) error {
 		})
 	}
 
-	return ctx.JSON(fiber.Map{
+	return ctx.Status(200).JSON(fiber.Map{
 		"message": "Medicine deleted successfully",
 	})
 }

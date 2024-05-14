@@ -11,6 +11,14 @@ type Appointment struct {
 	Requested   User   `json:"requested" gorm:"foreignKey:RequestedID"`
 }
 
+type AppointmentByAuth struct {
+	ID         uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	Date       string `json:"date" form:"date"`
+	Time       string `json:"time" form:"time"`
+	Complaint  string `json:"complaint" form:"complaint"`
+	ApprovedID *uint  `json:"approved_id" gorm:"default:null"` // Changed to *uint and allow null
+}
+
 type AppointmentResponse struct {
 	ID          uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
 	Date        string `json:"date" form:"date"`

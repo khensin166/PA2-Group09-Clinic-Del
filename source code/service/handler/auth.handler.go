@@ -14,6 +14,18 @@ import (
 )
 
 func LoginHandler(ctx *fiber.Ctx) error {
+	// Ambil token dari header Authorization
+	token := ctx.Get("Authorization")
+
+	// Periksa apakah token masih aktif
+	if isActiveToken(token) {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "token masih aktif",
+		})
+	}
+
+	// Melanjutkan proses login jika token tidak aktif
+
 	loginRequest := new(request.LoginRequest)
 
 	// Menangani error saat parsing request body
@@ -76,7 +88,7 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	}
 
 	// Set the Authorization header with the Bearer token
-	ctx.Set("Authorization", "Bearer "+token)
+	ctx.Set("Authorization", ""+token)
 
 	cookie := fiber.Cookie{
 		Name:     "jwt",
@@ -95,6 +107,12 @@ func LoginHandler(ctx *fiber.Ctx) error {
 		"data":    claims,
 		"token":   token,
 	})
+}
+
+func isActiveToken(token string) bool {
+	// Periksa apakah token ada dalam daftar ActiveTokens
+	_, isActive := middleware.ActiveTokens[token]
+	return isActive
 }
 
 func LogoutHandler(ctx *fiber.Ctx) error {
