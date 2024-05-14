@@ -7,6 +7,7 @@ import (
 	"github.com/khensin166/PA2-Kel9/model/entity"
 	"github.com/khensin166/PA2-Kel9/utils"
 	"log"
+	"path/filepath"
 )
 
 func UserHandlerGetAll(ctx *fiber.Ctx) error {
@@ -29,11 +30,15 @@ func UserHandlerGetAll(ctx *fiber.Ctx) error {
 }
 
 func CreateUser(ctx *fiber.Ctx) error {
+	// Parse form data
 	user := new(entity.User)
 
 	// Menangani error saat parsing request body
 	if err := ctx.BodyParser(user); err != nil {
-		return err
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "Invalid form data",
+		})
 	}
 
 	//VALIDATION REQUEST
@@ -57,6 +62,21 @@ func CreateUser(ctx *fiber.Ctx) error {
 	}
 	// passing password yang sudah di hasing ke entity user (JSON)
 	user.Password = hashedPassword
+
+	image, err := ctx.FormFile("profilePicture")
+
+	if err == nil {
+		filename := utils.GenerateImageFile(user.Name, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"status":  "failed",
+				"message": "Can't save file image",
+			})
+		}
+		user.ProfilePicture = &filename
+	} else {
+		user.ProfilePicture = nil
+	}
 
 	// Mencoba membuat entitas baru dan menangani errornya
 	if err := database.DB.Create(&user).Error; err != nil {
@@ -97,16 +117,19 @@ func UserHandlerGetById(ctx *fiber.Ctx) error {
 }
 
 func UpdateUser(ctx *fiber.Ctx) error {
-
+	// Parse form data
 	userRequest := new(entity.User)
 	if err := ctx.BodyParser(userRequest); err != nil {
-		return ctx.Status(404).JSON(fiber.Map{"message": "bad request"})
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "bad request",
+		})
 	}
 
+	// Get user ID from URL
 	var user entity.User
-
 	// logic
 	userID := ctx.Params("id")
+
 	// CHECK AVAILABLE USER
 	err := database.DB.First(&user, "id = ?", userID).Error
 	if err != nil {
@@ -120,18 +143,42 @@ func UpdateUser(ctx *fiber.Ctx) error {
 		user.Name = userRequest.Name
 	}
 	user.Address = userRequest.Address
-	user.Phone = userRequest.Phone
-	errUpdate := database.DB.Save(&user).Error
 
-	if errUpdate != nil {
+	user.Phone = userRequest.Phone
+
+	// Process image if provided
+	image, err := ctx.FormFile("profilePicture")
+	if err == nil {
+		filename := utils.GenerateImageFile(user.Name, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"status":  "failed",
+				"message": "Can't save file image",
+			})
+		}
+		user.ProfilePicture = &filename
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(user); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+	}
+
+	// Update the medicine in the database
+	if err := database.DB.Save(&user).Error; err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
-			"message": "internal server error",
+			"status":  "failed",
+			"message": "failed to update data",
+			"error":   err.Error(),
 		})
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "success",
-		"data":    user,
+		"status": "success",
+		"data":   user,
 	})
 }
 

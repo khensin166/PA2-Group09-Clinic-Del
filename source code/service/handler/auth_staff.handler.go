@@ -63,6 +63,7 @@ func StaffLoginHandler(ctx *fiber.Ctx) error {
 
 	//GENERATE JWT (don't forget to install package : github.com/dgrijalva/jwt-go)
 	claims := jwt.MapClaims{}
+	claims["id"] = staff.ID
 	claims["name"] = staff.Name
 	claims["age"] = staff.Age
 	claims["weight"] = staff.Weight
@@ -87,7 +88,9 @@ func StaffLoginHandler(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"token": token,
+		"message": "success login",
+		"data":    claims,
+		"token":   token,
 	})
 
 }

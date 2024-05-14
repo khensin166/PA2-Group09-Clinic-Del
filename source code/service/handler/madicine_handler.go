@@ -5,7 +5,21 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/model/entity"
+	"github.com/khensin166/PA2-Kel9/utils"
+	"os"
+	"path/filepath"
 )
+
+var PathImageProduct = "./Public"
+
+func init() {
+	if _, err := os.Stat(PathImageProduct); os.IsNotExist(err) {
+		err := os.Mkdir(PathImageProduct, os.ModePerm)
+		if err != nil {
+			return
+		}
+	}
+}
 
 func MedicineGetAll(ctx *fiber.Ctx) error {
 	var medicines []entity.Medicine
@@ -31,89 +45,127 @@ func MedicineGetAll(ctx *fiber.Ctx) error {
 }
 
 func CreateMedicine(ctx *fiber.Ctx) error {
-	medicine := &entity.Medicine{}
-
-	if err := ctx.BodyParser(medicine); err != nil {
-		return err
-	}
-
-	// VALIDATION Request
-	validate := validator.New()
-	if err := validate.Struct(medicine); err != nil {
+	// Parse form data
+	input := new(entity.Medicine)
+	if err := ctx.BodyParser(input); err != nil {
 		return ctx.Status(400).JSON(fiber.Map{
-			"message": "failed",
-			"error":   err.Error(),
+			"status":  "failed",
+			"message": "Invalid form data",
 		})
 	}
 
-	// Create the Medicine
-	if err := database.DB.Create(medicine).Error; err != nil {
+	// Validate the input
+	validate := validator.New()
+	if err := validate.Struct(input); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+	}
+
+	// Process image
+	image, err := ctx.FormFile("image")
+	if err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "Image is required",
+		})
+	}
+
+	filename := utils.GenerateImageFile(input.Name, image.Filename)
+	if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "Can't save file image",
+		})
+	}
+	input.Image = filename
+
+	// Create the Medicine
+	if err := database.DB.Create(input).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"status":  "failed",
 			"message": "failed to store data",
 			"error":   err.Error(),
 		})
 	}
 
-	response := entity.Medicine{
-		ID:      medicine.ID,
-		Name:    medicine.Name,
-		Amount:  medicine.Amount,
-		Expired: medicine.Expired,
-	}
-
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "success",
-		"data":    response,
+		"status": "success",
+		"data":   input,
 	})
 }
 
 func UpdateMedicine(ctx *fiber.Ctx) error {
-
-	medicineRequest := new(entity.Medicine)
-
-	if err := ctx.BodyParser(medicineRequest); err != nil {
-		return ctx.Status(404).JSON(fiber.Map{
-			"message": "bad request",
+	// Parse form data
+	input := new(entity.Medicine)
+	if err := ctx.BodyParser(input); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "Invalid form data",
 		})
 	}
 
+	// Get medicine ID from URL
+	medicineID := ctx.Params("id")
 	var medicine entity.Medicine
 
-	medicineID := ctx.Params("id")
-
-	err := database.DB.First(&medicine, "id = ?", medicineID).Error
-	if err != nil {
+	// Find the existing medicine record
+	if err := database.DB.First(&medicine, "id = ?", medicineID).Error; err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
+			"status":  "failed",
 			"message": "medicine not found",
 		})
 	}
 
-	// UPDATE USER DATA
-	if medicine.Name != "" {
-		medicine.Name = medicineRequest.Name
+	// Update fields
+	if input.Name != "" {
+		medicine.Name = input.Name
 	}
 
-	if medicine.Amount != 0 {
-		medicine.Amount = medicineRequest.Amount
+	if input.Amount != 0 {
+		medicine.Amount = input.Amount
 	}
 
-	if medicine.Expired != "" {
-		medicine.Expired = medicineRequest.Expired
+	if input.Expired != "" {
+		medicine.Expired = input.Expired
 	}
 
-	errUpdate := database.DB.Save(&medicine).Error
+	// Process image if provided
+	image, err := ctx.FormFile("image")
+	if err == nil {
+		filename := utils.GenerateImageFile(medicine.Name, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"status":  "failed",
+				"message": "Can't save file image",
+			})
+		}
+		medicine.Image = filename
+	}
 
-	if errUpdate != nil {
+	// Validate the struct
+	validate := validator.New()
+	if err := validate.Struct(medicine); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+	}
+
+	// Update the medicine in the database
+	if err := database.DB.Save(&medicine).Error; err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
-			"message": "internal server error",
+			"status":  "failed",
+			"message": "failed to update data",
+			"error":   err.Error(),
 		})
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "success",
-		"data":    medicine,
+		"status": "success",
+		"data":   medicine,
 	})
-
 }
 
 func DeleteMedicine(ctx *fiber.Ctx) error {

@@ -7,6 +7,7 @@ import (
 	"github.com/khensin166/PA2-Kel9/model/entity"
 	"github.com/khensin166/PA2-Kel9/utils"
 	"log"
+	"path/filepath"
 )
 
 func StaffHandlerGetAll(ctx *fiber.Ctx) error {
@@ -31,7 +32,10 @@ func CreateStaff(ctx *fiber.Ctx) error {
 
 	// Menangani error saat parsing request body
 	if err := ctx.BodyParser(staff); err != nil {
-		return err
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": "Invalid form data",
+		})
 	}
 
 	//VALIDATION REQUEST
@@ -45,20 +49,6 @@ func CreateStaff(ctx *fiber.Ctx) error {
 		})
 	}
 
-	newStaff := entity.Staff{
-		Name:     staff.Name,
-		Age:      staff.Age,
-		Weight:   staff.Weight,
-		Height:   staff.Height,
-		NIP:      staff.NIP,
-		Birthday: staff.Birthday,
-		Gender:   staff.Gender,
-		Address:  staff.Address,
-		Phone:    staff.Phone,
-		Username: staff.Username,
-		Role:     staff.Role,
-	}
-
 	// pemanggilan hashed password
 	hashedPassword, err := utils.HashingPassword(staff.Password)
 	if err != nil {
@@ -68,10 +58,25 @@ func CreateStaff(ctx *fiber.Ctx) error {
 		})
 	}
 	// passing password yang sudah di hasing ke entity user (JSON)
-	newStaff.Password = hashedPassword
+	staff.Password = hashedPassword
+
+	image, err := ctx.FormFile("profilePicture")
+
+	if err == nil {
+		filename := utils.GenerateImageFile(staff.Name, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"status":  "failed",
+				"message": "Can't save file image",
+			})
+		}
+		staff.ProfilePicture = &filename
+	} else {
+		staff.ProfilePicture = nil
+	}
 
 	// Mencoba membuat entitas baru dan menangani errornya
-	if err := database.DB.Create(&newStaff).Error; err != nil {
+	if err := database.DB.Create(&staff).Error; err != nil {
 		// Mengembalikan respon error 500 dengan pesan yang sesuai
 		return ctx.Status(500).JSON(fiber.Map{
 			"message": "failed to store data",
@@ -82,7 +87,7 @@ func CreateStaff(ctx *fiber.Ctx) error {
 	// Mengembalikan respon sukses dengan data baru yang telah dibuat
 	return ctx.JSON(fiber.Map{
 		"message": "success",
-		"data":    newStaff,
+		"data":    staff,
 	})
 }
 
@@ -132,17 +137,40 @@ func UpdateStaff(ctx *fiber.Ctx) error {
 	}
 	staff.Address = staffRequest.Address
 	staff.Phone = staffRequest.Phone
-	errUpdate := database.DB.Save(&staff).Error
 
-	if errUpdate != nil {
+	// Process image if provided
+	image, err := ctx.FormFile("profilePicture")
+	if err == nil {
+		filename := utils.GenerateImageFile(staff.Name, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"status":  "failed",
+				"message": "Can't save file image",
+			})
+		}
+		staff.ProfilePicture = &filename
+	}
+
+	validate := validator.New()
+	if err := validate.Struct(staff); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"status":  "failed",
+			"message": err.Error(),
+		})
+	}
+
+	// Update the medicine in the database
+	if err := database.DB.Save(&staff).Error; err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
-			"message": "internal server error",
+			"status":  "failed",
+			"message": "failed to update data",
+			"error":   err.Error(),
 		})
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "success",
-		"data":    staff,
+		"status": "success",
+		"data":   staff,
 	})
 }
 
