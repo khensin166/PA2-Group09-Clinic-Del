@@ -9,7 +9,7 @@ import (
 )
 
 func AppointmentGetByAuth(ctx *fiber.Ctx) error {
-
+	// Mendapatkan token dari header Authorization
 	token := ctx.Get("Authorization")
 	if token == "" {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -17,7 +17,7 @@ func AppointmentGetByAuth(ctx *fiber.Ctx) error {
 		})
 	}
 
-	//_, err := utils.VerifyToken(token)
+	// Mendekode token untuk mendapatkan informasi pengguna
 	claims, err := utils.DecodeToken(token)
 	if err != nil {
 		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -25,25 +25,37 @@ func AppointmentGetByAuth(ctx *fiber.Ctx) error {
 		})
 	}
 
-	id := int(claims["id"].(float64))
-	log.Println(id)
+	// Mendapatkan ID pengguna dari token
+	userID := int(claims["id"].(float64))
 
-	// mendeklarasikan variabel user dengan tipe data userEntity
-	var appointment entity.AppointmentByAuth
-
-	// Query Statement dengan GORM
-	err = database.DB.Find(&appointment, "?", id).Error
+	// Melakukan query ke basis data untuk mendapatkan appointment yang sesuai dengan ID pengguna
+	// Anda perlu menyesuaikan sesuai dengan struktur tabel dan kueri yang benar
+	var appointments []entity.Appointment
+	err = database.DB.Where("requested_id = ?", userID).Find(&appointments).Error
 	if err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
 			"message": "appointment not found",
 		})
 	}
 
+	// Membuat slice baru untuk menyimpan data appointment yang akan dikirim ke client
+	var responseAppointments []interface{}
+	for _, appointment := range appointments {
+		responseAppointment := map[string]interface{}{
+			"id":        appointment.ID,
+			"date":      appointment.Date,
+			"time":      appointment.Time,
+			"complaint": appointment.Complaint,
+			"approved":  appointment.Approved,
+		}
+		responseAppointments = append(responseAppointments, responseAppointment)
+	}
+
+	// Mengembalikan data appointment dalam format JSON
 	return ctx.JSON(fiber.Map{
 		"message": "success",
-		"data":    appointment,
+		"data":    responseAppointments,
 	})
-
 }
 
 func AppointmentGetAll(ctx *fiber.Ctx) error {
