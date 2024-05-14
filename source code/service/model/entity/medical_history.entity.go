@@ -1,11 +1,19 @@
 package entity
 
+import (
+	"gorm.io/gorm"
+	"time"
+)
+
 type MedicalHistory struct {
-	ID             uint         `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
-	UserID         uint         `json:"UserID"`
-	DoctorReportID uint         `json:"DoctorReportID"`
-	DoctorReport   DoctorReport `json:"doctorReport" gorm:"foreignKey:DoctorReportID"`
-	User           User         `json:"user" gorm:"foreignKey:UserID"`
+	ID             uint           `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	UserID         uint           `json:"UserID"`
+	DoctorReportID uint           `json:"DoctorReportID"`
+	DoctorReport   DoctorReport   `json:"doctorReport" gorm:"foreignKey:DoctorReportID"`
+	User           User           `json:"user" gorm:"foreignKey:UserID"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`
 }
 
 type MedicalHistoryResponse struct {
