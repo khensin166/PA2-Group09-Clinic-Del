@@ -1,6 +1,7 @@
+import 'package:clinicapp/Provider/AppointmentProvider/add_appointment_provider.dart';
+import 'package:clinicapp/Provider/AppointmentProvider/delete_appointment_provider.dart';
 import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
-import 'package:clinicapp/onBoarding.dart';
 import 'package:clinicapp/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthenticationProvider()),
         ChangeNotifierProvider(create: (_) => DatabaseProvider()),
+        ChangeNotifierProvider(create: (_) => AddAppointmentProvider()),
+        ChangeNotifierProvider(create: (_) => DeleteAppointmentProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',

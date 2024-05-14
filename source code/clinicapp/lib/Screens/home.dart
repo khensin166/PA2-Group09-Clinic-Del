@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
 
     if (index == 1) {
       Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const AppoinmentPage()));
+          MaterialPageRoute(builder: (context) => const AppointmentPage()));
     } else
     // Jika index adalah 2 (Profil), navigasikan ke halaman profil
     if (index == 2) {
@@ -163,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                         title: "Janji Temu",
                         onTap: () {
                           PageNavigator(ctx: context)
-                              .nextPage(page: const AppoinmentPage());
+                              .nextPage(page: const AppointmentPage());
                         },
                       ),
                     ),
@@ -202,18 +202,18 @@ class _HomePageState extends State<HomePage> {
                 rating: "4.8",
                 jamBuka: "10.00 - 23.00",
               ),
-              Article(
-                imagePath: 'assets/logo.png',
-                nameShop: "Toko Kenanganku",
-                rating: "4.9",
-                jamBuka: "13.00 - 23.00",
-              ),
-              Article(
-                imagePath: 'assets/logo.png',
-                nameShop: "Ketiga Kopi",
-                rating: "4.7",
-                jamBuka: "13.00 - 20.00",
-              ),
+              // Article(
+              //   imagePath: 'assets/logo.png',
+              //   nameShop: "Toko Kenanganku",
+              //   rating: "4.9",
+              //   jamBuka: "13.00 - 23.00",
+              // ),
+              // Article(
+              //   imagePath: 'assets/logo.png',
+              //   nameShop: "Ketiga Kopi",
+              //   rating: "4.7",
+              //   jamBuka: "13.00 - 20.00",
+              // ),
             ],
           ),
         ),
