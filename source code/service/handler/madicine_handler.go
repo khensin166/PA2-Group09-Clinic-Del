@@ -14,7 +14,10 @@ var PathImageProduct = "./Public"
 
 func init() {
 	if _, err := os.Stat(PathImageProduct); os.IsNotExist(err) {
-		os.Mkdir(PathImageProduct, os.ModePerm)
+		err := os.Mkdir(PathImageProduct, os.ModePerm)
+		if err != nil {
+			return
+		}
 	}
 }
 
