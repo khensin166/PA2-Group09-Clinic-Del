@@ -6,22 +6,22 @@ import (
 )
 
 type User struct {
-	ID       uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
-	Name     string `json:"name"`
-	Age      int    `json:"age"`
-	Weight   int    `json:"weight"`
-	Height   int    `json:"height"`
-	NIK      int    `json:"nik"`
-	Birthday string `json:"birthday"`
-	Gender   string `json:"gender"`
-	Address  string `json:"address"`
-	Phone    string `json:"phone"`
-	Username string `json:"username" gorm:"unique"`
-	Password string `json:"password" gorm:"column:password"`
-	Role     int    `json:"role"`
-	DormID   uint   `json:"dormID"`
-	Dorm     *Dorm  `json:"dorm" gorm:"foreignKey:DormID"`
-	//PROFILE PICTURE
+	ID             uint             `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	Name           string           `json:"name"`
+	Age            int              `json:"age"`
+	Weight         int              `json:"weight"`
+	Height         int              `json:"height"`
+	NIK            int              `json:"nik"`
+	Birthday       string           `json:"birthday"`
+	Gender         string           `json:"gender"`
+	Address        string           `json:"address"`
+	Phone          string           `json:"phone"`
+	Username       string           `json:"username" gorm:"unique"`
+	Password       string           `json:"password" gorm:"column:password"`
+	Role           int              `json:"role"`
+	DormID         uint             `json:"dormID"`
+	Dorm           *Dorm            `json:"dorm" gorm:"foreignKey:DormID"`
+	ProfilePicture *string          `json:"profilePicture"`
 	Appointments   []Appointment    `json:"-" gorm:"foreignKey:RequestedID"`
 	MedicalHistory []MedicalHistory `json:"-" gorm:"foreignKey:UserID"`
 	NurseReport    *NurseReport     `json:"-" gorm:"foreignKey:PatientID"`

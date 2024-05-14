@@ -6,26 +6,26 @@ import (
 )
 
 type Staff struct {
-	ID       uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
-	Name     string `json:"name"`
-	Age      int    `json:"age"`
-	Weight   int    `json:"weight"`
-	Height   int    `json:"height"`
-	NIP      int    `json:"NIP"`
-	Birthday string `json:"birthday"`
-	Gender   string `json:"gender"`
-	Address  string `json:"address"`
-	Phone    string `json:"phone"`
-	Username string `json:"username" gorm:"unique"`
-	Password string `json:"password" gorm:"column:password"`
-	Role     int    `json:"role"`
-	// PROFILE PICTURE
-	Appointments *Appointment   `json:"appointments" gorm:"foreignKey:ApprovedID"`
-	NurseReports []NurseReport  `json:"nurse_reports" gorm:"foreignKey:StaffNurseID"`
-	DoctorReport []DoctorReport `json:"doctorReport" gorm:"foreignKey:StaffDoctorID"`
-	CreatedAt    time.Time      `json:"created_at"`
-	UpdatedAt    time.Time      `json:"updated_at"`
-	DeletedAt    gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`
+	ID             uint           `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	Name           string         `json:"name"`
+	Age            int            `json:"age"`
+	Weight         int            `json:"weight"`
+	Height         int            `json:"height"`
+	NIP            int            `json:"NIP"`
+	Birthday       string         `json:"birthday"`
+	Gender         string         `json:"gender"`
+	Address        string         `json:"address"`
+	Phone          string         `json:"phone"`
+	Username       string         `json:"username" gorm:"unique"`
+	Password       string         `json:"password" gorm:"column:password"`
+	Role           int            `json:"role"`
+	ProfilePicture *string        `json:"profilePicture"`
+	Appointments   *Appointment   `json:"appointments" gorm:"foreignKey:ApprovedID"`
+	NurseReports   []NurseReport  `json:"nurse_reports" gorm:"foreignKey:StaffNurseID"`
+	DoctorReport   []DoctorReport `json:"doctorReport" gorm:"foreignKey:StaffDoctorID"`
+	CreatedAt      time.Time      `json:"created_at"`
+	UpdatedAt      time.Time      `json:"updated_at"`
+	DeletedAt      gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`
 }
 
 type StaffResponse struct {
