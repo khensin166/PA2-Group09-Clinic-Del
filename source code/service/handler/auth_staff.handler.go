@@ -14,6 +14,16 @@ import (
 )
 
 func StaffLoginHandler(ctx *fiber.Ctx) error {
+	// Ambil token dari header Authorization
+	token := ctx.Get("Authorization")
+
+	// Periksa apakah token masih aktif
+	if isActiveToken(token) {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "token masih aktif",
+		})
+	}
+
 	loginRequest := new(request.LoginRequest)
 
 	// Menangani error saat parsing request body
