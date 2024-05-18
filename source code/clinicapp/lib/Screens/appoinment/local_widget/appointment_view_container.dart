@@ -1,4 +1,4 @@
-import 'package:clinicapp/Screens/appoinment/detail_appointment.dart';
+import 'package:clinicapp/Screens/Appoinment/detail_appointment.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';

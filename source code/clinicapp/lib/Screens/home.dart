@@ -1,8 +1,8 @@
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:flutter/material.dart';
-import 'appoinment/appoinment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
+import 'Appoinment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
 import 'clinic_information.dart';
-import 'profile/profile.dart';
+import 'Profile/profile.dart';
 import 'reminder.dart'; // Pastikan untuk mengimpor halaman pengingat jika belum
 import '../widgets/category.dart';
 import '../widgets/article.dart';

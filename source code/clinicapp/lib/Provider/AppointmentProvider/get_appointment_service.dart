@@ -30,7 +30,8 @@ class GetUserAppointment {
         }
       } else {
         print(request.body);
-        return AppointmentModel(); // Returning an empty model in case of error
+        return AppointmentModel(); 
+        // Returning an empty model in case of error
       }
     } catch (e) {
       print(e);

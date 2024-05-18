@@ -25,7 +25,6 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
     _timeController.dispose();
     _complaint.dispose();
     super.dispose();
-    // digunakan untuk membersihkan sumber daya yang digunakan oleh widget
   }
 
   @override
@@ -46,9 +45,7 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
                   fontSize: 15,
                   color: primaryColor),
             ),
-            SizedBox(
-              height: 10,
-            ),
+            SizedBox(height: 10),
             TextField(
               controller: _dateController,
               readOnly: true,
@@ -68,7 +65,7 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
                 }
               },
               decoration: InputDecoration(
-                hintText: '02 February 2024',
+                hintText: 'Pilih Tanggal Janji Temu',
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
@@ -101,12 +98,12 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
                 }
               },
               decoration: InputDecoration(
-                hintText: '10:00 AM', // Atur teks petunjuk sesuai kebutuhan
+                hintText: 'Pilih Waktu Janji Temu',
                 filled: true,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                suffixIcon: Icon(Icons.access_time), // Ganti ikon jam
+                suffixIcon: Icon(Icons.access_time),
               ),
             ),
             SizedBox(height: 30),
@@ -131,31 +128,42 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
             ),
             SizedBox(height: 30),
             Consumer<AddAppointmentProvider>(
-                builder: (context, addAppointment, child) {
-              WidgetsBinding.instance!.addPostFrameCallback((_) {
-                if (addAppointment.getResponse != '') {
-                  showMessage(
-                      message: addAppointment.getResponse, context: context);
-
-                  // clear respon message
-                  addAppointment.clear();
-                }
-              });
-              return customButton(
-                status: addAppointment.getStatus,
-                context: context,
-                text: 'Daftar',
-                tap: () {
-                  if (_complaint.text.isEmpty) {
+              builder: (context, addAppointment, child) {
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  if (addAppointment.getResponse != '') {
                     showMessage(
-                        message: "Keluhan Harus diisi!", context: context);
-                  } else {
-                    addAppointment.addAppointment(
-                        complaint: _complaint.text.trim(), context: context);
+                        message: addAppointment.getResponse, context: context);
+
+                    // clear respon message
+                    addAppointment.clear();
                   }
-                },
-              );
-            }),
+                });
+                return customButton(
+                  status: addAppointment.getStatus,
+                  context: context,
+                  text: 'Daftar',
+                  tap: () {
+                    if (_complaint.text.isEmpty) {
+                      showMessage(
+                          message: "Keluhan Harus diisi!", context: context);
+                    } else if (selectedDate == null) {
+                      showMessage(
+                          message: "Tanggal Harus diisi!", context: context);
+                    } else if (selectedTime == null) {
+                      showMessage(
+                          message: "Waktu Harus diisi!", context: context);
+                    } else {
+                      addAppointment.addAppointment(
+                        complaint: _complaint.text.trim(),
+                        context: context,
+                        date: selectedDate,
+                        time: selectedTime,
+                      );
+                    }
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),

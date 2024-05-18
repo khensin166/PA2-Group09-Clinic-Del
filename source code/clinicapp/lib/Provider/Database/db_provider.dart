@@ -1,4 +1,4 @@
-import 'package:clinicapp/Screens/authentication/login.dart';
+import 'package:clinicapp/Screens/Authentication/login.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

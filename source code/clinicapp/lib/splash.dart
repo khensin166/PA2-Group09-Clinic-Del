@@ -1,6 +1,6 @@
-import 'package:clinicapp/Screens/authentication/login.dart';
+import 'package:clinicapp/Screens/Authentication/login.dart';
 import 'package:clinicapp/Utils/router.dart';
-import 'package:clinicapp/onBoarding.dart';
+import 'package:clinicapp/on_boarding.dart';
 import 'package:flutter/material.dart';
 
 import 'Provider/Database/db_provider.dart';

@@ -1,4 +1,5 @@
 import 'package:clinicapp/Provider/Database/db_provider.dart';
+import 'package:clinicapp/Screens/Profile/components/body.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -23,6 +24,8 @@ class _ProfilePageState extends State<ProfilePage> {
               }),
         ],
       ),
+      // body: Body(),
+      // bottomNavigationBar: CustomB,
     );
   }
 }

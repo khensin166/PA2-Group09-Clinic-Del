@@ -21,7 +21,11 @@ class AddAppointmentProvider extends ChangeNotifier {
   ///To get graphql client
 
   ///Add task method
-  void addAppointment({String? complaint, BuildContext? context,}) async {
+  void addAppointment(
+      {String? complaint,
+      BuildContext? context,
+      DateTime? date,
+      TimeOfDay? time}) async {
     final token = await DatabaseProvider().getToken();
     final userId = await DatabaseProvider().getUserId();
     _status = true;
@@ -29,10 +33,22 @@ class AddAppointmentProvider extends ChangeNotifier {
 
     final _url = "$url/appointment";
 
+// Gabungkan tanggal dan waktu ke dalam satu DateTime
+    final appointmentDateTime = DateTime(
+      date!.year,
+      date.month,
+      date.day,
+      time!.hour,
+      time.minute,
+    );
+
+    // Konversi ke format ISO 8601 dengan zona waktu
+    final dateIsoString = appointmentDateTime.toUtc().toIso8601String();
+
     final body = {
       "complaint": complaint,
-      "date": "2022-08-18T11:01:00.000+00:00",
-      "time": "2022-09-18T12:00:00.000+00:00",
+      "date": dateIsoString,
+      "time": dateIsoString,
       "requested_id": userId,
     };
 

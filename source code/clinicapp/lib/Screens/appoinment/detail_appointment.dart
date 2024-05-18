@@ -1,6 +1,8 @@
+import 'package:clinicapp/Provider/AppointmentProvider/delete_appointment_provider.dart';
 import 'package:clinicapp/Styles/colors.dart';
-import 'package:clinicapp/Widgets/button.dart';
+import 'package:clinicapp/Utils/snackbar_message.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
   const AppointmentDetailsPage({Key? key, this.title, this.appointmentId})
@@ -44,12 +46,29 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
       appBar: AppBar(
         title: const Text('Detail Janji Temu'),
         actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.delete,
-                color: white,
-              ))
+          Consumer<DeleteAppointmentProvider>(
+              builder: (context, deleteAppointment, child) {
+            WidgetsBinding.instance!.addPostFrameCallback((_) {
+              if (deleteAppointment.getResponse != '') {
+                showMessage(
+                    message: deleteAppointment.getResponse, context: context);
+
+                // Clear the respon message to avoid duplicate
+                deleteAppointment.clear();
+              }
+            });
+            return IconButton(
+                onPressed: deleteAppointment.getStatus == true
+                    ? null
+                    : () {
+                        deleteAppointment.deleteAppointment(
+                            appointmentId: widget.appointmentId, ctx: context);
+                      },
+                icon: Icon(
+                  Icons.delete,
+                  color: deleteAppointment.getStatus == true ? grey : white,
+                ));
+          })
         ],
       ),
       body: SingleChildScrollView(
