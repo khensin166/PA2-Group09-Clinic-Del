@@ -1,5 +1,5 @@
 import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
-import 'package:clinicapp/Screens/authentication/register.dart';
+import 'package:clinicapp/Screens/Authentication/register.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
 import 'package:clinicapp/Widgets/button.dart';

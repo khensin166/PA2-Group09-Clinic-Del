@@ -17,12 +17,16 @@ class AppointmentModel {
 
   factory AppointmentModel.fromJson(Map<String, dynamic> json) =>
       AppointmentModel(
-        data: json["data"] != null ? List<Data>.from(json["data"].map((x) => Data.fromJson(x))) : null,
+        data: json["data"] != null
+            ? List<Data>.from(json["data"].map((x) => Data.fromJson(x)))
+            : null,
         message: json["message"],
       );
 
   Map<String, dynamic> toJson() => {
-        "data": data != null ? List<dynamic>.from(data!.map((x) => x.toJson())) : null,
+        "data": data != null
+            ? List<dynamic>.from(data!.map((x) => x.toJson()))
+            : null,
         "message": message,
       };
 }
@@ -42,7 +46,7 @@ class Data {
     this.time,
   });
 
-factory Data.fromJson(Map<String, dynamic> json) => Data(
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
         approved: json["approved"],
         complaint: json["complaint"],
         date: json["date"] != null ? DateTime.parse(json["date"]) : null,

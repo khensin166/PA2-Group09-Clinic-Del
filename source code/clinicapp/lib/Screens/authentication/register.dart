@@ -17,8 +17,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _username = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _passwordConfirmation = TextEditingController();
+  final TextEditingController _dormController = TextEditingController();
 
   int _selectedDormId = 1;
+  String _selectedDormName = "Pniel";
   bool _isHidden = true;
   bool _isHidden2 = true;
 
@@ -33,10 +35,18 @@ class _RegisterPageState extends State<RegisterPage> {
   };
 
   @override
+  void initState() {
+    super.initState();
+    _dormController.text = _selectedDormName; // Inisialisasi dengan nilai awal
+  }
+
+  @override
   void dispose() {
-    // TODO: implement dispose
+    _fullname.dispose();
     _username.dispose();
     _password.dispose();
+    _passwordConfirmation.dispose();
+    _dormController.dispose();
     super.dispose();
   }
 
@@ -51,71 +61,60 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Column(
           children: [
             customTextField(
-                title: 'Nama Lengkap',
-                controller: _fullname,
-                hint: 'Jhon Doe',
-                obsecureText: false,
-                prefixIcon: Icons.account_circle_outlined,
-                isHidden: false),
-            const SizedBox(
-              height: 20,
+              title: 'Nama Lengkap',
+              controller: _fullname,
+              hint: 'Jhon Doe',
+              obsecureText: false,
+              prefixIcon: Icons.account_circle_outlined,
+              isHidden: false,
             ),
+            const SizedBox(height: 20),
             customTextField(
-                title: 'Username',
-                controller: _username,
-                hint: 'JhonDoe12',
-                obsecureText: false,
-                prefixIcon: Icons.account_circle_outlined),
-            const SizedBox(
-              height: 20,
+              title: 'Username',
+              controller: _username,
+              hint: 'JhonDoe12',
+              obsecureText: false,
+              prefixIcon: Icons.account_circle_outlined,
             ),
+            const SizedBox(height: 20),
             customTextField(
-                title: 'Password',
-                controller: _password,
-                hint: 'Terdiri dari huruf dan angka',
-                prefixIcon: Icons.lock,
-                obsecureText: true,
-                isHidden: _isHidden,
-                tootleFieldView: _tootleFieldView),
-            const SizedBox(
-              height: 20,
+              title: 'Password',
+              controller: _password,
+              hint: 'Terdiri dari huruf dan angka',
+              prefixIcon: Icons.lock,
+              obsecureText: true,
+              isHidden: _isHidden,
+              tootleFieldView: _tootleFieldView,
             ),
-
+            const SizedBox(height: 20),
             customTextField(
-                title: 'Konfirmasi Password',
-                controller: _passwordConfirmation,
-                hint: 'Konfirmasi password',
-                prefixIcon: Icons.lock,
-                obsecureText: true,
-                isHidden: _isHidden2,
-                tootleFieldView: _tootleFieldViewConfirmation),
-            const SizedBox(
-              height: 20,
+              title: 'Konfirmasi Password',
+              controller: _passwordConfirmation,
+              hint: 'Konfirmasi password',
+              prefixIcon: Icons.lock,
+              obsecureText: true,
+              isHidden: _isHidden2,
+              tootleFieldView: _tootleFieldViewConfirmation,
             ),
-            DropdownButtonFormField<int>(
-              value: _selectedDormId,
-              onChanged: (newValue) {
-                setState(() {
-                  _selectedDormId = newValue!;
-                });
-              },
-              items: dormValues.entries.map((entry) {
-                return DropdownMenuItem<int>(
-                  value: entry.value,
-                  child: Text(entry.key),
-                );
-              }).toList(),
-              decoration: const InputDecoration(
-                labelText: 'Select Dorm Name',
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: _showDormDialog,
+              child: AbsorbPointer(
+                child: customTextField(
+                  title: 'Dormitory',
+                  controller: _dormController,
+                  hint: 'Pilih Dormitory',
+                  prefixIcon: Icons.home,
+                  obsecureText: false,
+                  isHidden: false,
+                ),
               ),
             ),
-            // button
+            const SizedBox(height: 20),
             Consumer<AuthenticationProvider>(builder: (context, auth, child) {
               WidgetsBinding.instance!.addPostFrameCallback((_) {
                 if (auth.resMessage != '') {
                   showMessage(message: auth.resMessage, context: context);
-
-                  // bersihkan respon agar tidaj terjadi duplikasi
                   auth.clear();
                 }
               });
@@ -139,7 +138,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 context: context,
                 status: auth.isLoading,
               );
-            })
+            }),
           ],
         ),
       ),
@@ -156,5 +155,36 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       _isHidden2 = !_isHidden2;
     });
+  }
+
+  void _showDormDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Pilih Dormitory'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: dormValues.entries.map((entry) {
+                return RadioListTile<int>(
+                  title: Text(entry.key),
+                  value: entry.value,
+                  groupValue: _selectedDormId,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedDormId = value!;
+                      _selectedDormName = entry.key;
+                      _dormController.text =
+                          _selectedDormName; // Memperbarui TextEditingController
+                    });
+                    Navigator.of(context).pop();
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
