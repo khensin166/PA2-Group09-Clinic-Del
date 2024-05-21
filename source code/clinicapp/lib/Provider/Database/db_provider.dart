@@ -10,9 +10,13 @@ class DatabaseProvider extends ChangeNotifier {
 
   String _userId = '';
 
+  String _userName = '';
+
   String get token => _token;
 
   String get userId => _userId;
+
+  String get userName => _userName;
 
   void saveToken(String token) async {
     SharedPreferences value = await _pref;
@@ -24,6 +28,12 @@ class DatabaseProvider extends ChangeNotifier {
     SharedPreferences value = await _pref;
 
     value.setString('id', id);
+  }
+
+  void saveUserName(String username) async {
+    SharedPreferences value = await _pref;
+
+    value.setString('username', username);
   }
 
   Future<String> getToken() async {
@@ -51,6 +61,21 @@ class DatabaseProvider extends ChangeNotifier {
       return data;
     } else {
       _userId = '';
+      notifyListeners();
+      return '';
+    }
+  }
+
+  Future<String> getUserName() async {
+    SharedPreferences value = await _pref;
+
+    if (value.containsKey('username')) {
+      String data = value.getString('username')!;
+      _userName = data;
+      notifyListeners();
+      return data;
+    } else {
+      _userName = '';
       notifyListeners();
       return '';
     }

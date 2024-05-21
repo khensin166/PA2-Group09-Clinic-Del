@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
-import 'package:clinicapp/Screens/home.dart';
+import 'package:clinicapp/Screens/Appoinment/appointment.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -64,7 +64,7 @@ class AddAppointmentProvider extends ChangeNotifier {
       _response = json.decode(res)['message'];
       notifyListeners();
 
-      PageNavigator(ctx: context).nextPageOnly(page: const HomePage());
+      PageNavigator(ctx: context).nextPageOnly(page: const AppointmentPage());
     } else {
       final res = result.body;
       print(res);

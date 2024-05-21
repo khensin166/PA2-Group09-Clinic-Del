@@ -149,7 +149,7 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	// Process image if provided
 	image, err := ctx.FormFile("profilePicture")
 	if err == nil {
-		filename := utils.GenerateImageFile(user.Name, image.Filename)
+		filename := utils.GenerateImageFile(user.Username, image.Filename)
 		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
 			return ctx.Status(500).JSON(fiber.Map{
 				"status":  "failed",

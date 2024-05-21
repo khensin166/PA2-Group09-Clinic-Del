@@ -14,32 +14,36 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Card(
-        color: primaryColor,
-        child: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Container(
-            width: 50,
-            height: 60,
-            child: Column(
-              children: [
-                Image.asset(
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          child: ClipOval(
+            child: Container(
+              color: primaryColor,
+              width: 60,
+              height: 60,
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Image.asset(
                   imagePath,
                   width: 30,
+                  height: 30,
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  title,
-                )
-              ],
+              ),
             ),
           ),
         ),
-      ),
+        const SizedBox(height: 8),
+        Text(
+          title,
+          style: TextStyle(
+            color: black,
+            fontSize: 16,
+            // fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -1,15 +1,21 @@
+import 'package:clinicapp/Model/user_model.dart';
+import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
 import 'package:clinicapp/Styles/colors.dart';
+import 'package:clinicapp/Widgets/search_fields.dart';
 import 'package:flutter/material.dart';
-import 'Appoinment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
-import 'clinic_information.dart';
-import 'Profile/profile.dart';
-import 'reminder.dart'; // Pastikan untuk mengimpor halaman pengingat jika belum
-import '../widgets/category.dart';
-import '../widgets/article.dart';
-import '../utils/router.dart';
+import 'package:provider/provider.dart';
+import '../Appoinment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
+import '../Clinic_Information/clinic_information.dart';
+import '../Profile/profile.dart';
+import '../Reminder/reminder.dart'; // Pastikan untuk mengimpor halaman pengingat jika belum
+import '../../widgets/category.dart';
+import '../../widgets/article.dart';
+import '../../utils/router.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -18,19 +24,14 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-
-    if (index == 1) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const AppointmentPage()));
-    } else
-    // Jika index adalah 2 (Profil), navigasikan ke halaman profil
-    if (index == 2) {
-      Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => const ProfilePage()));
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Selamat pagi';
+    } else if (hour < 17) {
+      return 'Selamat siang';
+    } else {
+      return 'Selamat sore';
     }
   }
 
@@ -38,19 +39,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.battery_charging_full_outlined),
-              label: "Riwayat"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profil")
-        ],
-      ),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -77,8 +65,8 @@ class _HomePageState extends State<HomePage> {
                             InkWell(
                               onTap: () {
                                 // Navigasi ke halaman profil saat gambar profil diklik
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => const ProfilePage()));
+                                PageNavigator(ctx: context)
+                                    .nextPage(page: const ProfilePage());
                               },
                               child: Row(
                                 children: [
@@ -102,8 +90,27 @@ class _HomePageState extends State<HomePage> {
                                   const SizedBox(
                                     width: 10,
                                   ),
-                                  Text(
-                                    "Halo Aji, Selamat Datang !",
+                                  FutureBuilder<UserModel?>(
+                                    future: Provider.of<AuthenticationProvider>(
+                                            context,
+                                            listen: false)
+                                        .getUserData(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else if (snapshot.hasData) {
+                                        final username =
+                                            snapshot.data?.username ?? 'User';
+                                        return Text(
+                                          '${_getGreeting()}\n $username',
+                                        );
+                                      } else {
+                                        return Text('No user data available');
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
@@ -125,28 +132,13 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.all(15),
                         child: Container(
-                          height: 60,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFF5F5F7),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: TextField(
-                            cursorHeight: 20,
-                            autofocus: false,
-                            decoration: InputDecoration(
-                              hintText: "Cari Obat dan Article...",
-                              prefixIcon: Icon(Icons.search),
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
+                            height: 60,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Color(0xFFF5F5F7),
+                              borderRadius: BorderRadius.circular(30),
                             ),
-                          ),
-                        ),
+                            child: searchFields()),
                       ),
                     ],
                   ),

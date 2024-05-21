@@ -76,6 +76,7 @@ func LoginHandler(ctx *fiber.Ctx) error {
 	claims["phone"] = user.Phone
 	claims["username"] = user.Username
 	claims["role"] = user.Role
+	claims["profilePicture"] = user.ProfilePicture
 	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
 
 	token, errGenerateToken := utils.GenerateToken(&claims)

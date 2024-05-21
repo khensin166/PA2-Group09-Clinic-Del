@@ -6,12 +6,17 @@ import 'package:clinicapp/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  String token = await DatabaseProvider().getToken();
+  runApp(MyApp(
+    token: token,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key});
+  final token;
+  const MyApp({Key? key, @required this.token});
 
   // This widget is the root of your application.
   @override
@@ -25,11 +30,10 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
-        theme: ThemeData(
-            // Atur tema aplikasi di sini
-            ),
-        home: const SplashScreen(),
-      ), // Kurung kurawal ini harus berada di sini
+        // home: (JwtDecoder.isExpired(token) == false) ? HomePage() : LoginPage(),
+        // home: Onboarding(),
+        home: SplashScreen(),
+      ),
     );
   }
 }

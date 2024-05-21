@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:clinicapp/Constants/url.dart';
+import 'package:clinicapp/Model/user_model.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
 import 'package:clinicapp/Screens/Authentication/login.dart';
-import 'package:clinicapp/Screens/home.dart';
+import 'package:clinicapp/Screens/Home/main_wrapper.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -15,10 +16,20 @@ class AuthenticationProvider extends ChangeNotifier {
   // Setter
   bool _isLoading = false;
   String _resMessage = "";
+  UserModel? _userModel;
+  Stream<UserModel?>? _userStream;
 
   // Getter
   bool get isLoading => _isLoading;
   String get resMessage => _resMessage;
+  UserModel? get userModel => _userModel;
+  Stream<UserModel?>? get userStream => _userStream;
+
+  // Function to fetch user data
+  Future<UserModel?> getUserData() async {
+    // Here we simulate fetching user data. In real use case, it might be an API call or database query.
+    return _userModel;
+  }
 
   // function method untuk registerasi user
   void registerUser(
@@ -70,17 +81,17 @@ class AuthenticationProvider extends ChangeNotifier {
         final message = res['message'];
 
         // variable untuk menampung respon data
-        final userData = res['data']; 
+        final userData = res['data'];
 
         print(message);
-        
+
         _isLoading = false;
         _resMessage = "Account Created!";
         notifyListeners();
         PageNavigator(ctx: context).nextPageOnly(page: LoginPage());
       } else {
         final res = json.decode(req.body);
-        
+
         _resMessage = res['message'];
         print(_resMessage);
         _isLoading = false;
@@ -146,10 +157,20 @@ class AuthenticationProvider extends ChangeNotifier {
 
         final token = res['token'] as String;
         final UserID = res['data']['id'].toString();
+
         print(token);
         DatabaseProvider().saveToken(token);
         DatabaseProvider().saveUserId(UserID);
-        PageNavigator(ctx: context).nextPageOnly(page: const HomePage());
+
+        // Create UserModel from response data
+        final userDataMap = res['data']; // Extracting user data map
+        userDataMap['profilePicture'] =
+            "$requestBaseUrl/${userDataMap['profilePicture']}";
+        final userDataJsonString =
+            json.encode(userDataMap); // Convert user data map to JSON string
+        _userModel = userModelFromJson(userDataJsonString);
+
+        PageNavigator(ctx: context).nextPageOnly(page: const MainWrapper());
       } else {
         final res = json.decode(req.body);
         print(res);

@@ -1,5 +1,5 @@
-import 'package:clinicapp/Screens/authentication/login.dart';
-import 'package:clinicapp/Screens/authentication/register.dart';
+import 'package:clinicapp/Screens/Authentication/login.dart';
+import 'package:clinicapp/Screens/Authentication/register.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
