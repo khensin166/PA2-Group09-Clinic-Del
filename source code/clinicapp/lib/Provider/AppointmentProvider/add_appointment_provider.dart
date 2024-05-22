@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddAppointmentProvider extends ChangeNotifier {
-  final url = AppUrl.baseUrl;
+  final url = AppUrl.addAppointmentUrl;
 
   bool _status = false;
 
@@ -31,7 +31,6 @@ class AddAppointmentProvider extends ChangeNotifier {
     _status = true;
     notifyListeners();
 
-    final _url = "$url/appointment";
 
 // Gabungkan tanggal dan waktu ke dalam satu DateTime
     final appointmentDateTime = DateTime(
@@ -52,7 +51,7 @@ class AddAppointmentProvider extends ChangeNotifier {
       "requested_id": userId,
     };
 
-    final result = await http.post(Uri.parse(_url),
+    final result = await http.post(Uri.parse(url),
         body: body, headers: {'Authorization': '$token'});
 
     print(result.statusCode);

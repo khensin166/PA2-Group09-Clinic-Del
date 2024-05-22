@@ -46,7 +46,7 @@ func AppointmentGetByAuth(ctx *fiber.Ctx) error {
 			"date":      appointment.Date,
 			"time":      appointment.Time,
 			"complaint": appointment.Complaint,
-			"approved":  appointment.Approved,
+			"approved":  appointment.ApprovedID,
 		}
 		responseAppointments = append(responseAppointments, responseAppointment)
 	}

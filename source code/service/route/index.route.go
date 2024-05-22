@@ -9,7 +9,7 @@ import (
 func RouteInit(r *fiber.App) {
 	// AUTHENTICATION
 	r.Post("/userLogin", handler.LoginHandler)
-	r.Static("/user/image", handler.PathImageProduct)
+	r.Static("/user/image", handler.PathImageUser)
 	r.Post("/userLogout", handler.LogoutHandler)
 
 	r.Post("/staffLogin", handler.StaffLoginHandler)

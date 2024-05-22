@@ -7,9 +7,20 @@ import (
 	"github.com/khensin166/PA2-Kel9/model/entity"
 	"github.com/khensin166/PA2-Kel9/utils"
 	"log"
+	"os"
 	"path/filepath"
 )
 
+var PathImageUser = "./Public/User"
+
+func init() {
+	if _, err := os.Stat(PathImageUser); os.IsNotExist(err) {
+		err := os.Mkdir(PathImageUser, os.ModePerm)
+		if err != nil {
+			return
+		}
+	}
+}
 func UserHandlerGetAll(ctx *fiber.Ctx) error {
 
 	userInfo := ctx.Locals("userInfo")
@@ -67,7 +78,7 @@ func CreateUser(ctx *fiber.Ctx) error {
 
 	if err == nil {
 		filename := utils.GenerateImageFile(user.Name, image.Filename)
-		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+		if err := ctx.SaveFile(image, filepath.Join(PathImageUser, filename)); err != nil {
 			return ctx.Status(500).JSON(fiber.Map{
 				"status":  "failed",
 				"message": "Can't save file image",
@@ -150,7 +161,7 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	image, err := ctx.FormFile("profilePicture")
 	if err == nil {
 		filename := utils.GenerateImageFile(user.Username, image.Filename)
-		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+		if err := ctx.SaveFile(image, filepath.Join(PathImageUser, filename)); err != nil {
 			return ctx.Status(500).JSON(fiber.Map{
 				"status":  "failed",
 				"message": "Can't save file image",

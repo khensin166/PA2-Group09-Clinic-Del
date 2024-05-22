@@ -1,3 +1,4 @@
+import 'package:clinicapp/Screens/History/history.dart';
 import 'package:clinicapp/Screens/Profile/profile.dart';
 import 'package:clinicapp/Screens/navigations/updates_navigation.dart';
 import 'package:clinicapp/Screens/navigations/wistlists_navigation.dart';
@@ -56,7 +57,7 @@ class MainWrapperState extends State<MainWrapper> {
             BottomNavigationBarItem(
               icon: Icon(Icons.assignment_outlined),
               activeIcon: Icon(Icons.assignment),
-              label: 'Riwayat',
+              label: 'Riwayat Penyakit',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.account_circle_outlined),
@@ -74,7 +75,7 @@ class MainWrapperState extends State<MainWrapper> {
               Wishlist(),
 
               /// Second Route
-              UpdatesNavigator(),
+              HistoryPage(),
 
               // Third Route
               ProfilePage()

@@ -11,6 +11,9 @@ class _ClinicInformationState extends State<ClinicInformation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Informasi Klinik'),
+      ),
       body: Center(
         child: Text('Clinic Information'),
       ),

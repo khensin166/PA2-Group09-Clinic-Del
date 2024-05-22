@@ -52,17 +52,18 @@ class Article extends StatelessWidget {
                         ),
                         Row(
                           children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              rating,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Icon(Icons.access_time, color: Colors.grey),
+                            // Icon(Icons.star, color: Colors.amber),
+                            // SizedBox(
+                            //   width: 5,
+                            // ),
+                            // Text(
+                            //   rating,
+                            // ),
+                            // SizedBox(
+                            //   width: 20,
+                            // ),
+                            Icon(Icons.calendar_today_outlined,
+                                color: Colors.grey),
                             SizedBox(
                               width: 5,
                             ),

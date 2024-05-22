@@ -12,6 +12,7 @@ import 'package:http/http.dart' as http;
 class AuthenticationProvider extends ChangeNotifier {
   // Pemanggilan base url
   final requestBaseUrl = AppUrl.baseUrl;
+  final requestUserProfileUrl = AppUrl.userProfileUrl;
 
   // Setter
   bool _isLoading = false;
@@ -165,7 +166,7 @@ class AuthenticationProvider extends ChangeNotifier {
         // Create UserModel from response data
         final userDataMap = res['data']; // Extracting user data map
         userDataMap['profilePicture'] =
-            "http://192.168.76.133:8080/user/image/${userDataMap['profilePicture']}";
+            "${requestUserProfileUrl}/${userDataMap['profilePicture']}";
         final userDataJsonString =
             json.encode(userDataMap); // Convert user data map to JSON string
         _userModel = userModelFromJson(userDataJsonString);
@@ -195,5 +196,18 @@ class AuthenticationProvider extends ChangeNotifier {
     _resMessage = "";
     // _isLoading is false
     notifyListeners();
+  }
+
+  String getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) {
+      return 'Selamat pagi';
+    } else if (hour < 17) {
+      return 'Selamat siang';
+    } else if (hour < 19) {
+      return 'Selamat sore';
+    } else {
+      return 'Selamat malam';
+    }
   }
 }

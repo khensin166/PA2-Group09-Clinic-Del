@@ -2,9 +2,12 @@ import 'package:clinicapp/Model/appointment_model.dart';
 import 'package:clinicapp/Provider/AppointmentProvider/get_appointment_service.dart';
 import 'package:clinicapp/Screens/Appoinment/create_appointment.dart';
 import 'package:clinicapp/Screens/Appoinment/local_widget/appointment_view_container.dart';
+import 'package:clinicapp/Screens/Home/home.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
+import 'package:clinicapp/Widgets/app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import untuk DateFormat
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({super.key});
@@ -17,8 +20,11 @@ class _AppointmentPageState extends State<AppointmentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Daftar Janji Temu'),
+      appBar: AppBarCustom(
+        title: 'Daftar Janji Temu',
+        backgroundColor: primaryColor,
+        nextPage: HomePage(),
+        leadingIcon: Icons.arrow_back_ios_outlined,
       ),
       body: Container(
         padding: const EdgeInsets.all(20),
@@ -27,7 +33,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
           builder: (context, snapshot) {
             print(snapshot);
             if (snapshot.hasError) {
-              return const Center(child: Text('Error Ocurred'));
+              return const Center(child: Text('Error Occurred'));
             } else if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasData) {
@@ -48,7 +54,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               .nextPage(page: const CreateAppointmentPage());
                         },
                         child: Text(
-                          'Create an appointment ',
+                          'Create an appointment',
                           style: TextStyle(fontSize: 18, color: primaryColor),
                         ),
                       ),
@@ -60,17 +66,24 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   itemCount: snapshot.data!.data!.length,
                   itemBuilder: (context, index) {
                     final data = snapshot.data!.data![index];
+
+                    // Format date dan time
+                    String formattedDate = data.date != null
+                        ? DateFormat('yyyy-MM-dd').format(data.date!)
+                        : 'No Date';
+                    String formattedTime = data.time != null
+                        ? DateFormat('HH:mm').format(data.time!)
+                        : 'No Time';
+
                     return AppointmentCard(
-                      // initial: "${index + 1}",
-                      // title: data.complaint ?? 'No Title',
-                      // subtitle: data.time?.toString() ?? 'No Time',
-                      // isCompleted: false,
                       taskId: data.id.toString(),
-                      doctorName: data.complaint ?? 'No Title',
-                      appointmentDate: data.date?.toString() ?? 'No Date',
-                      appointmentTime: data.time?.toString() ?? 'No Time',
+                      appointmentDate: formattedDate, // Pastikan ini String
+                      appointmentTime: formattedTime, // Pastikan ini String
                       doctorImageUrl:
                           "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg",
+                      statusAppointment:
+                          data.approved == null ? 'waiting' : 'approved',
+                      complaint: data.complaint ?? 'No Title',
                     );
                   },
                 );
@@ -89,7 +102,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
               .nextPage(page: const CreateAppointmentPage());
         },
         foregroundColor: black,
-        label: const Text('Buat Janji Temu'),
+        label: const Text(
+          'Buat Janji Temu',
+        ),
         icon: Icon(Icons.add),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),

@@ -11,6 +11,9 @@ class _ReminderPageState extends State<ReminderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Pengingat Obat'),
+      ),
       body: Center(
         child: Text('Drugs Reminder'),
       ),

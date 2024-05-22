@@ -3,18 +3,20 @@ import 'package:clinicapp/Styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class AppointmentCard extends StatelessWidget {
-  final String doctorName;
+  final String complaint;
   final String appointmentDate;
   final String appointmentTime;
   final String doctorImageUrl;
   final String taskId;
+  final String statusAppointment;
 
   AppointmentCard({
-    required this.doctorName,
+    required this.complaint,
     required this.appointmentDate,
     required this.appointmentTime,
     required this.doctorImageUrl,
     required this.taskId,
+    required this.statusAppointment,
   });
 
   @override
@@ -26,7 +28,7 @@ class AppointmentCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => AppointmentDetailsPage(
-              title: doctorName,
+              title: complaint,
               appointmentId: taskId,
             ),
           ),
@@ -53,7 +55,7 @@ class AppointmentCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        doctorName,
+                        complaint,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -88,6 +90,16 @@ class AppointmentCard extends StatelessWidget {
                           ),
                         ],
                       ),
+                      SizedBox(height: 16),
+                      Text(
+                        'Status: $statusAppointment',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: statusAppointment == 'waiting'
+                              ? Colors.orange
+                              : Colors.green,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -102,7 +114,7 @@ class AppointmentCard extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => AppointmentDetailsPage(
-                          title: doctorName,
+                          title: complaint,
                           appointmentId: taskId,
                         ),
                       ),

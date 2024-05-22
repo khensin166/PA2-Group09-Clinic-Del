@@ -1,12 +1,12 @@
 import 'package:clinicapp/Model/user_model.dart';
 import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
+import 'package:clinicapp/Screens/Notification/notification.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Widgets/search_fields.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../Appoinment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
 import '../Clinic_Information/clinic_information.dart';
-import '../Profile/profile.dart';
 import '../Reminder/reminder.dart'; // Pastikan untuk mengimpor halaman pengingat jika belum
 import '../../widgets/category.dart';
 import '../../widgets/article.dart';
@@ -22,21 +22,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-
-  String _getGreeting() {
-    final hour = DateTime.now().hour;
-    if (hour < 12) {
-      return 'Selamat pagi';
-    } else if (hour < 17) {
-      return 'Selamat siang';
-    } else if (hour < 19) {
-      return 'Selamat sore';
-    } else {
-      return 'Selamat malam';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,27 +51,6 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Row(
                               children: [
-                                Container(
-                                  alignment: Alignment.topLeft,
-                                  height: 45,
-                                  width: 45,
-                                  decoration: BoxDecoration(
-                                    // Hilangkan gambar profil
-                                    image: DecorationImage(
-                                      image: NetworkImage(
-                                          "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg"),
-                                    ),
-                                    borderRadius: BorderRadius.circular(25),
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      style: BorderStyle.solid,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
                                 FutureBuilder<UserModel?>(
                                   future: Provider.of<AuthenticationProvider>(
                                           context,
@@ -95,22 +59,67 @@ class _HomePageState extends State<HomePage> {
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
-                                      return CircularProgressIndicator();
+                                      return Container(
+                                        alignment: Alignment.topLeft,
+                                        height: 45,
+                                        width: 45,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            style: BorderStyle.solid,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: CircularProgressIndicator(),
+                                      );
                                     } else if (snapshot.hasError) {
                                       return Text('Error: ${snapshot.error}');
                                     } else if (snapshot.hasData) {
-                                      final name =
-                                          snapshot.data?.name ?? 'User';
-                                      return GestureDetector(
-                                        onTap: () {
-                                          // Kosongkan onTap agar tidak dapat diklik
-                                        },
-                                        child: Text(
-                                          '${_getGreeting()}\n$name',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
+                                      final user = snapshot.data;
+                                      final profileImageUrl = user
+                                              ?.profilePicture ??
+                                          'https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg';
+                                      final name = user?.name ?? 'User';
+
+                                      return Row(
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.topLeft,
+                                            height: 45,
+                                            width: 45,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                    profileImageUrl ??
+                                                        'https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg'),
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(25),
+                                              border: Border.all(
+                                                color: Colors.white,
+                                                style: BorderStyle.solid,
+                                                width: 2,
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              // Kosongkan onTap agar tidak dapat diklik
+                                            },
+                                            child: Text(
+                                              '${AuthenticationProvider().getGreeting()}\n$name',
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       );
                                     } else {
                                       return Text('No user data available');
@@ -121,10 +130,17 @@ class _HomePageState extends State<HomePage> {
                             ),
                             Container(
                               alignment: Alignment.topRight,
-                              child: const Icon(
-                                Icons.notifications_active,
+                              child: IconButton(
                                 color: Colors.white,
-                                size: 30,
+                                onPressed: () {
+                                  print('test');
+                                  PageNavigator(ctx: context)
+                                      .nextPage(page: const NotificationPage());
+                                },
+                                icon: Icon(
+                                  Icons.notifications_active,
+                                  size: 40,
+                                ),
                               ),
                             ),
                           ],
@@ -187,17 +203,25 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               const Padding(
-                padding: EdgeInsets.all(15),
-                child: Text(
-                  "Article",
-                ),
-              ),
-              Article(
-                imagePath: 'assets/logo.png',
-                nameShop: "Aku Kopi",
-                rating: "4.8",
-                jamBuka: "10.00 - 23.00",
-              ),
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Health Article",
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                      Article(
+                        imagePath: 'assets/health_article.jpg',
+                        nameShop: "The 25 Healthiest Fruits You Can Eat",
+                        rating: "4.8",
+                        jamBuka: "Jun 10, 20223",
+                      ),
+                    ],
+                  )),
             ],
           ),
         ),

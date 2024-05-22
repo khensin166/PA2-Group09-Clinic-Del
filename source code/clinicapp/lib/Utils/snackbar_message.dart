@@ -3,10 +3,27 @@ import 'package:flutter/material.dart';
 
 void showMessage({String? message, BuildContext? context}) {
   ScaffoldMessenger.of(context!).showSnackBar(SnackBar(
-    content: Text(
-      message!,
-      style: TextStyle(color: white),
+    backgroundColor: Colors.transparent,
+    elevation: 0,
+    behavior: SnackBarBehavior.floating,
+    content: Card(
+      color: primaryColor,
+      elevation: 0,
+      child: ListTile(
+        leading: Icon(
+          Icons.check_circle_outline,
+          color: white,
+        ),
+        title: Text(
+          message!,
+          style: TextStyle(color: white, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Text(
+          'selamat anda berhasil login',
+          style: TextStyle(color: white, fontWeight: FontWeight.bold),
+        ),
+      ),
     ),
-    backgroundColor: primaryColor,
+    margin: EdgeInsets.all(10),
   ));
 }
