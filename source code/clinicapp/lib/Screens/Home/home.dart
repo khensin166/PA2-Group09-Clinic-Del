@@ -30,8 +30,10 @@ class _HomePageState extends State<HomePage> {
       return 'Selamat pagi';
     } else if (hour < 17) {
       return 'Selamat siang';
-    } else {
+    } else if (hour < 19) {
       return 'Selamat sore';
+    } else {
+      return 'Selamat malam';
     }
   }
 
@@ -62,58 +64,60 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            InkWell(
-                              onTap: () {
-                                // Navigasi ke halaman profil saat gambar profil diklik
-                                PageNavigator(ctx: context)
-                                    .nextPage(page: const ProfilePage());
-                              },
-                              child: Row(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.topLeft,
-                                    height: 45,
-                                    width: 45,
-                                    decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                            "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg"),
-                                      ),
-                                      borderRadius: BorderRadius.circular(25),
-                                      border: Border.all(
-                                        color: Colors.white,
-                                        style: BorderStyle.solid,
-                                        width: 2,
-                                      ),
+                            Row(
+                              children: [
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  height: 45,
+                                  width: 45,
+                                  decoration: BoxDecoration(
+                                    // Hilangkan gambar profil
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg"),
+                                    ),
+                                    borderRadius: BorderRadius.circular(25),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      style: BorderStyle.solid,
+                                      width: 2,
                                     ),
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  FutureBuilder<UserModel?>(
-                                    future: Provider.of<AuthenticationProvider>(
-                                            context,
-                                            listen: false)
-                                        .getUserData(),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.connectionState ==
-                                          ConnectionState.waiting) {
-                                        return CircularProgressIndicator();
-                                      } else if (snapshot.hasError) {
-                                        return Text('Error: ${snapshot.error}');
-                                      } else if (snapshot.hasData) {
-                                        final username =
-                                            snapshot.data?.username ?? 'User';
-                                        return Text(
-                                          '${_getGreeting()}\n $username',
-                                        );
-                                      } else {
-                                        return Text('No user data available');
-                                      }
-                                    },
-                                  ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                FutureBuilder<UserModel?>(
+                                  future: Provider.of<AuthenticationProvider>(
+                                          context,
+                                          listen: false)
+                                      .getUserData(),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return CircularProgressIndicator();
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (snapshot.hasData) {
+                                      final name =
+                                          snapshot.data?.name ?? 'User';
+                                      return GestureDetector(
+                                        onTap: () {
+                                          // Kosongkan onTap agar tidak dapat diklik
+                                        },
+                                        child: Text(
+                                          '${_getGreeting()}\n$name',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      );
+                                    } else {
+                                      return Text('No user data available');
+                                    }
+                                  },
+                                ),
+                              ],
                             ),
                             Container(
                               alignment: Alignment.topRight,
@@ -145,7 +149,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.all(5),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
@@ -194,18 +198,6 @@ class _HomePageState extends State<HomePage> {
                 rating: "4.8",
                 jamBuka: "10.00 - 23.00",
               ),
-              // Article(
-              //   imagePath: 'assets/logo.png',
-              //   nameShop: "Toko Kenanganku",
-              //   rating: "4.9",
-              //   jamBuka: "13.00 - 23.00",
-              // ),
-              // Article(
-              //   imagePath: 'assets/logo.png',
-              //   nameShop: "Ketiga Kopi",
-              //   rating: "4.7",
-              //   jamBuka: "13.00 - 20.00",
-              // ),
             ],
           ),
         ),

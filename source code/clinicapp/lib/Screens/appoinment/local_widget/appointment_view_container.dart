@@ -1,80 +1,122 @@
 import 'package:clinicapp/Screens/Appoinment/detail_appointment.dart';
 import 'package:clinicapp/Styles/colors.dart';
-import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 
-class AppointmentField extends StatefulWidget {
-  AppointmentField(
-      {Key? key,
-      this.title,
-      this.taskId,
-      this.isCompleted,
-      this.initial,
-      this.subtitle})
-      : super(key: key);
+class AppointmentCard extends StatelessWidget {
+  final String doctorName;
+  final String appointmentDate;
+  final String appointmentTime;
+  final String doctorImageUrl;
+  final String taskId;
 
-  final String? title;
-  final String? subtitle;
-  final String? taskId;
-  final String? initial;
+  AppointmentCard({
+    required this.doctorName,
+    required this.appointmentDate,
+    required this.appointmentTime,
+    required this.doctorImageUrl,
+    required this.taskId,
+  });
 
-  bool? isCompleted;
-
-  @override
-  _AppointmentFieldState createState() => _AppointmentFieldState();
-}
-
-class _AppointmentFieldState extends State<AppointmentField> {
   @override
   Widget build(BuildContext context) {
-    return ListTile(
+    return GestureDetector(
       onTap: () {
-        PageNavigator(ctx: context).nextPage(
-            page: AppointmentDetailsPage(
-          appointmentId: widget.taskId,
-          title: widget.title,
-        ));
-      },
-      contentPadding: const EdgeInsets.all(0),
-      title: Text(
-        widget.title!,
-        style: TextStyle(
-          decoration: widget.isCompleted == true
-              ? TextDecoration.lineThrough
-              : TextDecoration.none,
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
-      subtitle: Text(
-        widget.subtitle!,
-        style: TextStyle(
-          decoration: widget.isCompleted == true
-              ? TextDecoration.lineThrough
-              : TextDecoration.none,
-        ),
-        overflow: TextOverflow.ellipsis,
-      ),
-      leading: CircleAvatar(
-        backgroundColor: widget.isCompleted == true ? green : amber,
-        child: Padding(
-          padding: const EdgeInsets.all(1.0),
-          child: CircleAvatar(
-            backgroundColor: primaryColor,
-            child: Text(widget.initial!),
+        // Navigate to the detail appointment page
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => AppointmentDetailsPage(
+              title: doctorName,
+              appointmentId: taskId,
+            ),
           ),
+        );
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
         ),
-      ),
-      trailing: Checkbox(
-        onChanged: (value) {
-          setState(() {
-            widget.isCompleted = value!;
-          });
-        },
-        value: widget.isCompleted,
-        fillColor: MaterialStateProperty.resolveWith(
-          (states) {
-            return widget.isCompleted == true ? green : grey.withOpacity(0.20);
-          },
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(doctorImageUrl),
+                  ),
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        doctorName,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Icon(Icons.calendar_today,
+                              size: 16, color: Colors.grey),
+                          SizedBox(width: 4),
+                          Text(
+                            appointmentDate,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.access_time, size: 16, color: Colors.grey),
+                          SizedBox(width: 4),
+                          Text(
+                            appointmentTime,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 16),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to the detail appointment page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AppointmentDetailsPage(
+                          title: doctorName,
+                          appointmentId: taskId,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text('Detail'),
+                  style: TextButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    primary: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

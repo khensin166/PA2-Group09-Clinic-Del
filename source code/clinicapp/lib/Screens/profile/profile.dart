@@ -1,3 +1,4 @@
+import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Model/user_model.dart';
 import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
@@ -58,8 +59,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: NetworkImage(
-                              "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg"),
+                          backgroundImage:
+                              NetworkImage('${user.profilePicture}'),
                         ),
                       ],
                     ),

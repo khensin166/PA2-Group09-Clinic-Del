@@ -60,12 +60,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   itemCount: snapshot.data!.data!.length,
                   itemBuilder: (context, index) {
                     final data = snapshot.data!.data![index];
-                    return AppointmentField(
-                      initial: "${index + 1}",
-                      title: data.complaint ?? 'No Title',
-                      subtitle: data.time?.toString() ?? 'No Time',
-                      isCompleted: false,
+                    return AppointmentCard(
+                      // initial: "${index + 1}",
+                      // title: data.complaint ?? 'No Title',
+                      // subtitle: data.time?.toString() ?? 'No Time',
+                      // isCompleted: false,
                       taskId: data.id.toString(),
+                      doctorName: data.complaint ?? 'No Title',
+                      appointmentDate: data.date?.toString() ?? 'No Date',
+                      appointmentTime: data.time?.toString() ?? 'No Time',
+                      doctorImageUrl:
+                          "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg",
                     );
                   },
                 );
@@ -77,7 +82,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        tooltip: 'klik tombol ini unutuk menambahkan janji temu',
+        tooltip: 'klik tombol ini untuk menambahkan janji temu',
         elevation: 10.0,
         onPressed: () {
           PageNavigator(ctx: context)

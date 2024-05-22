@@ -165,7 +165,7 @@ class AuthenticationProvider extends ChangeNotifier {
         // Create UserModel from response data
         final userDataMap = res['data']; // Extracting user data map
         userDataMap['profilePicture'] =
-            "$requestBaseUrl/${userDataMap['profilePicture']}";
+            "http://192.168.76.133:8080/user/image/${userDataMap['profilePicture']}";
         final userDataJsonString =
             json.encode(userDataMap); // Convert user data map to JSON string
         _userModel = userModelFromJson(userDataJsonString);
