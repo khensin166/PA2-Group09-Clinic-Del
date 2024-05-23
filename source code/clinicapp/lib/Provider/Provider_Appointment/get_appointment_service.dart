@@ -26,11 +26,13 @@ class GetUserAppointment {
           return AppointmentModel();
         } else {
           final appointmentModel = appointmentModelFromJson(request.body);
+          // Sorting appointments by id in descending order
+          appointmentModel.data!.sort((a, b) => b.id!.compareTo(a.id!));
           return appointmentModel;
         }
       } else {
         print(request.body);
-        return AppointmentModel(); 
+        return AppointmentModel();
         // Returning an empty model in case of error
       }
     } catch (e) {

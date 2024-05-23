@@ -5,12 +5,13 @@ class Category extends StatelessWidget {
   final String imagePath;
   final String title;
   final VoidCallback onTap;
-  const Category(
-      {Key? key,
-      required this.imagePath,
-      required this.title,
-      required this.onTap})
-      : super(key: key);
+
+  const Category({
+    Key? key,
+    required this.imagePath,
+    required this.title,
+    required this.onTap,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,18 +19,25 @@ class Category extends StatelessWidget {
       children: [
         InkWell(
           onTap: onTap,
-          child: ClipOval(
-            child: Container(
+          child: Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
               color: primaryColor,
-              width: 60,
-              height: 60,
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Image.asset(
-                  imagePath,
-                  width: 30,
-                  height: 30,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 2,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
                 ),
+              ],
+            ),
+            width: 60,
+            height: 60,
+            child: Padding(
+              padding: const EdgeInsets.all(13.0),
+              child: Image.asset(
+                imagePath,
               ),
             ),
           ),
@@ -39,8 +47,7 @@ class Category extends StatelessWidget {
           title,
           style: TextStyle(
             color: black,
-            fontSize: 16,
-            // fontWeight: FontWeight.bold,
+            fontSize: 15,
           ),
         ),
       ],

@@ -2,6 +2,7 @@ import 'package:clinicapp/Screens/History/history.dart';
 import 'package:clinicapp/Screens/Profile/profile.dart';
 import 'package:clinicapp/Screens/navigations/updates_navigation.dart';
 import 'package:clinicapp/Screens/navigations/wistlists_navigation.dart';
+import 'package:clinicapp/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -44,7 +45,7 @@ class MainWrapperState extends State<MainWrapper> {
       onWillPop: _systemBackButtonPressed,
       child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Colors.blue,
+          selectedItemColor: primaryColor,
           unselectedItemColor: Colors.grey,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,

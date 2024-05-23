@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
-import 'package:clinicapp/Screens/Appoinment/appointment.dart';
+import 'package:clinicapp/Screens/Appointment/appointment.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;

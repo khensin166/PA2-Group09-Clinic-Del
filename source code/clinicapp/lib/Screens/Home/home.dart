@@ -1,11 +1,13 @@
+import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Model/user_model.dart';
-import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
+import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
+import 'package:clinicapp/Provider/Provider_Profile/get_profile_provider.dart';
 import 'package:clinicapp/Screens/Notification/notification.dart';
 import 'package:clinicapp/Styles/colors.dart';
-import 'package:clinicapp/Widgets/search_fields.dart';
+import 'package:clinicapp/Widgets/fields_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../Appoinment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
+import '../Appointment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
 import '../Clinic_Information/clinic_information.dart';
 import '../Reminder/reminder.dart'; // Pastikan untuk mengimpor halaman pengingat jika belum
 import '../../widgets/category.dart';
@@ -51,11 +53,8 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Row(
                               children: [
-                                FutureBuilder<UserModel?>(
-                                  future: Provider.of<AuthenticationProvider>(
-                                          context,
-                                          listen: false)
-                                      .getUserData(),
+                                FutureBuilder<UserModel>(
+                                  future: GetUserProfile().getProfile(),
                                   builder: (context, snapshot) {
                                     if (snapshot.connectionState ==
                                         ConnectionState.waiting) {
@@ -78,9 +77,9 @@ class _HomePageState extends State<HomePage> {
                                       return Text('Error: ${snapshot.error}');
                                     } else if (snapshot.hasData) {
                                       final user = snapshot.data;
-                                      final profileImageUrl = user
-                                              ?.profilePicture ??
-                                          'https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg';
+                                      final profileImageUrl =
+                                          '${AppUrl.userProfilePhotoUrl}/${user?.profilePicture}' ??
+                                              'https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg';
                                       final name = user?.name ?? 'User';
 
                                       return Row(
@@ -92,8 +91,8 @@ class _HomePageState extends State<HomePage> {
                                             decoration: BoxDecoration(
                                               image: DecorationImage(
                                                 image: NetworkImage(
-                                                    profileImageUrl ??
-                                                        'https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg'),
+                                                    profileImageUrl),
+                                                fit: BoxFit.cover,
                                               ),
                                               borderRadius:
                                                   BorderRadius.circular(25),
@@ -171,7 +170,7 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     Expanded(
                       child: Category(
-                        imagePath: "assets/appoinment.png",
+                        imagePath: "assets/appointment.png",
                         title: "Janji Temu",
                         onTap: () {
                           PageNavigator(ctx: context)

@@ -6,13 +6,15 @@ import 'package:clinicapp/Provider/Database/db_provider.dart';
 import 'package:clinicapp/Screens/Authentication/login.dart';
 import 'package:clinicapp/Screens/Home/main_wrapper.dart';
 import 'package:clinicapp/Utils/router.dart';
+import 'package:clinicapp/on_boarding.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationProvider extends ChangeNotifier {
   // Pemanggilan base url
   final requestBaseUrl = AppUrl.baseUrl;
-  final requestUserProfileUrl = AppUrl.userProfileUrl;
+  final requestUserProfileUrl = AppUrl.userProfilePhotoUrl;
+  final requestLogoutUrl = AppUrl.userLogout;
 
   // Setter
   bool _isLoading = false;
@@ -53,7 +55,7 @@ class AuthenticationProvider extends ChangeNotifier {
     // pemanggilan api
     String url = "$requestBaseUrl/user";
 
-    // Data yang dikirim
+    // Data yang dikirim 
     final body = {
       'name': fullname,
       'username': username,
@@ -162,15 +164,6 @@ class AuthenticationProvider extends ChangeNotifier {
         print(token);
         DatabaseProvider().saveToken(token);
         DatabaseProvider().saveUserId(UserID);
-
-        // Create UserModel from response data
-        final userDataMap = res['data']; // Extracting user data map
-        userDataMap['profilePicture'] =
-            "${requestUserProfileUrl}/${userDataMap['profilePicture']}";
-        final userDataJsonString =
-            json.encode(userDataMap); // Convert user data map to JSON string
-        _userModel = userModelFromJson(userDataJsonString);
-
         PageNavigator(ctx: context).nextPageOnly(page: const MainWrapper());
       } else {
         final res = json.decode(req.body);
@@ -209,5 +202,40 @@ class AuthenticationProvider extends ChangeNotifier {
     } else {
       return 'Selamat malam';
     }
+  }
+
+
+  Future<void> logout(BuildContext context) async {
+    final token = await DatabaseProvider().getToken();
+
+    final response = await http.post(
+      Uri.parse(requestLogoutUrl),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': '$token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final responseBody = json.decode(response.body);
+      if (responseBody['message'] == 'logout successful') {
+        await DatabaseProvider().removeToken();
+        PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
+      } else {
+        throw Exception('Logout failed');
+      }
+    } else {
+      throw Exception('Logout request failed');
+    }
+  }
+}
+
+void logOut(BuildContext context) async {
+  try {
+    await AuthenticationProvider().logout(context);
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Logout failed: $e')),
+    );
   }
 }

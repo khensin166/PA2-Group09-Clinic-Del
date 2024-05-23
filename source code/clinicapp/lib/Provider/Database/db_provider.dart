@@ -1,5 +1,6 @@
 import 'package:clinicapp/Screens/Authentication/login.dart';
 import 'package:clinicapp/Utils/router.dart';
+import 'package:clinicapp/on_boarding.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,13 +11,10 @@ class DatabaseProvider extends ChangeNotifier {
 
   String _userId = '';
 
-  String _userName = '';
-
   String get token => _token;
 
   String get userId => _userId;
 
-  String get userName => _userName;
 
   void saveToken(String token) async {
     SharedPreferences value = await _pref;
@@ -66,26 +64,17 @@ class DatabaseProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> getUserName() async {
-    SharedPreferences value = await _pref;
 
-    if (value.containsKey('username')) {
-      String data = value.getString('username')!;
-      _userName = data;
-      notifyListeners();
-      return data;
-    } else {
-      _userName = '';
-      notifyListeners();
-      return '';
-    }
+  Future<void> removeToken() async {
+    SharedPreferences value = await _pref;
+    value.remove('token');
   }
 
   void logOut(BuildContext context) async {
     final value = await _pref;
-
+    
     value.clear();
 
-    PageNavigator(ctx: context).nextPageOnly(page: const LoginPage());
+    PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
   }
 }

@@ -34,11 +34,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   void navigate() {
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 2), () {
+      // call value token yang disimpan di dalam DatabaseProvider
       DatabaseProvider().getToken().then((value) {
         if (value == null || value.isEmpty) {
           // Handle case where the token is null or empty
-          PageNavigator(ctx: context).nextPageOnly(page: const LoginPage());
+          PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
           return;
         }
 
@@ -51,12 +52,12 @@ class _SplashScreenState extends State<SplashScreen> {
         } catch (e) {
           // Handle invalid token format
           print('Error decoding token: $e');
-          PageNavigator(ctx: context).nextPageOnly(page: const LoginPage());
+          PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
         }
       }).catchError((error) {
         // Handle errors from the database
         print('Error fetching token: $error');
-        PageNavigator(ctx: context).nextPageOnly(page: const LoginPage());
+        PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
       });
     });
   }

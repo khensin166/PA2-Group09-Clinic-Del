@@ -1,7 +1,7 @@
 import 'package:clinicapp/Model/appointment_model.dart';
-import 'package:clinicapp/Provider/AppointmentProvider/get_appointment_service.dart';
-import 'package:clinicapp/Screens/Appoinment/create_appointment.dart';
-import 'package:clinicapp/Screens/Appoinment/local_widget/appointment_view_container.dart';
+import 'package:clinicapp/Provider/Provider_Appointment/get_appointment_service.dart';
+import 'package:clinicapp/Screens/Appointment/create_appointment.dart';
+import 'package:clinicapp/Screens/Appointment/local_widget/appointment_view_container.dart';
 import 'package:clinicapp/Screens/Home/home.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
@@ -54,7 +54,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
                               .nextPage(page: const CreateAppointmentPage());
                         },
                         child: Text(
-                          'Create an appointment',
+                          'Buat Janji Temu',
                           style: TextStyle(fontSize: 18, color: primaryColor),
                         ),
                       ),
@@ -69,18 +69,16 @@ class _AppointmentPageState extends State<AppointmentPage> {
 
                     // Format date dan time
                     String formattedDate = data.date != null
-                        ? DateFormat('yyyy-MM-dd').format(data.date!)
+                        ? DateFormat('dd-MM-yyyy').format(data.date!)
                         : 'No Date';
                     String formattedTime = data.time != null
                         ? DateFormat('HH:mm').format(data.time!)
                         : 'No Time';
 
                     return AppointmentCard(
-                      taskId: data.id.toString(),
+                      appointmentId: data.id.toString(),
                       appointmentDate: formattedDate, // Pastikan ini String
                       appointmentTime: formattedTime, // Pastikan ini String
-                      doctorImageUrl:
-                          "https://studiolorier.com/wp-content/uploads/2018/10/Profile-Round-Sander-Lorier.jpg",
                       statusAppointment:
                           data.approved == null ? 'waiting' : 'approved',
                       complaint: data.complaint ?? 'No Title',

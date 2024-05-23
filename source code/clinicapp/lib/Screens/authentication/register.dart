@@ -1,7 +1,7 @@
-import 'package:clinicapp/Provider/AuthProvider/auth_provider.dart';
+import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
 import 'package:clinicapp/Widgets/button.dart';
-import 'package:clinicapp/Widgets/text_fields.dart';
+import 'package:clinicapp/Widgets/fields_text.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
