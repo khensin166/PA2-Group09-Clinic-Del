@@ -3,25 +3,25 @@ import 'package:clinicapp/Screens/views/wistlist/details_wistlist.dart';
 import 'package:clinicapp/Screens/views/wistlist/wistlist.dart';
 import 'package:flutter/material.dart';
 
-class Wishlist extends StatefulWidget {
-  const Wishlist({super.key});
+class Home extends StatefulWidget {
+  const Home({super.key});
 
   @override
-  WishlistState createState() => WishlistState();
+  HomeState createState() => HomeState();
 }
 
-GlobalKey<NavigatorState> wishListNavigatorKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> homeNavigatorKey = GlobalKey<NavigatorState>();
 
-class WishlistState extends State<Wishlist> {
+class HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      key: wishListNavigatorKey,
+      key: homeNavigatorKey,
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
             settings: settings,
             builder: (BuildContext context) {
-              if (settings.name == "/detailsWishlist") {
+              if (settings.name == "/detailsHome") {
                 return const DetailsWishlistView();
               }
               return const HomePage();

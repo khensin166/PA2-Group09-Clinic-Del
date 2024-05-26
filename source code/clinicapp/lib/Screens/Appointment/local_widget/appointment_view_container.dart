@@ -1,11 +1,12 @@
 import 'package:clinicapp/Screens/Appointment/detail_appointment.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentCard extends StatelessWidget {
   final String complaint;
-  final String appointmentDate;
-  final String appointmentTime;
+  final DateTime appointmentDate;
+  final TimeOfDay appointmentTime;
   final String appointmentId;
   final String statusAppointment;
 
@@ -19,6 +20,10 @@ class AppointmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Format date dan time
+    String formattedDate = DateFormat('dd-MM-yyyy').format(appointmentDate);
+    String formattedTime = appointmentTime.format(context);
+
     return GestureDetector(
       onTap: () {
         // Navigate to the detail appointment page
@@ -59,7 +64,7 @@ class AppointmentCard extends StatelessWidget {
                   Icon(Icons.calendar_today, size: 20, color: Colors.grey),
                   SizedBox(width: 5),
                   Text(
-                    appointmentDate,
+                    formattedDate,
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.grey,
@@ -73,7 +78,7 @@ class AppointmentCard extends StatelessWidget {
                   Icon(Icons.access_time, size: 20, color: Colors.grey),
                   SizedBox(width: 5),
                   Text(
-                    appointmentTime,
+                    formattedTime,
                     style: TextStyle(
                       fontSize: 17,
                       color: Colors.grey,
@@ -112,9 +117,10 @@ class AppointmentCard extends StatelessWidget {
                   },
                   child: Text('Lihat Detail'),
                   style: TextButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    primary: Colors.white,
-                  ),
+                      backgroundColor: primaryColor,
+                      foregroundColor: Colors.white
+                      
+                      ),
                 ),
               ),
             ],

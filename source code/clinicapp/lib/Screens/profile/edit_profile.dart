@@ -1,4 +1,5 @@
-import 'package:clinicapp/Constants/url.dart';
+import 'dart:io';
+
 import 'package:clinicapp/Model/user_model.dart';
 import 'package:clinicapp/Provider/Provider_Profile/get_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/update_profile_provider.dart';
@@ -10,14 +11,20 @@ import 'package:clinicapp/Widgets/fields_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// final imageUserProfile = ImageUserProfile();
+
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  const EditProfilePage({
+    super.key,
+  });
 
   @override
   State<EditProfilePage> createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  File? _image;
+
   late UserModel user = UserModel();
   late TextEditingController nameController = TextEditingController();
   late TextEditingController birthdayController = TextEditingController();
@@ -28,8 +35,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late TextEditingController heightController = TextEditingController();
   late TextEditingController addressController = TextEditingController();
 
-  bool isEditing = false;
-
+// fungsi mengambil data ketika
   @override
   void initState() {
     super.initState();
@@ -59,6 +65,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       appBar: AppBarCustom(
         title: 'Profile',
         backgroundColor: primaryColor,
+        leading: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -66,34 +73,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Center(
-                    child: GestureDetector(
-                      onTap: () {
-                        if (isEditing) {
-                          // Implement logic to change profile picture
-                        }
-                      },
-                      child: Container(
-                        width: 110,
-                        height: 110,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: amber,
-                            width: 4.0,
-                          ),
-                        ),
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(
-                            user.profilePicture != null
-                                ? '${AppUrl.userProfilePhotoUrl}/${user.profilePicture}'
-                                : 'https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 20),
                   profileFieldsCustom(
                     readOnly: false,

@@ -18,10 +18,10 @@ void showMessage({String? message, BuildContext? context}) {
           message!,
           style: TextStyle(color: white, fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          'selamat anda berhasil login',
-          style: TextStyle(color: white, fontWeight: FontWeight.bold),
-        ),
+        // subtitle: Text(
+        //   'selamat anda berhasil login',
+        //   style: TextStyle(color: white, fontWeight: FontWeight.bold),
+        // ),
       ),
     ),
     margin: EdgeInsets.all(10),
@@ -45,10 +45,10 @@ void showErrorMessage({String? message, BuildContext? context}) {
           message!,
           style: TextStyle(color: white, fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(
-          'selamat anda berhasil login',
-          style: TextStyle(color: white, fontWeight: FontWeight.bold),
-        ),
+        // subtitle: Text(
+        //   'selamat anda berhasil login',
+        //   style: TextStyle(color: white, fontWeight: FontWeight.bold),
+        // ),
       ),
     ),
     margin: EdgeInsets.all(10),

@@ -55,7 +55,7 @@ class AuthenticationProvider extends ChangeNotifier {
     // pemanggilan api
     String url = "$requestBaseUrl/user";
 
-    // Data yang dikirim 
+    // Data yang dikirim
     final body = {
       'name': fullname,
       'username': username,
@@ -204,7 +204,6 @@ class AuthenticationProvider extends ChangeNotifier {
     }
   }
 
-
   Future<void> logout(BuildContext context) async {
     final token = await DatabaseProvider().getToken();
 
@@ -219,8 +218,13 @@ class AuthenticationProvider extends ChangeNotifier {
     if (response.statusCode == 200) {
       final responseBody = json.decode(response.body);
       if (responseBody['message'] == 'logout successful') {
+        print(responseBody['message']);
         await DatabaseProvider().removeToken();
-        PageNavigator(ctx: context).nextPageOnly(page: const Onboarding());
+        // Navigate to the new screen without the bottom navigation bar
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => Onboarding()),
+          (route) => false,
+        );
       } else {
         throw Exception('Logout failed');
       }

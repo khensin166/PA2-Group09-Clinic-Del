@@ -2,11 +2,11 @@ import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Model/user_model.dart';
 import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/get_profile_provider.dart';
+import 'package:clinicapp/Screens/Article/article.dart';
 import 'package:clinicapp/Screens/Notification/notification.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Widgets/fields_search.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../Appointment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
 import '../Clinic_Information/clinic_information.dart';
 import '../Reminder/reminder.dart'; // Pastikan untuk mengimpor halaman pengingat jika belum
@@ -77,9 +77,11 @@ class _HomePageState extends State<HomePage> {
                                       return Text('Error: ${snapshot.error}');
                                     } else if (snapshot.hasData) {
                                       final user = snapshot.data;
-                                      final profileImageUrl =
-                                          '${AppUrl.userProfilePhotoUrl}/${user?.profilePicture}' ??
-                                              'https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg';
+                                      final profileImageUrl = user
+                                                  ?.profilePicture !=
+                                              null
+                                          ? '${AppUrl.userProfilePhotoUrl}/${user?.profilePicture}'
+                                          : 'https://static.vecteezy.com/system/resources/previews/001/840/618/original/picture-profile-icon-male-icon-human-or-people-sign-and-symbol-free-vector.jpg';
                                       final name = user?.name ?? 'User';
 
                                       return Row(
@@ -111,7 +113,7 @@ class _HomePageState extends State<HomePage> {
                                               // Kosongkan onTap agar tidak dapat diklik
                                             },
                                             child: Text(
-                                              '${AuthenticationProvider().getGreeting()}\n$name',
+                                              '${AuthenticationProvider().getGreeting()}👋\n$name',
                                               style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold,
@@ -132,7 +134,6 @@ class _HomePageState extends State<HomePage> {
                               child: IconButton(
                                 color: Colors.white,
                                 onPressed: () {
-                                  print('test');
                                   PageNavigator(ctx: context)
                                       .nextPage(page: const NotificationPage());
                                 },
@@ -173,8 +174,11 @@ class _HomePageState extends State<HomePage> {
                         imagePath: "assets/appointment.png",
                         title: "Janji Temu",
                         onTap: () {
-                          PageNavigator(ctx: context)
-                              .nextPage(page: const AppointmentPage());
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AppointmentPage()),
+                          );
                         },
                       ),
                     ),
@@ -201,7 +205,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              const Padding(
+              Padding(
                   padding: EdgeInsets.all(15),
                   child: Column(
                     children: [
@@ -213,12 +217,18 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         height: 15,
                       ),
-                      Article(
-                        imagePath: 'assets/health_article.jpg',
-                        nameShop: "The 25 Healthiest Fruits You Can Eat",
-                        rating: "4.8",
-                        jamBuka: "Jun 10, 20223",
-                      ),
+                      GestureDetector(
+                        onTap: () {
+                          PageNavigator(ctx: context)
+                              .nextPage(page: ArticlePage());
+                        },
+                        child: Article(
+                          imagePath: 'assets/health_article.jpg',
+                          nameShop: "The 25 Healthiest Fruits You Can Eat",
+                          jamBuka: "Jun 10, 2023",
+                          rating: '',
+                        ),
+                      )
                     ],
                   )),
             ],

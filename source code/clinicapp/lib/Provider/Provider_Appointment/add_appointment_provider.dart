@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddAppointmentProvider extends ChangeNotifier {
-  final url = AppUrl.addAppointmentUrl;
+  final url = AppUrl.AppointmentUrl;
 
   bool _status = false;
 
@@ -31,7 +31,6 @@ class AddAppointmentProvider extends ChangeNotifier {
     _status = true;
     notifyListeners();
 
-
 // Gabungkan tanggal dan waktu ke dalam satu DateTime
     final appointmentDateTime = DateTime(
       date!.year,
@@ -41,8 +40,8 @@ class AddAppointmentProvider extends ChangeNotifier {
       time.minute,
     );
 
-    // Konversi ke format ISO 8601 dengan zona waktu
-    final dateIsoString = appointmentDateTime.toUtc().toIso8601String();
+// Konversi ke format ISO 8601 dengan zona waktu
+    final dateIsoString = appointmentDateTime.toIso8601String();
 
     final body = {
       "complaint": complaint,
@@ -51,8 +50,8 @@ class AddAppointmentProvider extends ChangeNotifier {
       "requested_id": userId,
     };
 
-    final result = await http.post(Uri.parse(url),
-        body: body, headers: {'Authorization': '$token'});
+    final result = await http
+        .post(Uri.parse(url), body: body, headers: {'Authorization': '$token'});
 
     print(result.statusCode);
 
@@ -62,7 +61,7 @@ class AddAppointmentProvider extends ChangeNotifier {
       _status = false;
       _response = json.decode(res)['message'];
       notifyListeners();
-
+      // Navigator.pop(context!);
       PageNavigator(ctx: context).nextPageOnly(page: const AppointmentPage());
     } else {
       final res = result.body;

@@ -1,45 +1,52 @@
 import 'package:clinicapp/Provider/Provider_Appointment/delete_appointment_provider.dart';
+import 'package:clinicapp/Screens/Appointment/edit_appointment.dart';
 import 'package:clinicapp/Styles/colors.dart';
+import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
+import 'package:clinicapp/Widgets/app_bar.dart';
+import 'package:clinicapp/Widgets/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 class AppointmentDetailsPage extends StatefulWidget {
-  const AppointmentDetailsPage(
-      {Key? key,
-      this.appointmentId,
-      this.complaint,
-      this.statusAppointment,
-      this.appointmentDate,
-      this.appointmentTime})
-      : super(key: key);
+  const AppointmentDetailsPage({
+    Key? key,
+    required this.appointmentId,
+    required this.complaint,
+    required this.statusAppointment,
+    required this.appointmentDate,
+    required this.appointmentTime,
+  }) : super(key: key);
 
-  final String? complaint;
-  final String? appointmentId;
-  final String? statusAppointment;
-  final String? appointmentDate;
-  final String? appointmentTime;
+  final String complaint;
+  final String appointmentId;
+  final String statusAppointment;
+  final DateTime appointmentDate;
+  final TimeOfDay appointmentTime;
 
   @override
   State<AppointmentDetailsPage> createState() => _AppointmentDetailsPageState();
 }
 
 class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
+  String? formattedDate;
+  String? formattedTime;
+
   @override
   void initState() {
     super.initState();
     // Inisialisasi locale data untuk format tanggal
     initializeDateFormatting('id_ID', null).then((_) {
-      setState(
-          () {}); // Memastikan build method dipanggil ulang setelah inisialisasi
+      setState(() {
+        formattedDate = DateFormat('dd-MM-yyyy').format(widget.appointmentDate);
+        formattedTime = widget.appointmentTime.format(context);
+      });
     });
   }
 
-  String _formatDate(String? date) {
-    if (date == null) return 'No Date';
-
+  String _formatDate(String date) {
     try {
       // Parse the date
       final parsedDate = DateFormat('dd-MM-yyyy').parse(date);
@@ -52,10 +59,81 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if formattedDate and formattedTime are initialized
+    if (formattedDate == null || formattedTime == null) {
+      return Scaffold(
+        appBar: AppBarCustom(
+          title: 'Detail Janji Temu',
+          backgroundColor: primaryColor,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => EditAppointmentPage(
+                    appointmentId: widget.appointmentId,
+                    oldComplaint: widget.complaint,
+                    oldDate: widget.appointmentDate,
+                    oldTime: widget.appointmentTime,
+                  ),
+                ));
+              },
+            )
+          ],
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Detail Janji Temu'),
+      appBar: AppBarCustom(
+        title: 'Detail Janji Temu',
         backgroundColor: primaryColor,
+        leading: true,
+        actions: [
+          widget.statusAppointment == "waiting"
+              ? Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10), color: amber),
+                  margin: EdgeInsets.all(10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: TextButton.icon(
+                    onPressed: () async {
+                      final confirmed = await showConfirmationDialog(
+                        context: context,
+                        content: "Apakah Anda yakin ingin mengubah janji temu?",
+                        onConfirm: () {
+                          // Tidak ada tindakan khusus di sini
+                        },
+                      );
+                      if (confirmed == true) {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => EditAppointmentPage(
+                            appointmentId: widget.appointmentId,
+                            oldComplaint: widget.complaint,
+                            oldDate: widget.appointmentDate,
+                            oldTime: widget.appointmentTime,
+                          ),
+                        ));
+                      }
+                    },
+                    icon: Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      'Edit',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                )
+              : Container()
+        ],
       ),
       body: Center(
         child: Padding(
@@ -77,7 +155,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    '${_formatDate(widget.appointmentDate)}, ${widget.appointmentTime}',
+                    '${_formatDate(formattedDate!)}, $formattedTime',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -102,7 +180,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   ),
                   SizedBox(height: 4),
                   Text(
-                    widget.statusAppointment ?? '',
+                    widget.statusAppointment,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -118,7 +196,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    widget.complaint ?? "",
+                    widget.complaint,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 14, color: Colors.grey[700]),
                   ),
@@ -138,10 +216,21 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                       return TextButton(
                         onPressed: deleteAppointment.getStatus == true
                             ? null
-                            : () {
-                                deleteAppointment.deleteAppointment(
-                                    appointmentId: widget.appointmentId,
-                                    ctx: context);
+                            : () async {
+                                final confirmed = await showConfirmationDialog(
+                                  context: context,
+                                  content:
+                                      "Apakah Anda yakin ingin membatalkan janji temu?",
+                                  onConfirm: () {
+                                    deleteAppointment.deleteAppointment(
+                                      appointmentId: widget.appointmentId,
+                                      ctx: context,
+                                    );
+                                  },
+                                );
+                                if (confirmed == true) {
+                                  // Lakukan sesuatu setelah konfirmasi
+                                }
                               },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -160,7 +249,7 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                         ),
                       );
                     }),
-                  )
+                  ),
                 ],
               ),
             ),

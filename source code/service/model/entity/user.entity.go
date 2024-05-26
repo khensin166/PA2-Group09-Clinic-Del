@@ -48,6 +48,13 @@ type UserResponse struct {
 	ProfilePicture *string `json:"profilePicture"`
 }
 
+type UserProfileResponse struct {
+	Name           string  `json:"name"`
+	ID             uint    `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	Username       string  `json:"username" gorm:"unique"`
+	ProfilePicture *string `json:"profilePicture"`
+}
+
 func (UserResponse) TableName() string {
 	return "users"
 }

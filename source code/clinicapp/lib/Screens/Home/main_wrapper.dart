@@ -1,7 +1,7 @@
-import 'package:clinicapp/Screens/History/history.dart';
 import 'package:clinicapp/Screens/Profile/profile.dart';
-import 'package:clinicapp/Screens/navigations/updates_navigation.dart';
-import 'package:clinicapp/Screens/navigations/wistlists_navigation.dart';
+import 'package:clinicapp/Screens/navigations/profile_navigation.dart';
+import 'package:clinicapp/Screens/navigations/history_navigation.dart';
+import 'package:clinicapp/Screens/navigations/home_navigation.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,8 +17,9 @@ class MainWrapperState extends State<MainWrapper> {
   int _selectedIndex = 0;
 
   final List<GlobalKey<NavigatorState>> _navigatorKeys = [
-    wishListNavigatorKey,
-    updatesNavigatorKey,
+    homeNavigatorKey,
+    historyNavigatorKey,
+    profileNavigatorKey
   ];
 
   Future<bool> _systemBackButtonPressed() async {
@@ -73,10 +74,10 @@ class MainWrapperState extends State<MainWrapper> {
             index: _selectedIndex,
             children: const <Widget>[
               /// First Route
-              Wishlist(),
+              Home(),
 
               /// Second Route
-              HistoryPage(),
+              History(),
 
               // Third Route
               ProfilePage()

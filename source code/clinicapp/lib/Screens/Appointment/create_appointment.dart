@@ -53,7 +53,7 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
                 final DateTime? pickedDate = await showDatePicker(
                   context: context,
                   initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
+                  firstDate: DateTime(2020),
                   lastDate: DateTime(2025),
                 );
                 if (pickedDate != null) {
@@ -164,7 +164,6 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
                 );
               },
             ),
-         
           ],
         ),
       ),

@@ -22,7 +22,7 @@ environment:
   sdk: ">=3.1.4 <4.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
+# To automatically upgrade gityour package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
@@ -40,6 +40,13 @@ dependencies:
   shared_preferences: ^2.2.3
   jwt_decoder: ^2.0.1
   intl: ^0.19.0
+  image_picker: ^1.0.8
+  image_cropper: ^5.0.1
+  photo_view: ^0.15.0
+  date_picker_timeline: ^1.2.6
+  flutter_launcher_icons: ^0.13.1
+  url_launcher: ^6.2.6
+
 
 dev_dependencies:
   flutter_test:
@@ -50,7 +57,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  # flutter_lints: ^2.0.0
+  flutter_lints: ^2.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -92,3 +99,13 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: "AppIcon"
+  image_path: "assets/logo.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+# flutter pub run flutter_launcher_icons
+# command untuk menjalankannya
+# https://youtu.be/QPVMaedX1W8

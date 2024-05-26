@@ -193,7 +193,7 @@ func UpdateAppointment(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "Success",
+		"message": "success",
 		"data":    appointment,
 	})
 }

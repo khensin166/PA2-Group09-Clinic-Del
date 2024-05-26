@@ -6,24 +6,29 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final List<Widget>? actions;
   final Color backgroundColor;
-  final Widget? nextPage;  // Membuat nextPage opsional
+  final Widget? nextPage; // Membuat nextPage opsional
+  final bool leading;
 
   const AppBarCustom({
     Key? key,
     this.leadingIcon,
     required this.title,
     this.actions,
-    required this.backgroundColor,  // Default primary color
+    required this.backgroundColor, // Default primary color
     this.nextPage,
+    this.leading = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: leadingIcon != null && nextPage != null // Hanya tampilkan leading icon jika leadingIcon dan nextPage tidak null
+      automaticallyImplyLeading: leading,
+      leading: leadingIcon != null &&
+              nextPage !=
+                  null // Hanya tampilkan leading icon jika leadingIcon dan nextPage tidak null
           ? IconButton(
               onPressed: () {
-                Navigator.push(
+                Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => nextPage!),
                 );

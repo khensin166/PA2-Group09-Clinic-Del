@@ -1,22 +1,21 @@
+import 'package:clinicapp/Screens/History/history.dart';
 import 'package:clinicapp/Screens/views/updates/details_updates.dart';
-import 'package:clinicapp/Screens/views/updates/updates.dart';
 import 'package:flutter/material.dart';
 
-
-class UpdatesNavigator extends StatefulWidget {
-  const UpdatesNavigator({super.key});
+class History extends StatefulWidget {
+  const History({super.key});
 
   @override
-  UpdatesNavigatorState createState() => UpdatesNavigatorState();
+  HistoryState createState() => HistoryState();
 }
 
-GlobalKey<NavigatorState> updatesNavigatorKey = GlobalKey<NavigatorState>();
+GlobalKey<NavigatorState> historyNavigatorKey = GlobalKey<NavigatorState>();
 
-class UpdatesNavigatorState extends State<UpdatesNavigator> {
+class HistoryState extends State<History> {
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      key: updatesNavigatorKey,
+      key: historyNavigatorKey,
       onGenerateRoute: (RouteSettings settings) {
         return MaterialPageRoute(
           settings: settings,
@@ -24,7 +23,7 @@ class UpdatesNavigatorState extends State<UpdatesNavigator> {
             if (settings.name == "/detailsUpdates") {
               return const DetailsUpdatesView();
             }
-            return const UpdatesView();
+            return const HistoryPage();
           },
         );
       },

@@ -1,8 +1,12 @@
 import 'package:clinicapp/Provider/Provider_Appointment/add_appointment_provider.dart';
 import 'package:clinicapp/Provider/Provider_Appointment/delete_appointment_provider.dart';
+import 'package:clinicapp/Provider/Provider_Appointment/edit_appointment_provider.dart';
 import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
+import 'package:clinicapp/Provider/Provider_Profile/image_profile_provider.dart';
+import 'package:clinicapp/Provider/view_models.dart/photo_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/update_profile_provider.dart';
+import 'package:clinicapp/Screens/Profile/profile.view.dart';
 import 'package:clinicapp/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,12 +32,15 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => DatabaseProvider()),
         ChangeNotifierProvider(create: (_) => AddAppointmentProvider()),
         ChangeNotifierProvider(create: (_) => DeleteAppointmentProvider()),
+        ChangeNotifierProvider(create: (_) => EditAppointmentProvider()),
         ChangeNotifierProvider(create: (_) => UpdateProfileProvider()),
+        ChangeNotifierProvider(create: (_) => ProfileImageProvider()),
+        ChangeNotifierProvider(create: (_) => UserProfileProvider()),
       ],
-      child: MaterialApp(
+      child: const MaterialApp(
         title: 'Flutter Demo',
         // home: (JwtDecoder.isExpired(token) == false) ? HomePage() : LoginPage(),
-        // home: Onboarding(),
+        // home: ProfileView(),
         home: SplashScreen(),
       ),
     );

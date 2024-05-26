@@ -7,7 +7,6 @@ import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/Widgets/app_bar.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import untuk DateFormat
 
 class AppointmentPage extends StatefulWidget {
   const AppointmentPage({super.key});
@@ -31,7 +30,6 @@ class _AppointmentPageState extends State<AppointmentPage> {
         child: FutureBuilder<AppointmentModel>(
           future: GetUserAppointment().getAppointment(),
           builder: (context, snapshot) {
-            print(snapshot);
             if (snapshot.hasError) {
               return const Center(child: Text('Error Occurred'));
             } else if (snapshot.connectionState == ConnectionState.waiting) {
@@ -67,18 +65,12 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   itemBuilder: (context, index) {
                     final data = snapshot.data!.data![index];
 
-                    // Format date dan time
-                    String formattedDate = data.date != null
-                        ? DateFormat('dd-MM-yyyy').format(data.date!)
-                        : 'No Date';
-                    String formattedTime = data.time != null
-                        ? DateFormat('HH:mm').format(data.time!)
-                        : 'No Time';
-
                     return AppointmentCard(
                       appointmentId: data.id.toString(),
-                      appointmentDate: formattedDate, // Pastikan ini String
-                      appointmentTime: formattedTime, // Pastikan ini String
+                      appointmentDate: data.date ?? DateTime.now(),
+                      appointmentTime: data.time != null
+                          ? TimeOfDay.fromDateTime(data.time!)
+                          : TimeOfDay.now(),
                       statusAppointment:
                           data.approved == null ? 'waiting' : 'approved',
                       complaint: data.complaint ?? 'No Title',
