@@ -1,12 +1,16 @@
 class AppUrl {
-  static String baseUrl = 'http://192.168.76.133:8080';
+  static String baseUrl = 'http://192.168.76.25:8080';
 
+  // Profile
   static String userProfilePhotoUrl = '${baseUrl}/user/image';
   static String userProfileUrl = '${baseUrl}/user-profile';
   static String userLogout = '${baseUrl}/userLogout';
 
   // Appointment
   static String AppointmentUrl = '${baseUrl}/appointment';
+
+  // Reminder
+  static String ReminderUrl = '${baseUrl}/reminder';
 
   static String NEWS_API_KEY = "6824d273d6be40e8b656abb2e39c349e";
 

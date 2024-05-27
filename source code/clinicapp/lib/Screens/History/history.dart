@@ -1,5 +1,7 @@
+import 'package:clinicapp/Screens/Reminder/reminder_create.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Styles/theme.dart';
+import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/Widgets/app_bar.dart';
 import 'package:clinicapp/Widgets/button_add.dart';
 import 'package:date_picker_timeline/date_picker_timeline.dart';
@@ -63,6 +65,38 @@ class _HistoryPageState extends State<HistoryPage> {
                   // simpan date ke dalam variable
                   _selectedDate = date;
                 },
+              ),
+            ),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(DateFormat.yMMMMd().format(DateTime.now())),
+                    const Icon(
+                      Icons.medication,
+                      size: 100,
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Tidak ada pengingat obat!',
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.black54),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        PageNavigator(ctx: context)
+                            .nextPage(page: const CreateReminderPage());
+                        // Add your onPressed code here!
+                      },
+                      child: const Text('Tambahkan Pengingat Obat'),
+                    ),
+                  ],
+                ),
               ),
             )
           ],

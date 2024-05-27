@@ -1,4 +1,8 @@
+import 'package:clinicapp/Provider/Provider_Reminder/add_reminder.dart';
+import 'package:clinicapp/Utils/snackbar_message.dart';
+import 'package:clinicapp/Widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateReminderPage extends StatefulWidget {
   const CreateReminderPage({super.key});
@@ -8,13 +12,23 @@ class CreateReminderPage extends StatefulWidget {
 }
 
 class _CreateReminderPageState extends State<CreateReminderPage> {
-  final TextEditingController _medicineController = TextEditingController();
+  TimeOfDay? selectedTime;
+  final TextEditingController _medicine = TextEditingController();
+  final TextEditingController _time = TextEditingController();
   int _timesPerDay = 1;
   int _days = 1;
 
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   selectedTime = TimeOfDay.now();
+  //   _time.text = selectedTime!.format(context); // Set initial value for _time
+  // }
+
   @override
   void dispose() {
-    _medicineController.dispose();
+    _medicine.dispose();
+    _time.dispose();
     super.dispose();
   }
 
@@ -50,6 +64,19 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
     }
   }
 
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+    if (picked != null) {
+      setState(() {
+        selectedTime = picked;
+        _time.text = picked.format(context); // Update _time text
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +88,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
         child: ListView(
           children: [
             TextField(
-              controller: _medicineController,
+              controller: _medicine,
               decoration: const InputDecoration(
                 labelText: 'Nama Obat',
               ),
@@ -86,11 +113,25 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                 );
               }),
             ),
+            const SizedBox(height: 10),
+            const Text(
+              'Kamu akan menerima notifikasi pengingat pada',
+            ),
+            ListTile(
+              title: Text(_time.text),
+              trailing: const Icon(Icons.edit),
+              onTap: () async {
+                await _selectTime(context);
+              },
+            ),
             const SizedBox(height: 16),
-            const Text('Selama berapa hari?'),
+            const Text(
+              'Selama berapa hari?',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             ListTile(
               title: Text('$_days Hari'),
-              trailing: const Icon(Icons.arrow_drop_down),
+              trailing: const Icon(Icons.edit),
               onTap: () => _selectDays(context),
             ),
             const SizedBox(height: 16),
@@ -113,12 +154,39 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               ],
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                // Add your save reminder logic here
-              },
-              child: const Text('Simpan'),
-            ),
+            Consumer<AddReminderProvider>(
+                builder: (context, addReminder, child) {
+              WidgetsBinding.instance!.addPostFrameCallback((_) {
+                if (addReminder.getResponse != '') {
+                  showMessage(
+                      message: addReminder.getResponse, context: context);
+
+                  // clear respon message
+                  addReminder.clear();
+                }
+              });
+              return customButton(
+                status: addReminder.getStatus,
+                context: context,
+                text: 'Daftar',
+                tap: () {
+                  if (_medicine.text.isEmpty) {
+                    showMessage(
+                        message: "Nama Obat Harus diisi!", context: context);
+                  } else if (selectedTime == null) {
+                    showMessage(
+                        message: "Waktu Harus diisi!", context: context);
+                  } else {
+                    addReminder.addReminder(
+                        name: _medicine.text,
+                        time: selectedTime,
+                        frequency: _days,
+                        duration: _days,
+                        context: context);
+                  }
+                },
+              );
+            })
           ],
         ),
       ),

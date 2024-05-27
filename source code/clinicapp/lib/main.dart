@@ -4,6 +4,7 @@ import 'package:clinicapp/Provider/Provider_Appointment/edit_appointment_provide
 import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/image_profile_provider.dart';
+import 'package:clinicapp/Provider/Provider_Reminder/add_reminder.dart';
 import 'package:clinicapp/Provider/view_models.dart/photo_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/update_profile_provider.dart';
 import 'package:clinicapp/Screens/Profile/profile.view.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UpdateProfileProvider()),
         ChangeNotifierProvider(create: (_) => ProfileImageProvider()),
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
+        ChangeNotifierProvider(create: (_) => AddReminderProvider()),
       ],
       child: const MaterialApp(
         title: 'Flutter Demo',

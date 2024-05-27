@@ -218,17 +218,16 @@ class _HomePageState extends State<HomePage> {
                         height: 15,
                       ),
                       GestureDetector(
-                        onTap: () {
-                          PageNavigator(ctx: context)
-                              .nextPage(page: ArticlePage());
-                        },
-                        child: Article(
-                          imagePath: 'assets/health_article.jpg',
-                          nameShop: "The 25 Healthiest Fruits You Can Eat",
-                          jamBuka: "Jun 10, 2023",
-                          rating: '',
-                        ),
-                      )
+                          onTap: () {
+                            PageNavigator(ctx: context)
+                                .nextPage(page: ArticlePage());
+                          },
+                          child: Article(
+                              imagePath: 'assets/health_article.jpg',
+                              title: "The 25 Healthiest Fruits You Can Eat",
+                              publishedAt: "Jun 10, 2023")
+
+                          )
                     ],
                   )),
             ],

@@ -1,6 +1,12 @@
+import 'package:clinicapp/Screens/Home/home.dart';
 import 'package:clinicapp/Screens/Reminder/reminder_create.dart';
+import 'package:clinicapp/Styles/colors.dart';
+import 'package:clinicapp/Styles/theme.dart';
 import 'package:clinicapp/Utils/router.dart';
+import 'package:clinicapp/Widgets/app_bar.dart';
+import 'package:date_picker_timeline/date_picker_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class ReminderPage extends StatefulWidget {
@@ -10,84 +16,90 @@ class ReminderPage extends StatefulWidget {
   State<ReminderPage> createState() => _ReminderPageState();
 }
 
-class _ReminderPageState extends State<ReminderPage>
-    with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
+class _ReminderPageState extends State<ReminderPage> {
+  DateTime _selectedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Pengingat Obat'),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Kemarin'),
-            Tab(text: 'Hari ini'),
-            Tab(text: 'Besok'),
-          ],
-        ),
+      appBar: AppBarCustom(
+        title: 'Pengingat Obat',
+        backgroundColor: primaryColor,
+        nextPage: HomePage(),
+        leadingIcon: Icons.arrow_back,
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          ReminderContent(day: 'kemarin'),
-          ReminderContent(day: 'hari ini'),
-          ReminderContent(day: 'besok'),
-        ],
-      ),
-    );
-  }
-}
-
-class ReminderContent extends StatelessWidget {
-  final String day;
-
-  const ReminderContent({super.key, required this.day});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(DateFormat.yMMMMd().format(DateTime.now())),
-            const Icon(
-              Icons.medication,
-              size: 100,
-              color: Colors.blue,
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      "Today",
+                      style: headingStyle,
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Text(
+                      DateFormat.yMMMMd().format(DateTime.now()),
+                      style: subHeadingStyle,
+                    ),
+                  ],
+                ),
+              ],
             ),
-            const SizedBox(height: 20),
-            Text(
-              'Tidak ada pengingat obat $day!',
-              style: const TextStyle(fontSize: 18, color: Colors.black54),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                PageNavigator(ctx: context)
-                    .nextPage(page: const CreateReminderPage());
-                // Add your onPressed code here!
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 10, left: 20),
+            child: DatePicker(
+              DateTime.now(),
+              height: 80,
+              width: 80,
+              initialSelectedDate: DateTime.now(),
+              selectionColor: primaryColor,
+              selectedTextColor: Colors.white,
+              dateTextStyle: GoogleFonts.lato(
+                  textStyle: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w600)),
+              onDateChange: (date) {
+                // simpan date ke dalam variable
+                _selectedDate = date;
               },
-              child: const Text('Tambahkan Pengingat Obat'),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.medication,
+                    size: 100,
+                    color: Colors.blue,
+                  ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Tidak ada pengingat obat!',
+                    style: TextStyle(fontSize: 18, color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 15),
+                  ElevatedButton(
+                    onPressed: () {
+                      PageNavigator(ctx: context)
+                          .nextPage(page: const CreateReminderPage());
+                    },
+                    child: const Text('Tambahkan Pengingat Obat'),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
