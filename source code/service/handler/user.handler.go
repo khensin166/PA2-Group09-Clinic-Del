@@ -1,15 +1,28 @@
 package handler
 
 import (
+	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/model/entity"
 	"github.com/khensin166/PA2-Kel9/utils"
+	"gorm.io/gorm"
 	"log"
+	"os"
 	"path/filepath"
 )
 
+var PathImageUser = "./Public/User"
+
+func init() {
+	if _, err := os.Stat(PathImageUser); os.IsNotExist(err) {
+		err := os.Mkdir(PathImageUser, os.ModePerm)
+		if err != nil {
+			return
+		}
+	}
+}
 func UserHandlerGetAll(ctx *fiber.Ctx) error {
 
 	userInfo := ctx.Locals("userInfo")
@@ -67,7 +80,7 @@ func CreateUser(ctx *fiber.Ctx) error {
 
 	if err == nil {
 		filename := utils.GenerateImageFile(user.Name, image.Filename)
-		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+		if err := ctx.SaveFile(image, filepath.Join(PathImageUser, filename)); err != nil {
 			return ctx.Status(500).JSON(fiber.Map{
 				"status":  "failed",
 				"message": "Can't save file image",
@@ -149,8 +162,8 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	// Process image if provided
 	image, err := ctx.FormFile("profilePicture")
 	if err == nil {
-		filename := utils.GenerateImageFile(user.Name, image.Filename)
-		if err := ctx.SaveFile(image, filepath.Join(PathImageProduct, filename)); err != nil {
+		filename := utils.GenerateImageFile(user.Username, image.Filename)
+		if err := ctx.SaveFile(image, filepath.Join(PathImageUser, filename)); err != nil {
 			return ctx.Status(500).JSON(fiber.Map{
 				"status":  "failed",
 				"message": "Can't save file image",
@@ -177,8 +190,8 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"status": "success",
-		"data":   user,
+		"message": "Profile berhasil diperbaharui",
+		"data":    user,
 	})
 }
 
@@ -201,5 +214,181 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "User deleted successfully",
+	})
+}
+
+func UserHandlerProfile(ctx *fiber.Ctx) error {
+	// Mendapatkan token dari header Authorization
+	token := ctx.Get("Authorization")
+	if token == "" {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	// Mendekode token untuk mendapatkan informasi pengguna
+	claims, err := utils.DecodeToken(token)
+	if err != nil {
+		log.Println("Error decoding token:", err)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated err",
+		})
+	}
+
+	// Mendapatkan ID pengguna dari token
+	userName, ok := claims["username"]
+	if !ok {
+		log.Println("Invalid token claims:", claims)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "invalid token claims",
+		})
+	}
+
+	// Melakukan query ke basis data untuk mendapatkan pengguna yang sesuai dengan ID pengguna
+	var user entity.User
+	result := database.DB.Where("username = ?", userName).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Println("User not found dek:", userName)
+			return ctx.Status(404).JSON(fiber.Map{
+				"message": "user not found",
+			})
+		}
+		log.Println("Database error:", result.Error)
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "database error",
+		})
+	}
+
+	// Mempersiapkan respons pengguna
+	userResponse := entity.UserResponse{
+		ID:             user.ID,
+		DormID:         user.DormID,
+		Name:           user.Name,
+		Age:            user.Age,
+		Weight:         user.Weight,
+		Height:         user.Height,
+		NIK:            user.NIK,
+		Birthday:       user.Birthday,
+		Gender:         user.Gender,
+		Address:        user.Address,
+		Phone:          user.Phone,
+		Username:       user.Username,
+		Password:       user.Password,
+		Role:           user.Role,
+		ProfilePicture: user.ProfilePicture,
+	}
+
+	// Mengembalikan data pengguna dalam format JSON
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    userResponse,
+	})
+}
+
+func UserHandlerProfilePicture(ctx *fiber.Ctx) error {
+	userID := ctx.Params("id")
+	var user entity.User
+
+	err := database.DB.First(&user, "id = ?", userID).Error
+	if err != nil {
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "user not found",
+		})
+	}
+
+	image, err := ctx.FormFile("profilePicture")
+	if err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"message": "No file provided",
+		})
+	}
+
+	filename := utils.GenerateImageFile(user.Username, image.Filename)
+	if err := ctx.SaveFile(image, filepath.Join(PathImageUser, filename)); err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "Can't save file image",
+		})
+	}
+	user.ProfilePicture = &filename
+
+	if err := database.DB.Save(&user).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "failed to update profile picture",
+			"error":   err.Error(),
+		})
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"message": "success",
+		"image":   user.ProfilePicture,
+		"status":  "200",
+	})
+}
+
+func UserHandlerGetProfilePicture(ctx *fiber.Ctx) error {
+	// Mendapatkan token dari body permintaan
+	body := struct {
+		Token string `json:"token"`
+	}{}
+	if err := ctx.BodyParser(&body); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "invalid request body",
+		})
+	}
+
+	token := body.Token
+	if token == "" {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	// Mendekode token untuk mendapatkan informasi pengguna
+	claims, err := utils.DecodeToken(token)
+	if err != nil {
+		log.Println("Error decoding token:", err)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated err",
+		})
+	}
+
+	// Mendapatkan ID pengguna dari token
+	userName, ok := claims["username"]
+	if !ok {
+		log.Println("Invalid token claims:", claims)
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "invalid token claims",
+		})
+	}
+
+	// Melakukan query ke basis data untuk mendapatkan pengguna yang sesuai dengan ID pengguna
+	var user entity.User
+	result := database.DB.Where("username = ?", userName).First(&user)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			log.Println("User not found:", userName)
+			return ctx.Status(404).JSON(fiber.Map{
+				"message": "user not found",
+			})
+		}
+		log.Println("Database error:", result.Error)
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "database error",
+		})
+	}
+
+	userResponse := entity.UserProfileResponse{
+		Name:           user.Name,
+		ID:             user.ID,
+		Username:       user.Username,
+		ProfilePicture: user.ProfilePicture,
+	}
+
+	// Mengembalikan data pengguna dalam format JSON
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    userResponse,
+		"status":  "200",
 	})
 }

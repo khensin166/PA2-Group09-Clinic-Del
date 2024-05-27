@@ -15,4 +15,11 @@ class PageNavigator {
     Navigator.pushAndRemoveUntil(
         ctx!, MaterialPageRoute(builder: (context) => page!), (route) => false);
   }
+
+  Future<void> toNextPage({required BuildContext ctx, required Widget page}) {
+    return Navigator.pushReplacement(
+      ctx,
+      MaterialPageRoute(builder: (context) => page),
+    );
+  }
 }

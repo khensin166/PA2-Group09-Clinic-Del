@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 
 class Article extends StatelessWidget {
   final String imagePath;
-  final String nameShop;
-  final String rating;
-  final String jamBuka;
+  final String title;
+  final String publishedAt;
   const Article(
       {Key? key,
       required this.imagePath,
-      required this.nameShop,
-      required this.rating,
-      required this.jamBuka})
+      required this.title,
+      required this.publishedAt})
       : super(key: key);
 
   @override
@@ -45,29 +43,20 @@ class Article extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          nameShop,
+                          title,
                         ),
                         SizedBox(
                           height: 10,
                         ),
                         Row(
                           children: [
-                            Icon(Icons.star, color: Colors.amber),
+                            Icon(Icons.calendar_today_outlined,
+                                color: Colors.grey),
                             SizedBox(
                               width: 5,
                             ),
                             Text(
-                              rating,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Icon(Icons.access_time, color: Colors.grey),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              jamBuka,
+                              publishedAt,
                             )
                           ],
                         )

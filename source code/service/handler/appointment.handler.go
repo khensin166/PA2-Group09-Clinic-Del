@@ -46,7 +46,7 @@ func AppointmentGetByAuth(ctx *fiber.Ctx) error {
 			"date":      appointment.Date,
 			"time":      appointment.Time,
 			"complaint": appointment.Complaint,
-			"approved":  appointment.Approved,
+			"approved":  appointment.ApprovedID,
 		}
 		responseAppointments = append(responseAppointments, responseAppointment)
 	}
@@ -193,7 +193,7 @@ func UpdateAppointment(ctx *fiber.Ctx) error {
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message": "Success",
+		"message": "success",
 		"data":    appointment,
 	})
 }

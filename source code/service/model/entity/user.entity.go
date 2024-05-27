@@ -31,20 +31,28 @@ type User struct {
 }
 
 type UserResponse struct {
-	ID       uint   `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
-	DormID   uint   `json:"dormID"`
-	Name     string `json:"name"`
-	Age      int    `json:"age"`
-	Weight   int    `json:"weight"`
-	Height   int    `json:"height"`
-	NIK      int    `json:"nik"`
-	Birthday string `json:"birthday"`
-	Gender   string `json:"gender"`
-	Address  string `json:"address"`
-	Phone    string `json:"phone"`
-	Username string `json:"username" gorm:"unique"`
-	Password string `json:"password" gorm:"column:password"`
-	Role     int    `json:"role"`
+	ID             uint    `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	DormID         uint    `json:"dormID"`
+	Name           string  `json:"name"`
+	Age            int     `json:"age"`
+	Weight         int     `json:"weight"`
+	Height         int     `json:"height"`
+	NIK            int     `json:"nik"`
+	Birthday       string  `json:"birthday"`
+	Gender         string  `json:"gender"`
+	Address        string  `json:"address"`
+	Phone          string  `json:"phone"`
+	Username       string  `json:"username" gorm:"unique"`
+	Password       string  `json:"password" gorm:"column:password"`
+	Role           int     `json:"role"`
+	ProfilePicture *string `json:"profilePicture"`
+}
+
+type UserProfileResponse struct {
+	Name           string  `json:"name"`
+	ID             uint    `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	Username       string  `json:"username" gorm:"unique"`
+	ProfilePicture *string `json:"profilePicture"`
 }
 
 func (UserResponse) TableName() string {

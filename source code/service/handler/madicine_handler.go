@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 )
 
-var PathImageProduct = "./Public"
+var PathImageProduct = "./Public/Product"
 
 func init() {
 	if _, err := os.Stat(PathImageProduct); os.IsNotExist(err) {

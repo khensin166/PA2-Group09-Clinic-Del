@@ -18,12 +18,13 @@ func ReminderGetAll(ctx *fiber.Ctx) error {
 	// Iterate through medicines and populate response with required fields
 	for i, reminder := range reminders {
 		response[i] = fiber.Map{
-			"id":          reminder.ID,
-			"date":        reminder.Date,
-			"time":        reminder.Time,
-			"frequency":   reminder.Frequency,
-			"duration":    reminder.Frequency,
-			"medicine_id": reminder.MedicineID,
+			"id":        reminder.ID,
+			"date_time": reminder.DateTime,
+			"name":      reminder.Name,
+			//"time":      reminder.Time,
+			"frequency": reminder.Frequency,
+			"duration":  reminder.Frequency,
+			//"medicine_id": reminder.MedicineID,
 		}
 	}
 
@@ -55,11 +56,11 @@ func CreateReminder(ctx *fiber.Ctx) error {
 		})
 	}
 	response := entity.Reminder{
-		ID:         reminder.ID,
-		Date:       reminder.Time,
-		Frequency:  reminder.Frequency,
-		Duration:   reminder.Duration,
-		MedicineID: reminder.MedicineID,
+		ID:        reminder.ID,
+		Name:      reminder.Name,
+		DateTime:  reminder.DateTime,
+		Frequency: reminder.Frequency,
+		Duration:  reminder.Duration,
 	}
 	return ctx.Status(200).JSON(fiber.Map{
 		"message": "success",
@@ -89,12 +90,15 @@ func UpdateReminder(ctx *fiber.Ctx) error {
 	}
 
 	// UPDATE USER DATA
-	if reminder.Date != "" {
-		reminder.Date = reminderRequest.Date
+	//if reminder.Date != "" {
+	//	reminder.Date = reminderRequest.Date
+	//}
+	//
+	if reminder.Name != "" {
+		reminder.Name = reminderRequest.Name
 	}
-
-	if reminder.Time != "" {
-		reminder.Time = reminderRequest.Time
+	if reminder.DateTime != "" {
+		reminder.DateTime = reminderRequest.DateTime
 	}
 
 	if reminder.Frequency != "" {
@@ -105,9 +109,9 @@ func UpdateReminder(ctx *fiber.Ctx) error {
 		reminder.Duration = reminderRequest.Duration
 	}
 
-	if reminder.MedicineID != 0 {
-		reminder.MedicineID = reminderRequest.MedicineID
-	}
+	//if reminder.MedicineID != 0 {
+	//	reminder.MedicineID = reminderRequest.MedicineID
+	//}
 
 	errUpdate := database.DB.Save(&reminder).Error
 

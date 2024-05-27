@@ -9,6 +9,7 @@ import (
 func RouteInit(r *fiber.App) {
 	// AUTHENTICATION
 	r.Post("/userLogin", handler.LoginHandler)
+	r.Static("/user/image", handler.PathImageUser)
 	r.Post("/userLogout", handler.LogoutHandler)
 
 	r.Post("/staffLogin", handler.StaffLoginHandler)
@@ -17,16 +18,19 @@ func RouteInit(r *fiber.App) {
 	// USER
 	r.Get("/users", middleware.StaffAuth, handler.UserHandlerGetAll)
 	r.Get("/user/:id", middleware.StaffAuth, handler.UserHandlerGetById)
+	r.Get("/user-profile", middleware.Auth, handler.UserHandlerProfile)
 	r.Post("/user", handler.CreateUser)
 	r.Put("/user/:id", middleware.Auth, handler.UpdateUser)
-	r.Delete("/user/:id", handler.DeleteUser)
+	r.Delete("/user/:id", middleware.Auth, handler.DeleteUser)
+	r.Put("/user-photo/:id", handler.UserHandlerProfilePicture)
+	r.Post("/user-photo", handler.UserHandlerGetProfilePicture)
 
 	// APPOINTMENT
 	r.Get("/appointments", handler.AppointmentGetAll)
 	r.Get("/appointments-auth", middleware.Auth, handler.AppointmentGetByAuth)
 	r.Post("/appointment", middleware.Auth, handler.CreateAppointment)
 	r.Put("/appointment/:id/approve", middleware.StaffAuth, handler.UpdateApprovedID)
-	r.Put("/appointment/:id", middleware.Auth, handler.UpdateAppointment)
+	r.Put("/update-appointment/:id", middleware.Auth, handler.UpdateAppointment)
 	r.Delete("/appointment/:id", middleware.Auth, handler.DeleteAppointment)
 
 	// STAFF
