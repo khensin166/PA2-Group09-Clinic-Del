@@ -20,6 +20,24 @@ func init() {
 		}
 	}
 }
+func MedicineHandlerGetById(ctx *fiber.Ctx) error {
+	medicineId := ctx.Params("id")
+	// mendeklarasikan variabel user dengan tipe data userEntity
+	var medicine entity.Medicine
+
+	// Query Statement dengan GORM
+	err := database.DB.First(&medicine, "id = ?", medicineId).Error
+	if err != nil {
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "medicine not found",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    medicine,
+	})
+}
 
 func MedicineGetAll(ctx *fiber.Ctx) error {
 	var medicines []entity.Medicine

@@ -116,7 +116,7 @@ func UserHandlerGetById(ctx *fiber.Ctx) error {
 	var user entity.User
 
 	// Query Statement dengan GORM
-	err := database.DB.First(&user, "?", userId).Error
+	err := database.DB.First(&user, "id = ?", userId).Error
 	if err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
 			"message": "user not found",

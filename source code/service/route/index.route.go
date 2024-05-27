@@ -27,11 +27,12 @@ func RouteInit(r *fiber.App) {
 
 	// APPOINTMENT
 	r.Get("/appointments", handler.AppointmentGetAll)
+	r.Get("/appointment/:id", handler.AppointmentGetByiD)
 	r.Get("/appointments-auth", middleware.Auth, handler.AppointmentGetByAuth)
 	r.Post("/appointment", middleware.Auth, handler.CreateAppointment)
 	r.Put("/appointment/:id/approve", middleware.StaffAuth, handler.UpdateApprovedID)
-	r.Put("/update-appointment/:id", middleware.Auth, handler.UpdateAppointment)
-	r.Delete("/appointment/:id", middleware.Auth, handler.DeleteAppointment)
+	r.Put("/appointment/:id", middleware.Auth, handler.UpdateAppointment)
+	r.Delete("/appointment/:id", handler.DeleteAppointment)
 
 	// STAFF
 	r.Get("/staffs", middleware.StaffAuth, handler.StaffHandlerGetAll)
@@ -41,6 +42,7 @@ func RouteInit(r *fiber.App) {
 	r.Delete("/staff/:id", middleware.StaffAuth, handler.DeleteStaff)
 
 	// MEDICINE
+	r.Get("/medicine/:id", middleware.StaffAuth, handler.MedicineHandlerGetById)
 	r.Get("/medicines", middleware.StaffAuth, handler.MedicineGetAll)
 	r.Post("/medicine", middleware.StaffAuth, handler.CreateMedicine)
 	r.Put("/medicine/:id", middleware.StaffAuth, handler.UpdateMedicine)
@@ -60,6 +62,7 @@ func RouteInit(r *fiber.App) {
 
 	// DORM
 	r.Get("/dorms", middleware.StaffAuth, handler.DormGetAll)
+	r.Get("/dorm/:id", middleware.StaffAuth, handler.DormGetById)
 	r.Post("/dorm", middleware.StaffAuth, handler.CreateDorm)
 	r.Put("/dorm/:id", middleware.StaffAuth, handler.UpdateDorm)
 	r.Delete("/dorm/:id", middleware.StaffAuth, handler.DeleteDorm)
