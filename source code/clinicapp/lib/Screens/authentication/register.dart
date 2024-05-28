@@ -52,94 +52,102 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Registrasi'),
+        title: const  Text('Registrasi'),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(15),
-        child: Column(
-          children: [
-            customTextField(
-              title: 'Nama Lengkap',
-              controller: _fullname,
-              hint: 'Jhon Doe',
-              obsecureText: false,
-              prefixIcon: Icons.account_circle_outlined,
-              isHidden: false,
-            ),
-            const SizedBox(height: 20),
-            customTextField(
-              title: 'Username',
-              controller: _username,
-              hint: 'JhonDoe12',
-              obsecureText: false,
-              prefixIcon: Icons.account_circle_outlined,
-            ),
-            const SizedBox(height: 20),
-            customTextField(
-              title: 'Password',
-              controller: _password,
-              hint: 'Terdiri dari huruf dan angka',
-              prefixIcon: Icons.lock,
-              obsecureText: true,
-              isHidden: _isHidden,
-              tootleFieldView: _tootleFieldView,
-            ),
-            const SizedBox(height: 20),
-            customTextField(
-              title: 'Konfirmasi Password',
-              controller: _passwordConfirmation,
-              hint: 'Konfirmasi password',
-              prefixIcon: Icons.lock,
-              obsecureText: true,
-              isHidden: _isHidden2,
-              tootleFieldView: _tootleFieldViewConfirmation,
-            ),
-            const SizedBox(height: 20),
-            GestureDetector(
-              onTap: _showDormDialog,
-              child: AbsorbPointer(
-                child: customTextField(
-                  title: 'Dormitory',
-                  controller: _dormController,
-                  hint: 'Pilih Dormitory',
-                  prefixIcon: Icons.home,
-                  obsecureText: false,
-                  isHidden: false,
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.symmetric(vertical: size.height / 20),
+          padding: const EdgeInsets.all(15),
+          child: Column(
+            children: [
+              Image.asset('assets/logo.png'),
+              const SizedBox(
+                height: 20,
+              ),
+              customTextField(
+                title: 'Nama Lengkap',
+                controller: _fullname,
+                hint: 'Jhon Doe',
+                obsecureText: false,
+                prefixIcon: Icons.account_circle_outlined,
+                isHidden: false,
+              ),
+              const SizedBox(height: 20),
+              customTextField(
+                title: 'Username',
+                controller: _username,
+                hint: 'JhonDoe12',
+                obsecureText: false,
+                prefixIcon: Icons.account_circle_outlined,
+              ),
+              const SizedBox(height: 20),
+              customTextField(
+                title: 'Password',
+                controller: _password,
+                hint: 'Terdiri dari huruf dan angka',
+                prefixIcon: Icons.lock,
+                obsecureText: true,
+                isHidden: _isHidden,
+                tootleFieldView: _tootleFieldView,
+              ),
+              const SizedBox(height: 20),
+              customTextField(
+                title: 'Konfirmasi Password',
+                controller: _passwordConfirmation,
+                hint: 'Konfirmasi password',
+                prefixIcon: Icons.lock,
+                obsecureText: true,
+                isHidden: _isHidden2,
+                tootleFieldView: _tootleFieldViewConfirmation,
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: _showDormDialog,
+                child: AbsorbPointer(
+                  child: customTextField(
+                    title: 'Dormitory',
+                    controller: _dormController,
+                    hint: 'Pilih Dormitory',
+                    prefixIcon: Icons.home,
+                    obsecureText: false,
+                    isHidden: false,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Consumer<AuthenticationProvider>(builder: (context, auth, child) {
-              WidgetsBinding.instance!.addPostFrameCallback((_) {
-                if (auth.resMessage != '') {
-                  showMessage(message: auth.resMessage, context: context);
-                  auth.clear();
-                }
-              });
-              return customButton(
-                text: "Registrasi",
-                tap: () {
-                  if (_username.text.isEmpty || _password.text.isEmpty) {
-                    showMessage(
-                        message: "Semua kolom harus diisi", context: context);
-                  } else {
-                    auth.registerUser(
-                      username: _username.text.trim(),
-                      password: _password.text.trim(),
-                      passwordConfirmation: _passwordConfirmation.text.trim(),
-                      fullname: _fullname.text.trim(),
-                      context: context,
-                      dorm: _selectedDormId,
-                    );
+              const SizedBox(height: 20),
+              Consumer<AuthenticationProvider>(builder: (context, auth, child) {
+                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                  if (auth.resMessage != '') {
+                    showMessage(message: auth.resMessage, context: context);
+                    auth.clear();
                   }
-                },
-                context: context,
-                status: auth.isLoading,
-              );
-            }),
-          ],
+                });
+                return customButton(
+                  text: "Registrasi",
+                  tap: () {
+                    if (_username.text.isEmpty || _password.text.isEmpty) {
+                      showMessage(
+                          message: "Semua kolom harus diisi", context: context);
+                    } else {
+                      auth.registerUser(
+                        username: _username.text.trim(),
+                        password: _password.text.trim(),
+                        passwordConfirmation: _passwordConfirmation.text.trim(),
+                        fullname: _fullname.text.trim(),
+                        context: context,
+                        dorm: _selectedDormId,
+                      );
+                    }
+                  },
+                  context: context,
+                  status: auth.isLoading,
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );

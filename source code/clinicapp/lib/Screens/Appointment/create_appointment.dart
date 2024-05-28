@@ -141,7 +141,7 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
                 return customButton(
                   status: addAppointment.getStatus,
                   context: context,
-                  text: 'Daftar',
+                  text: 'Kirim',
                   tap: () {
                     if (_complaint.text.isEmpty) {
                       showMessage(

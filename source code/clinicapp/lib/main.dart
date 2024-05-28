@@ -5,24 +5,30 @@ import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/image_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Reminder/add_reminder.dart';
+import 'package:clinicapp/Provider/Provider_Reminder/local_notification_service.dart';
 import 'package:clinicapp/Provider/view_models.dart/photo_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/update_profile_provider.dart';
-import 'package:clinicapp/Screens/Profile/profile.view.dart';
+import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  // pemanggilan fungsi notifikasi
   WidgetsFlutterBinding.ensureInitialized();
-  String token = await DatabaseProvider().getToken();
+  await LocalNotificationService.init();
+  // WidgetsFlutterBinding.ensureInitialized();
+  // String token = await DatabaseProvider().getToken();
   runApp(MyApp(
-    token: token,
-  ));
+      // token: token,
+      ));
 }
 
 class MyApp extends StatelessWidget {
-  final token;
-  const MyApp({Key? key, @required this.token});
+  // final token;
+  const MyApp({
+    Key? key,
+  });
 
   // This widget is the root of your application.
   @override
@@ -39,8 +45,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
         ChangeNotifierProvider(create: (_) => AddReminderProvider()),
       ],
-      child: const MaterialApp(
-        title: 'Flutter Demo',
+      child: MaterialApp(
+        title: 'Clinic App',
+        theme: ThemeData(
+            colorScheme: ColorScheme.fromSeed(seedColor: primaryColor),
+            useMaterial3: true),
         // home: (JwtDecoder.isExpired(token) == false) ? HomePage() : LoginPage(),
         // home: ProfileView(),
         home: SplashScreen(),

@@ -1,7 +1,10 @@
 import 'package:clinicapp/Provider/Provider_Reminder/add_reminder.dart';
+import 'package:clinicapp/Styles/colors.dart';
+import 'package:clinicapp/Styles/theme.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
 import 'package:clinicapp/Widgets/button.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CreateReminderPage extends StatefulWidget {
@@ -12,18 +15,21 @@ class CreateReminderPage extends StatefulWidget {
 }
 
 class _CreateReminderPageState extends State<CreateReminderPage> {
-  TimeOfDay? selectedTime;
   final TextEditingController _medicine = TextEditingController();
   final TextEditingController _time = TextEditingController();
-  int _timesPerDay = 1;
   int _days = 1;
+  TimeOfDay? _firstTime;
+  TimeOfDay? _secondTime;
+  TimeOfDay? _thirdTime;
+  DateTime _date = DateTime.now();
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   selectedTime = TimeOfDay.now();
-  //   _time.text = selectedTime!.format(context); // Set initial value for _time
-  // }
+  @override
+  void initState() {
+    super.initState();
+    _firstTime = const TimeOfDay(hour: 7, minute: 0); // Jam 7
+    _secondTime = const TimeOfDay(hour: 13, minute: 0); // Jam 13
+    _thirdTime = const TimeOfDay(hour: 19, minute: 0); // Jam 19
+  }
 
   @override
   void dispose() {
@@ -32,7 +38,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
     super.dispose();
   }
 
-  void _selectDays(BuildContext context) async {
+  Future<void> _selectDays(BuildContext context) async {
     final int? selectedDays = await showDialog<int>(
       context: context,
       builder: (BuildContext context) {
@@ -64,17 +70,22 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
     }
   }
 
-  Future<void> _selectTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext context, TimeOfDay? initialTime,
+      void Function(TimeOfDay) onTimePicked) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: initialTime ?? TimeOfDay.now(),
     );
     if (picked != null) {
-      setState(() {
-        selectedTime = picked;
-        _time.text = picked.format(context); // Update _time text
-      });
+      onTimePicked(picked);
     }
+  }
+
+  String formatTimeOfDay(TimeOfDay time) {
+    final now = DateTime.now();
+    final dt = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    final format = DateFormat('HH:mm'); // Define the desired format
+    return format.format(dt);
   }
 
   @override
@@ -82,6 +93,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tambah Pengingat Obat'),
+        backgroundColor: primaryColor,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -94,40 +106,142 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Berapa Kali Sehari*',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List.generate(5, (index) {
-                return ChoiceChip(
-                  label: Text('${index + 1}'),
-                  selected: _timesPerDay == index + 1,
-                  onSelected: (selected) {
-                    setState(() {
-                      _timesPerDay = index + 1;
-                    });
-                  },
-                );
-              }),
+              style: titleStyle.copyWith(color: black),
             ),
             const SizedBox(height: 10),
             const Text(
               'Kamu akan menerima notifikasi pengingat pada',
             ),
             ListTile(
-              title: Text(_time.text),
+              title: Text(
+                  '${formatTimeOfDay(_firstTime!)}, ${formatTimeOfDay(_secondTime!)}, ${formatTimeOfDay(_thirdTime!)}'),
               trailing: const Icon(Icons.edit),
-              onTap: () async {
-                await _selectTime(context);
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Container(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Waktu pengingat',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ListTile(
+                            title: Text(
+                              _firstTime != null
+                                  ? formatTimeOfDay(_firstTime!)
+                                  : 'Pilih waktu',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            leading: const Icon(Icons.timer_sharp),
+                            trailing: TextButton(
+                              onPressed: () async {
+                                await _selectTime(context, _firstTime,
+                                    (picked) {
+                                  setState(() {
+                                    _firstTime = picked;
+                                  });
+                                });
+                              },
+                              child: const Text(
+                                'Ubah',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            onTap: () async {
+                              await _selectTime(context, _firstTime, (picked) {
+                                setState(() {
+                                  _firstTime = picked;
+                                });
+                              });
+                            },
+                          ),
+                          const Divider(thickness: 2),
+                          const SizedBox(height: 20),
+                          ListTile(
+                            title: Text(
+                              _secondTime != null
+                                  ? formatTimeOfDay(_secondTime!)
+                                  : 'Pilih waktu',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            leading: const Icon(Icons.timer_sharp),
+                            trailing: TextButton(
+                              onPressed: () async {
+                                await _selectTime(context, _secondTime,
+                                    (picked) {
+                                  setState(() {
+                                    _secondTime = picked;
+                                  });
+                                });
+                              },
+                              child: const Text(
+                                'Ubah',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            onTap: () async {
+                              await _selectTime(context, _secondTime, (picked) {
+                                setState(() {
+                                  _secondTime = picked;
+                                });
+                              });
+                            },
+                          ),
+                          const Divider(thickness: 2),
+                          const SizedBox(height: 20),
+                          ListTile(
+                            title: Text(
+                              _thirdTime != null
+                                  ? formatTimeOfDay(_thirdTime!)
+                                  : 'Pilih waktu',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            leading: const Icon(Icons.timer_sharp),
+                            trailing: TextButton(
+                              onPressed: () async {
+                                await _selectTime(context, _thirdTime,
+                                    (picked) {
+                                  setState(() {
+                                    _thirdTime = picked;
+                                  });
+                                });
+                              },
+                              child: const Text(
+                                'Ubah',
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            onTap: () async {
+                              await _selectTime(context, _thirdTime, (picked) {
+                                setState(() {
+                                  _thirdTime = picked;
+                                });
+                              });
+                            },
+                          ),
+                          const Divider(thickness: 2),
+                        ],
+                      ),
+                    );
+                  },
+                );
               },
             ),
             const SizedBox(height: 16),
-            const Text(
+            Text(
               'Selama berapa hari?',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: titleStyle.copyWith(color: black),
             ),
             ListTile(
               title: Text('$_days Hari'),
@@ -135,18 +249,18 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               onTap: () => _selectDays(context),
             ),
             const SizedBox(height: 16),
-            ExpansionTile(
-              title: const Text('Petunjuk Penggunaan'),
-              children: const [
+            const ExpansionTile(
+              title: Text('Petunjuk Penggunaan'),
+              children: [
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text('Detail petunjuk penggunaan di sini...'),
                 ),
               ],
             ),
-            ExpansionTile(
-              title: const Text('Bagaimana cara penggunaannya'),
-              children: const [
+            const ExpansionTile(
+              title: Text('Bagaimana cara penggunaannya'),
+              children: [
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: Text('Detail cara penggunaan di sini...'),
@@ -156,7 +270,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
             const SizedBox(height: 16),
             Consumer<AddReminderProvider>(
                 builder: (context, addReminder, child) {
-              WidgetsBinding.instance!.addPostFrameCallback((_) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
                 if (addReminder.getResponse != '') {
                   showMessage(
                       message: addReminder.getResponse, context: context);
@@ -168,25 +282,24 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
               return customButton(
                 status: addReminder.getStatus,
                 context: context,
-                text: 'Daftar',
+                text: 'Tambah',
                 tap: () {
                   if (_medicine.text.isEmpty) {
                     showMessage(
                         message: "Nama Obat Harus diisi!", context: context);
-                  } else if (selectedTime == null) {
-                    showMessage(
-                        message: "Waktu Harus diisi!", context: context);
                   } else {
                     addReminder.addReminder(
-                        name: _medicine.text,
-                        time: selectedTime,
-                        frequency: _days,
-                        duration: _days,
-                        context: context);
+                      name: _medicine.text.trim(),
+                      first_time: formatTimeOfDay(_firstTime!),
+                      second_time: formatTimeOfDay(_secondTime!),
+                      third_time: formatTimeOfDay(_thirdTime!),
+                      start_date: _date,
+                      duration: _days,
+                    );
                   }
                 },
               );
-            })
+            }),
           ],
         ),
       ),

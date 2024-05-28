@@ -34,11 +34,11 @@ class _ArticlePageState extends State<ArticlePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: const [
                       Text(
-                        'John Doe',
+                        'Ria Apriani',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        'Mar 28, 2023 - Sports',
+                        'Jun 27, 2024 - Kesehatan',
                         style: TextStyle(color: Colors.grey),
                       ),
                     ],
@@ -48,7 +48,7 @@ class _ArticlePageState extends State<ArticlePage> {
               const SizedBox(height: 16),
               // Article title
               const Text(
-                'A Number of Problems at the Indonesian U20 World Cup',
+                '5 Manfaat Minum Madu Sebelum Tidur, Tak Sekedar Tidur',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -56,7 +56,7 @@ class _ArticlePageState extends State<ArticlePage> {
               ),
               const SizedBox(height: 8),
               // Image from assets
-              Image.asset('assets/health_article.jpg'),
+              Image.asset('assets/health_article3.jpg'),
               const SizedBox(height: 8),
               // Author and date
 
@@ -68,8 +68,7 @@ class _ArticlePageState extends State<ArticlePage> {
               const SizedBox(height: 16),
               // Article content
               const Text(
-                'The 2023 U20 World Championship is said to have been canceled in Indonesia. This was conveyed by football observer, Isaiah Oktavianus.\n\n'
-                'The man who is familiarly called Bung Yes is very sure that the 2023 U20 World Cup will not be held in Indonesia even though the government has not officially announced it.',
+                'Madu memiliki kandungan antioksidan dan kandungan lainnya yang berguna untuk mendukung kesehatan tubuh, termasuk saat diminum sebelum tidur. Beberapa manfaat minum madu sebelum tidur, yakni meningkatkan kualitas tidur, mencegah tekanan darah tinggi, meningkatkan sistem imun, dan menurunkan berat badan. Meskipun begitu, madu memiliki kandungan gula yang perlu dibatasi konsumsinya karena bisa meningkatkan risiko obesitas, inflamasi, resistensi insulin, gangguan liver, dan penyakit jantung. Untuk lebih jelasnya, ketahui beberapa manfaat minum madu sebelum tidur dan efek samping yang mungkin dialami berikut ini.Artikel ini telah tayang di Kompas.com dengan judul "5 Manfaat Minum Madu Sebelum Tidur, Tak Sekadar Sehat Klik untuk baca',
                 style: TextStyle(fontSize: 16),
               ),
               ElevatedButton(

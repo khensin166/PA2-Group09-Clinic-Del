@@ -63,14 +63,14 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
           Container(
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10), color: amber),
-            margin: EdgeInsets.all(10),
+            margin: const EdgeInsets.all(10),
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: TextButton.icon(
               onPressed: () {
                 PageNavigator(ctx: context)
                     .nextPage(page: const EditProfilePage());
               },
-              icon: Icon(
+              icon: const Icon(
                 Icons.edit,
                 color: Colors.white,
               ),

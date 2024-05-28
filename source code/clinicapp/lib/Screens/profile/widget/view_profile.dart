@@ -1,4 +1,3 @@
-import 'package:clinicapp/Constants/url.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -8,6 +7,11 @@ class ViewProfile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PhotoView(imageProvider: NetworkImage(photoProfile));
+    return GestureDetector(
+      child: PhotoView(imageProvider: NetworkImage(photoProfile)),
+      onTap: () {
+        Navigator.pop(context);
+      },
+    );
   }
 }

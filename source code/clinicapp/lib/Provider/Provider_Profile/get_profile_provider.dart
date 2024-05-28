@@ -1,10 +1,8 @@
 import 'dart:convert';
 import 'package:clinicapp/Constants/url.dart';
-import 'package:clinicapp/Model/photo_profile_model.dart';
 import 'package:clinicapp/Model/user_model.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
 import 'package:http/http.dart' as http;
-import 'package:image_picker/image_picker.dart';
 
 class GetUserProfile {
   final url = AppUrl.userProfileUrl;

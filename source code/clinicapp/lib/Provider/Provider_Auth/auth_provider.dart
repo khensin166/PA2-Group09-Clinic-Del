@@ -194,13 +194,13 @@ class AuthenticationProvider extends ChangeNotifier {
   String getGreeting() {
     final hour = DateTime.now().hour;
     if (hour < 12) {
-      return 'Selamat pagi';
+      return 'Selamat Pagi';
     } else if (hour < 17) {
-      return 'Selamat siang';
+      return 'Selamat Siang';
     } else if (hour < 19) {
-      return 'Selamat sore';
+      return 'Selamat Sore';
     } else {
-      return 'Selamat malam';
+      return 'Selamat Malam';
     }
   }
 

@@ -74,7 +74,7 @@ class MainWrapperState extends State<MainWrapper> {
             index: _selectedIndex,
             children: const <Widget>[
               /// First Route
-              Home(),
+              Home(), 
 
               /// Second Route
               History(),

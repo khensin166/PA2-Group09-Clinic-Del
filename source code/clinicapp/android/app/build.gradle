@@ -29,6 +29,8 @@ android {
     ndkVersion flutter.ndkVersion
 
     compileOptions {
+        // untuk notifikasi
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -46,6 +48,9 @@ android {
         applicationId "com.example.clinicapp"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+
+        // untuk fungsi notifikasi
+        multiDexEnabled true
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
@@ -65,4 +70,7 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    //  untuk notifikasi
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+}

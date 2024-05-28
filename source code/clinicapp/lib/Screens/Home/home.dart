@@ -5,6 +5,7 @@ import 'package:clinicapp/Provider/Provider_Profile/get_profile_provider.dart';
 import 'package:clinicapp/Screens/Article/article.dart';
 import 'package:clinicapp/Screens/Notification/notification.dart';
 import 'package:clinicapp/Styles/colors.dart';
+import 'package:clinicapp/Styles/theme.dart';
 import 'package:clinicapp/Widgets/fields_search.dart';
 import 'package:flutter/material.dart';
 import '../Appointment/appointment.dart'; // Pastikan untuk mengimpor halaman appointment jika belum
@@ -113,11 +114,8 @@ class _HomePageState extends State<HomePage> {
                                               // Kosongkan onTap agar tidak dapat diklik
                                             },
                                             child: Text(
-                                              '${AuthenticationProvider().getGreeting()}👋\n$name',
-                                              style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                              ),
+                                              '👋 ${AuthenticationProvider().getGreeting()}\n$name',
+                                              style: titleStyle,
                                             ),
                                           ),
                                         ],
@@ -217,17 +215,40 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(
                         height: 15,
                       ),
-                      GestureDetector(
-                          onTap: () {
-                            PageNavigator(ctx: context)
-                                .nextPage(page: ArticlePage());
-                          },
-                          child: Article(
-                              imagePath: 'assets/health_article.jpg',
-                              title: "The 25 Healthiest Fruits You Can Eat",
-                              publishedAt: "Jun 10, 2023")
-
-                          )
+                      Column(
+                        children: [
+                          GestureDetector(
+                              onTap: () {
+                                PageNavigator(ctx: context)
+                                    .nextPage(page: ArticlePage());
+                              },
+                              child: const Article(
+                                  imagePath: 'assets/health_article3.jpg',
+                                  title: "5 Manfaat Madu sebelum Tidur",
+                                  publishedAt: "Jun 27, 2024")),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          GestureDetector(
+                              onTap: () {
+                                PageNavigator(ctx: context)
+                                    .nextPage(page: ArticlePage());
+                              },
+                              child: Article(
+                                  imagePath: 'assets/health_article.jpg',
+                                  title: "The 25 Healthiest Fruits You Can Eat",
+                                  publishedAt: "Jun 10, 2023")),
+                          GestureDetector(
+                              onTap: () {
+                                PageNavigator(ctx: context)
+                                    .nextPage(page: ArticlePage());
+                              },
+                              child: Article(
+                                  imagePath: 'assets/health_article2.jpg',
+                                  title: "The 25 Healthiest Fruits You Can Eat",
+                                  publishedAt: "Jun 10, 2023"))
+                        ],
+                      ),
                     ],
                   )),
             ],

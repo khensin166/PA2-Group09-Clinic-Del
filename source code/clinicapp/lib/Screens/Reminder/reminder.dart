@@ -25,7 +25,7 @@ class _ReminderPageState extends State<ReminderPage> {
       appBar: AppBarCustom(
         title: 'Pengingat Obat',
         backgroundColor: primaryColor,
-        nextPage: HomePage(),
+        nextPage: const HomePage(),
         leadingIcon: Icons.arrow_back,
       ),
       body: Column(

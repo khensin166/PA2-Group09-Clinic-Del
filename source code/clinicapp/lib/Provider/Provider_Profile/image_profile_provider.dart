@@ -50,7 +50,7 @@ class ProfileImageProvider extends ChangeNotifier {
         _profile = UserModel.fromJson(json.decode(data));
         notifyListeners();
         await fetchProfilePhoto();
-        PageNavigator(ctx: context).nextPage(page: ProfilePage());
+        // PageNavigator(ctx: context).nextPage(page: ProfilePage());
         return _profile;
       } else {
         var errorData = await response.stream.bytesToString();

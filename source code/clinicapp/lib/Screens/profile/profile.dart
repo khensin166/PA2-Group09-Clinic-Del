@@ -25,11 +25,22 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   UserModel user = UserModel();
+  late ProfileImageProvider profileProvider;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    profileProvider = Provider.of<ProfileImageProvider>(context, listen: false);
+  }
+
+  @override
+  void dispose() {
+    // Sekarang aman menggunakan profileProvider di sini
+    super.dispose();
+  }
 
   Future<void> _refreshProfile() async {
     try {
-      final profileProvider =
-          Provider.of<ProfileImageProvider>(context, listen: false);
       await profileProvider.fetchProfilePhoto();
       setState(() {
         user = profileProvider.profile!;
@@ -45,66 +56,66 @@ class _ProfilePageState extends State<ProfilePage> {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
-        return Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const Text(
-                'Photo Profile',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text(
+                  'Photo Profile',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  Navigator.pop(context);
-                  final ImagePicker picker = ImagePicker();
-                  final XFile? image = await picker.pickImage(
-                    source: ImageSource.gallery,
-                    imageQuality: 50,
-                  );
-                  if (image != null) {
-                    Uint8List bytes = await image.readAsBytes();
-                    final profileImageProvider =
-                        Provider.of<ProfileImageProvider>(context,
-                            listen: false);
-                    profileImageProvider
-                        .uploadImage(bytes, image.name, context)
-                        .then((value) async {
-                      if (value != null) {
-                        await profileImageProvider.fetchProfilePhoto();
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () async {
+                    Navigator.pop(context);
+                    final ImagePicker picker = ImagePicker();
+                    final XFile? image = await picker.pickImage(
+                      source: ImageSource.gallery,
+                      imageQuality: 50,
+                    );
+                    if (image != null) {
+                      Uint8List bytes = await image.readAsBytes();
+                      profileProvider
+                          .uploadImage(bytes, image.name, context)
+                          .then((value) async {
+                        if (value != null) {
+                          await profileProvider.fetchProfilePhoto();
+                          // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          //   content: Text('Foto profil berhasil diperbarui'),
+                          // ));
+                          // Navigator.pop(context);
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text('Gagal memperbaharui foto profil'),
+                          ));
+                          Navigator.pop(context);
+                        }
+                      }).onError((error, stackTrace) {
+                        print(error.toString());
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Foto profil berhasil diperbarui'),
+                          content:
+                              Text('Gagal memperbaharui foto profil: $error'),
                         ));
-                        Navigator.pop(context);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Gagal memperbaharui foto profil'),
-                        ));
-                        Navigator.pop(context);
-                      }
-                    }).onError((error, stackTrace) {
-                      print(error.toString());
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content:
-                            Text('Gagal memperbaharui foto profil: $error'),
-                      ));
-                    });
-                  }
-                },
-                child: Text('Ganti Photo Profile'),
-              ),
-              const SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Close'),
-              ),
-            ],
+                      });
+                    }
+                  },
+                  child: Text('Ganti Photo Profile'),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Close'),
+                ),
+              ],
+            ),
           ),
         );
       },
@@ -113,8 +124,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    final profileImageProvider = Provider.of<ProfileImageProvider>(context);
-
     return Scaffold(
       appBar: AppBarCustom(
         title: 'Profile',
@@ -135,8 +144,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 user = snapshot.data!;
 
                 // Periksa jika ada pembaruan profil
-                if (profileImageProvider.profile != null) {
-                  user = profileImageProvider.profile!;
+                if (profileProvider.profile != null) {
+                  user = profileProvider.profile!;
                 }
 
                 return Column(

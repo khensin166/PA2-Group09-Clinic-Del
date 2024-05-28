@@ -25,7 +25,7 @@ class _OnboardingState extends State<Onboarding> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset('assets/logo.png'),
-            SizedBox(height: size.height / 50),
+            SizedBox(height: size.height / 60),
             const Text(
               "Let's get started",
               style: TextStyle(fontWeight: FontWeight.w800, fontSize: 22),

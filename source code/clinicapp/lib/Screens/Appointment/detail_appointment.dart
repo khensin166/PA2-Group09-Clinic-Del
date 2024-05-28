@@ -1,7 +1,6 @@
 import 'package:clinicapp/Provider/Provider_Appointment/delete_appointment_provider.dart';
 import 'package:clinicapp/Screens/Appointment/edit_appointment.dart';
 import 'package:clinicapp/Styles/colors.dart';
-import 'package:clinicapp/Utils/router.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
 import 'package:clinicapp/Widgets/app_bar.dart';
 import 'package:clinicapp/Widgets/confirmation_dialog.dart';

@@ -1,13 +1,5 @@
-import 'package:clinicapp/Screens/Reminder/reminder_create.dart';
 import 'package:clinicapp/Styles/colors.dart';
-import 'package:clinicapp/Styles/theme.dart';
-import 'package:clinicapp/Utils/router.dart';
-import 'package:clinicapp/Widgets/app_bar.dart';
-import 'package:clinicapp/Widgets/button_add.dart';
-import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 
 class HistoryPage extends StatefulWidget {
   const HistoryPage({super.key});
@@ -17,89 +9,80 @@ class HistoryPage extends StatefulWidget {
 }
 
 class _HistoryPageState extends State<HistoryPage> {
-  DateTime _selectedDate = DateTime.now();
+  final List<Map<String, String>> history = [
+    {
+      'title': 'Demam Tinggi',
+      'date': 'Jul 10, 2023',
+      'prescription':
+          'Sanmol 500 grm (3x1)\nNeurobion Biru (3 x 1)\nParacetamol (3 x 1)',
+    },
+    {
+      'title': 'Demam Tinggi',
+      'date': 'Jul 10, 2023',
+      'prescription':
+          'Sanmol 500 grm (3x1)\nNeurobion Biru (3 x 1)\nParacetamol (3 x 1)',
+    },
+    {
+      'title': 'Demam Tinggi',
+      'date': 'Jul 10, 2023',
+      'prescription':
+          'Sanmol 500 grm (3x1)\nNeurobion Biru (3 x 1)\nParacetamol (3 x 1)',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarCustom(
-            title: 'Riwayat Penyakit', backgroundColor: primaryColor),
-        body: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: 20, right: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      appBar: AppBar(
+        title: const Text('Riwayat Penyakit'),
+        backgroundColor: primaryColor,
+      ),
+      body: ListView.builder(
+        itemCount: history.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          DateFormat.yMMMMd().format(DateTime.now()),
-                          style: subHeadingStyle,
-                        ),
-                        Text(
-                          "Today",
-                          style: headingStyle,
-                        )
-                      ],
+                  Text(
+                    history[index]['title']!,
+                    style: const TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  AddButton(label: "Tambah Pengingat Obat", onTap: () => null)
+                  const SizedBox(height: 8.0),
+                  Text(
+                    history[index]['date']!,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  const Text(
+                    'Resep Obat :',
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Text(
+                    history[index]['prescription']!,
+                    style: const TextStyle(
+                      fontSize: 14.0,
+                    ),
+                  ),
                 ],
               ),
             ),
-            Container(
-              margin: const EdgeInsets.only(top: 20, left: 20),
-              child: DatePicker(
-                DateTime.now(),
-                height: 100,
-                width: 80,
-                initialSelectedDate: DateTime.now(),
-                selectionColor: primaryColor,
-                selectedTextColor: Colors.white,
-                dateTextStyle: GoogleFonts.lato(
-                    textStyle:
-                        TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                onDateChange: (date) {
-                  // simpan date ke dalam variable
-                  _selectedDate = date;
-                },
-              ),
-            ),
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(DateFormat.yMMMMd().format(DateTime.now())),
-                    const Icon(
-                      Icons.medication,
-                      size: 100,
-                      color: Colors.blue,
-                    ),
-                    const SizedBox(height: 20),
-                    Text(
-                      'Tidak ada pengingat obat!',
-                      style:
-                          const TextStyle(fontSize: 18, color: Colors.black54),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        PageNavigator(ctx: context)
-                            .nextPage(page: const CreateReminderPage());
-                        // Add your onPressed code here!
-                      },
-                      child: const Text('Tambahkan Pengingat Obat'),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ));
+          );
+        },
+      ),
+    );
   }
 }
