@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 
-const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
+const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, reportId }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const [productDetails, setProductDetails] = useState(null);
+    const [productDetails, setReportDetails] = useState(null);
 
-    const fetchProductDetails = async () => {
+    const fetchReportDetails = async () => {
         setIsLoading(true);
         try {
-            if (typeof medicineId !== 'string' && typeof medicineId !== 'number') {
-                throw new Error('Invalid medicineId');
-            }
-
-            const url = `${apiEndpoint}/${medicineId}`;
+            const url = `${apiEndpoint}/${reportId}`;
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
@@ -25,69 +21,40 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
             }
 
             const data = await response.json();
-            setProductDetails(data.data);
-            console.log(data);
+            setReportDetails(data.data);
         } catch (error) {
-            console.error('Error fetching product details:', error.message);
+            console.error('Error fetching report details:', error.message);
         } finally {
             setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        if (isOpen && medicineId) {
-            fetchProductDetails();
+        if (isOpen && reportId) {
+            fetchReportDetails();
         }
-
-        const handleKeyDown = (e) => {
-            if (e.key === 'Escape') {
-                onClose();
-            }
-        };
-
-        if (isOpen) {
-            window.addEventListener('keydown', handleKeyDown);
-        } else {
-            window.removeEventListener('keydown', handleKeyDown);
-        }
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, [isOpen, medicineId]);
+    }, [isOpen, reportId]);
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "image") {
-            setProductDetails((prevDetails) => ({
-                ...prevDetails,
-                image: files[0],
-            }));
-        } else {
-            setProductDetails((prevDetails) => ({
-                ...prevDetails,
-                [name]: value,
-            }));
-        }
+        const { name, value } = e.target;
+        setReportDetails((prevDetails) => ({
+            ...prevDetails,
+            [name]: value,
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         try {
-            const url = `${apiEndpoint}/${medicineId}`;
-            const formData = new FormData();
-
-            for (const key in productDetails) {
-                formData.append(key, productDetails[key]);
-            }
-
+            const url = `${apiEndpoint}/${reportId}`;
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
                     'Authorization': token,
+                    'Content-Type': 'application/json'
                 },
-                body: formData,
+                body: JSON.stringify(reportDetails),
             });
 
             if (!response.ok) {
@@ -95,18 +62,19 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
             }
 
             const data = await response.json();
-            console.log('Product updated:', data);
+            console.log('Report updated:', data);
             onClose();
             window.location.reload();
 
         } catch (error) {
-            console.error('Error updating product details:', error.message);
+            console.error('Error updating report details:', error.message);
         } finally {
             setIsLoading(false);
         }
     };
 
     if (!isOpen) return null;
+
 
     return (
         <div
@@ -149,16 +117,16 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                                     htmlFor="name"
                                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                 >
-                                    Name
+                                    Disease
                                 </label>
                                 <input
                                     type="text"
                                     name="name"
                                     id="name"
-                                    defaultValue={productDetails?.name || ""}
+                                    defaultValue={productDetails?.disease || ""}
                                     onChange={handleChange}
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    placeholder="Ex. Apple iMac 27“"
+                                    placeholder="none"
                                 />
                             </div>
                             <div>
@@ -247,4 +215,3 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
 };
 
 export default ModalEdit;
-    

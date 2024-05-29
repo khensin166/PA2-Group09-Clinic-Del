@@ -31,7 +31,6 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
 
             const data = await response.json();
             setProductDetails(data.data);
-            console.log(data);
         } catch (error) {
             console.error('Error fetching product details:', error.message);
         } finally {
@@ -84,18 +83,24 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
         });
     };
 
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
+
         try {
             const url = `${apiEndpoint}/${medicineId}`;
-            const formData = new FormData();
 
-            for (const key in productDetails) {
-                formData.append(key, productDetails[key]);
+            // Make a copy of productDetails to avoid mutating state directly
+            const updatedProductDetails = { ...productDetails };
+
+            // Convert SizeCircumference to an integer if it exists
+            if (updatedProductDetails.SizeCircumference) {
+                updatedProductDetails.SizeCircumference = parseInt(updatedProductDetails.SizeCircumference, 10);
             }
+
+            // Convert updatedProductDetails to JSON string
+            const body = JSON.stringify(updatedProductDetails);
 
             const response = await fetch(url, {
                 method: 'PUT',
@@ -103,7 +108,7 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                     'Authorization': `${token}`,
                     'Content-Type': 'application/json'
                 },
-                body: formData,
+                body: body,
             });
 
             if (!response.ok) {
@@ -287,7 +292,7 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                                         placeholder="none"
                                     />
                                 </div>
-                                
+
 
                             </div>
                             <div className="flex items-center space-x-4">

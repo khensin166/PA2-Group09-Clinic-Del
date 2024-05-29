@@ -59,6 +59,7 @@ func RouteInit(r *fiber.App) {
 
 	// DOCTOR REPORT
 	r.Get("/doctor-report-approved", middleware.StaffAuth, handler.GetUserDataForReportDoctor)
+	r.Get("/doctor-report/:id", middleware.StaffAuth, handler.DoctorReportGetById)
 	r.Get("/doctor-reports", middleware.StaffAuth, handler.DoctorReportGetAll)
 	r.Post("/doctor-report", middleware.StaffAuth, handler.CreateDoctorReport)
 	r.Put("/doctor-report/:id", middleware.StaffAuth, handler.UpdateDoctorReport)

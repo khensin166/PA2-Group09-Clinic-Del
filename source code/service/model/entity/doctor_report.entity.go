@@ -27,6 +27,14 @@ type DoctorReportResponse struct {
 	StaffDoctorID uint   `json:"staff_doctor_id"`
 }
 
+type ReportRequest struct {
+	StaffDoctorID *uint      `json:"staff_doctor_id"`
+	Disease       *string    `json:"disease"`
+	NurseReportID *uint      `json:"nurse_report_id"`
+	Medicines     []Medicine `json:"medicines"`
+	Amount        *int       `json:"amount"`
+}
+
 func (d *DoctorReport) TableName() string {
 	return "doctor_reports"
 }

@@ -37,7 +37,7 @@ function Table() {
     };
     const closeDelete = () => setIsDeleteOpen(false);
 
-    const token = localStorage.getItem('token'); 
+    const token = localStorage.getItem('token');
 
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +139,7 @@ function Table() {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" className="p-4">ID</th>
-                                        <th scope="col" className="p-4">Amount</th>
+                                        <th scope="col" className="p-4">Medicine Name</th>
                                         <th scope="col" className="p-4">Disease</th>
                                         <th scope="col" className="p-4">Medicine</th>
                                         <th scope="col" className="p-4">Nurse Report For</th>
@@ -163,7 +163,11 @@ function Table() {
                                                     {report.id}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {report.amount}
+                                                    <ul>
+                                                        {report.Medicines.map((medicine) => (
+                                                            <li key={medicine.id}> - {medicine.name}</li>
+                                                        ))}
+                                                    </ul>
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     {report.disease}
@@ -172,34 +176,28 @@ function Table() {
                                                     kosong
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                   <a href="" className='text-blue-500 justify-center'>{report.nurse_report.patient.name}</a> 
+                                                    <a href="" className='text-blue-500 justify-center'>{report.nurse_report.patient.name}</a>
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {/* {report.staffDoctor.name} */}
+                                                    {report.staffDoctor.name}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                                     <div className="flex items-center space-x-4 justify-center">
                                                         <button
-                                                            onClick={() => openPreview(report.nurse_id)}
+                                                            onClick={() => openEdit(report.id)} // Use the correct ID here
                                                             type="button"
                                                             className="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                                                         >
                                                             Edit
                                                         </button>
                                                         <button
-                                                            onClick={() => openEdit(report.nurse_id)}
+                                                            onClick={() => openPreview(report.id)} // Use the correct ID here
                                                             type="button"
                                                             className="py-2 px-3 flex items-center text-sm font-medium text-center text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                                         >
                                                             Preview
                                                         </button>
-                                                        <button
-                                                            onClick={() => openDelete(report.nurse_id)}
-                                                            type="button"
-                                                            className="flex items-center text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                                                        >
-                                                            Delete
-                                                        </button>
+
                                                     </div>
                                                 </td>
                                             </tr>
@@ -249,15 +247,12 @@ function Table() {
 
                 </div >
             </section >
-            {/* End block */}
 
-
-       
             {/* Update modal */}
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                apiEndpoint="http://127.0.0.1:8080/doctor-report"
                 token={token}
                 medicineId={editId}
             >
@@ -267,13 +262,10 @@ function Table() {
             < ReadProductModal
                 isOpen={isPreviewOpen}
                 onClose={closePreview}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                apiEndpoint="http://127.0.0.1:8080/doctor-report"
                 medicineId={previewId}
                 token={token}
             />
-
-        
-
         </>
     );
 }

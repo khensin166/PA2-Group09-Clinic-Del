@@ -12,6 +12,25 @@ import (
 	"log"
 )
 
+func DoctorReportGetById(ctx *fiber.Ctx) error {
+	doctorReportId := ctx.Params("id")
+	// mendeklarasikan variabel user dengan tipe data userEntity
+	var doctorReport entity.DoctorReport
+
+	// Query Statement dengan GORM
+	err := database.DB.Preload("NurseReport").Preload("StaffDoctor").Preload("NurseReport.Patient").Preload("NurseReport.StaffNurse").Preload("Medicines").First(&doctorReport, "id = ?", doctorReportId).Error
+	if err != nil {
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "doctor report not found",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    doctorReport,
+	})
+}
+
 func DoctorReportGetAll(ctx *fiber.Ctx) error {
 	var doctorReports []entity.DoctorReport
 
@@ -118,50 +137,133 @@ func CreateDoctorReport(ctx *fiber.Ctx) error {
 }
 
 func UpdateDoctorReport(ctx *fiber.Ctx) error {
-	reportRequest := new(entity.DoctorReportResponse)
-	if err := ctx.BodyParser(reportRequest); err != nil {
-		return ctx.Status(400).JSON(fiber.Map{"message": "Bad request"})
+	// Parse report ID from URL
+	reportID := ctx.Params("id")
+	if reportID == "" {
+		return ctx.Status(400).JSON(fiber.Map{"message": "Missing report ID"})
+	}
+
+	// Parse the JSON input
+	var reportRequest entity.ReportRequest
+	if err := ctx.BodyParser(&reportRequest); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{"message": "Bad request", "error": err.Error()})
+	}
+
+	// Validate the input
+	validate := validator.New()
+	if err := validate.Struct(reportRequest); err != nil {
+		return ctx.Status(400).JSON(fiber.Map{
+			"message": "failed",
+			"error":   err.Error(),
+		})
+	}
+
+	// Authorization
+	token := ctx.Get("Authorization")
+	if token == "" {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated",
+		})
+	}
+
+	claims, err := utils.DecodeToken(token)
+	if err != nil {
+		return ctx.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "unauthenticated err",
+		})
+	}
+
+	role := claims["role"].(float64)
+	if role == 1 {
+		return ctx.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"message": "Nurse can't update the data",
+		})
 	}
 
 	var report entity.DoctorReport
 
-	reportID := ctx.Params("id")
-	// CHECK AVAILABLE REPORT
-	err := database.DB.First(&report, "id = ?", reportID).Error
-	if err != nil {
+	// Check if the report exists
+	if err := database.DB.First(&report, "id = ?", reportID).Error; err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
 			"message": "DoctorReport not found",
 		})
 	}
 
-	// UPDATE REPORT DATA
-	if reportRequest.Disease != "" {
-		report.Disease = &reportRequest.Disease
+	// Update report fields
+	if reportRequest.Disease != nil {
+		report.Disease = reportRequest.Disease
 	}
-	if reportRequest.NurseReportID != 0 {
-		report.NurseReportID = &reportRequest.NurseReportID
+	if reportRequest.NurseReportID != nil {
+		report.NurseReportID = reportRequest.NurseReportID
 	}
-
-	if reportRequest.StaffDoctorID != 0 {
-		report.StaffDoctorID = &reportRequest.StaffDoctorID
-	}
-
-	if reportRequest.Disease != "" {
-		report.Disease = &reportRequest.Disease
+	if reportRequest.StaffDoctorID != nil {
+		report.StaffDoctorID = reportRequest.StaffDoctorID
 	}
 
-	errUpdate := database.DB.Save(&report).Error
-
-	if errUpdate != nil {
+	// Handle medicines update
+	// Clear existing medicines association
+	if err := database.DB.Model(&report).Association("Medicines").Clear(); err != nil {
 		return ctx.Status(500).JSON(fiber.Map{
-			"message": "Internal server error",
+			"message": "failed to clear medicines association",
+			"error":   err.Error(),
 		})
 	}
 
-	return ctx.Status(200).JSON(fiber.Map{
-		"message": "Success",
-		"data":    report,
-	})
+	// Update medicines and their stock
+	var totalMedicineAmount int
+	for _, medicine := range reportRequest.Medicines {
+		var dbMedicine entity.Medicine
+		if err := database.DB.First(&dbMedicine, medicine.ID).Error; err != nil {
+			return ctx.Status(400).SendString("Obat tidak ditemukan")
+		}
+
+		if dbMedicine.Amount < medicine.Amount {
+			return ctx.Status(400).SendString("Stok obat tidak cukup")
+		}
+
+		dbMedicine.Amount -= medicine.Amount
+		if err := database.DB.Save(&dbMedicine).Error; err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"message": "failed to update medicine stock",
+				"error":   err.Error(),
+			})
+		}
+
+		if err := database.DB.Model(&report).Association("Medicines").Append(&dbMedicine); err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"message": "failed to associate medicine with doctor report",
+				"error":   err.Error(),
+			})
+		}
+
+		// Calculate total medicine amount taken
+		totalMedicineAmount += medicine.Amount
+	}
+
+	// Save the updated report
+	if err := database.DB.Save(&report).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "Internal server error",
+			"error":   err.Error(),
+		})
+	}
+
+	// Load relations
+	if err := database.DB.Preload("NurseReport").Preload("StaffDoctor").Preload("Medicines").First(&report, report.ID).Error; err != nil {
+		return ctx.Status(500).JSON(fiber.Map{
+			"message": "failed to load relations",
+			"error":   err.Error(),
+		})
+	}
+
+	// Prepare response data with total medicine amount taken
+	responseData := fiber.Map{
+		"message":             "Success",
+		"data":                report,
+		"totalMedicineAmount": totalMedicineAmount,
+	}
+
+	return ctx.Status(200).JSON(responseData)
 }
 
 func DeleteDoctorReport(ctx *fiber.Ctx) error {
@@ -184,6 +286,7 @@ func DeleteDoctorReport(ctx *fiber.Ctx) error {
 		"message": "DoctorReport deleted successfully",
 	})
 }
+
 func GetUserDataForReportDoctor(ctx *fiber.Ctx) error {
 	var nurseReports []entity.NurseReport
 

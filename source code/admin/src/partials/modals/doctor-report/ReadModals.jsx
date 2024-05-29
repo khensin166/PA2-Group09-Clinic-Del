@@ -13,6 +13,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
             }
 
             const url = `${apiEndpoint}/${medicineId}`;
+            console.log(url)
             const response = await fetch(url, {
                 headers: {
                     'Authorization': token,
@@ -86,7 +87,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                     <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <div className="flex justify-between mb-4 rounded-t sm:mb-5">
                             <div className="text-lg text-gray-900 md:text-xl dark:text-white">
-                                <h3 className="font-semibold">MEDICINE</h3>
+                                <h3 className="font-semibold">Doctor Report</h3>
                             </div>
                             <div>
                                 <button
@@ -117,26 +118,39 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                             <dl>
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Medicine Name</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.name || 'Product Name'}
+                                    {productDetails?.Medicines.map((medicine) => (
+                                        <li key={medicine.id}>{medicine.name}</li>
+                                    ))}
                                 </dd>
 
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Amount</dt>
-                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.amount || 'Product amount'}
-                                </dd>
+
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Expired</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.expired || 'Product expiry date'}
+                                    {productDetails?.disease || 'none'}
+                                </dd>
+
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Image</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.Medicines.map((medicine) => (
+                                        <li key={medicine.id}>{medicine.image}</li>
+                                    ))}
+                                </dd>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Nurse Report ID</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.nurse_report.id || 'none'}
+                                </dd>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Nurse Approve Name</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.nurse_report.staff.name || 'none'}
+                                </dd>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Staff Doctor Name</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.staffDoctor.name || 'none'}
                                 </dd>
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Created at</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.created_at || 'Product details here...'}
+                                    {productDetails?.created_at || 'none'}
                                 </dd>
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Image</dt>
-                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.image || 'Product image'}
-                                </dd>
-
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Updated at</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
                                     {productDetails?.updated_at || 'Product category'}
