@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
-    const [isChecked, setIsChecked] = useState(false);
 
     const fetchProductDetails = async () => {
         setIsLoading(true);

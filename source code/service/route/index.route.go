@@ -59,9 +59,9 @@ func RouteInit(r *fiber.App) {
 
 	// DOCTOR REPORT
 	r.Get("/doctor-report-approved", middleware.StaffAuth, handler.GetUserDataForReportDoctor)
+	r.Put("/doctor-report/:id/approve", middleware.StaffAuth, handler.UpdateApprovedDoctorID)
 	r.Get("/doctor-report/:id", middleware.StaffAuth, handler.DoctorReportGetById)
 	r.Get("/doctor-reports", middleware.StaffAuth, handler.DoctorReportGetAll)
-	r.Post("/doctor-report", middleware.StaffAuth, handler.CreateDoctorReport)
 	r.Put("/doctor-report/:id", middleware.StaffAuth, handler.UpdateDoctorReport)
 	r.Delete("/doctor-report/:id", middleware.StaffAuth, handler.DeleteDoctorReport)
 
@@ -74,7 +74,9 @@ func RouteInit(r *fiber.App) {
 
 	// MEDICAL HISTORY
 	r.Get("/medical-histories", middleware.Auth, handler.GetAllMedicalHistoryByToken)
+	r.Get("/medical-histories-approved", handler.GetUserDataForMedicalHistory)
 	r.Post("/medical-history", middleware.StaffAuth, handler.CreateMedicalHistory)
+	r.Get("/medical-history/:id", handler.MedicalHistoryGetById)
 
 	// REMINDER
 

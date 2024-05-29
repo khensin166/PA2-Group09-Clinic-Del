@@ -118,23 +118,15 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                             <dl>
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Medicine Name</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.Medicines.map((medicine) => (
-                                        <li key={medicine.id}>{medicine.name}</li>
-                                    ))}
+                                    {productDetails?.medicine.name}
+                                
                                 </dd>
-
-
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Expired</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
                                     {productDetails?.disease || 'none'}
                                 </dd>
 
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Image</dt>
-                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.Medicines.map((medicine) => (
-                                        <li key={medicine.id}>{medicine.image}</li>
-                                    ))}
-                                </dd>
+                            
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Nurse Report ID</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
                                     {productDetails?.nurse_report.id || 'none'}
@@ -145,7 +137,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                                 </dd>
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Staff Doctor Name</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.staffDoctor.name || 'none'}
+                                    {productDetails?.staff_doctor.name || 'none'}
                                 </dd>
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Created at</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
@@ -209,7 +201,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                apiEndpoint="http://127.0.0.1:8080/doctor-report"
                 medicineId={editId}
                 token={token}
             />

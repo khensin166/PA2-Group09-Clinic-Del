@@ -62,6 +62,7 @@ func MedicineGetAll(ctx *fiber.Ctx) error {
 		"medicine": response,
 	})
 }
+
 func CreateMedicine(ctx *fiber.Ctx) error {
 	// Parse form data
 	input := new(entity.Medicine)
@@ -115,7 +116,6 @@ func CreateMedicine(ctx *fiber.Ctx) error {
 }
 
 func UpdateMedicine(ctx *fiber.Ctx) error {
-	// Parse form data
 	input := new(entity.Medicine)
 	if err := ctx.BodyParser(input); err != nil {
 		return ctx.Status(400).JSON(fiber.Map{

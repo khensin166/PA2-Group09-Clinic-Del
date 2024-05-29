@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ModalEdit from '../modals/doctor-report/EditModals';
 import ReadProductModal from '../modals/doctor-report/ReadModals';
+import { jwtDecode } from 'jwt-decode';
 
 function Table() {
     // ADD
@@ -10,23 +11,23 @@ function Table() {
 
     // EDIT
     const [isEditOpen, setIsEditOpen] = useState(false);
-    const [editId, setEditId] = useState(null)
+    const [editId, setEditId] = useState(null);
 
     const openEdit = (id) => {
-        setEditId(id)
-        setIsEditOpen(true)
+        setEditId(id);
+        setIsEditOpen(true);
     };
     const closeEdit = () => setIsEditOpen(false);
 
     // PREVIEW
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-    const [previewId, setPreviewId] = useState(null)
+    const [previewId, setPreviewId] = useState(null);
 
     const openPreview = (id) => {
-        setPreviewId(id)
+        setPreviewId(id);
         setIsPreviewOpen(true);
-    }
-    const closePreview = () => setIsPreviewOpen(false)
+    };
+    const closePreview = () => setIsPreviewOpen(false);
 
     // DELETE
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -78,6 +79,39 @@ function Table() {
     }, [token]);
 
 
+    const decodedToken = jwtDecode(token);
+    const approvingDoctor = decodedToken.id
+
+    const approveAppointment = async (id) => {
+        try {
+            const response = await fetch(`http://127.0.0.1:8080/doctor-report/${id}/approve`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ staff_doctor_id: approvingDoctor }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Failed to approve doctor-report: ${errorText}`);
+            }
+
+            const updatedDoctorReports = doctorReports.map((report) =>
+                report.id === id ? { ...report, staff_doctor_id: approvingDoctor } : report
+            );
+            setDoctorReports(updatedDoctorReports);
+            window.location.reload();
+
+        } catch (error) {
+            console.error('Approval error:', error.message);
+            setError(error.message);
+        }
+    };
+
+
+
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 5;
@@ -115,8 +149,7 @@ function Table() {
                                             >
                                                 <path
                                                     fillRule="evenodd"
-                                                    d=
-                                                    "M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                                                     clipRule="evenodd"
                                                 />
                                             </svg>
@@ -157,47 +190,52 @@ function Table() {
                                             <td colSpan="7" className="text-center py-4 text-red-500">{error}</td>
                                         </tr>
                                     ) : (
-                                        currentItems.map((report, index) => (
+                                        currentItems.map((report) => (
                                             <tr key={report.id} className="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
-                                                < td className="px-4 py-3" >
+                                                <td className="px-4 py-3">
                                                     {report.id}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <ul>
-                                                        {report.Medicines.map((medicine) => (
-                                                            <li key={medicine.id}> - {medicine.name}</li>
-                                                        ))}
-                                                    </ul>
+                                                    {report.medicine?.name || 'No Medicine'}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                                     {report.disease}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    kosong
+                                                    {report.medicine ? 'Yes' : 'No'}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <a href="" className='text-blue-500 justify-center'>{report.nurse_report.patient.name}</a>
+                                                    <a href="#" className='text-blue-500 justify-center'>{report.nurse_report?.patient?.name || 'No Patient'}</a>
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {report.staffDoctor.name}
+                                                    {report.staff_doctor ? report.staff_doctor.name : 'N/A'}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                                     <div className="flex items-center space-x-4 justify-center">
+
+                                                        {!report.staff_doctor.id && (
+                                                            <button
+                                                                onClick={() => approveAppointment(report.id)}
+                                                                type="button"
+                                                                className="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                                            >
+                                                                Approve
+                                                            </button>
+                                                        )}
                                                         <button
-                                                            onClick={() => openEdit(report.id)} // Use the correct ID here
+                                                            onClick={() => openEdit(report.id)}
                                                             type="button"
                                                             className="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                                                         >
                                                             Edit
                                                         </button>
                                                         <button
-                                                            onClick={() => openPreview(report.id)} // Use the correct ID here
+                                                            onClick={() => openPreview(report.id)}
                                                             type="button"
                                                             className="py-2 px-3 flex items-center text-sm font-medium text-center text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
                                                         >
-                                                            Preview
+                                                            Read
                                                         </button>
-
                                                     </div>
                                                 </td>
                                             </tr>
@@ -207,46 +245,38 @@ function Table() {
                             </table>
                         </div>
 
-
-                        {/* PAGINATION */}
-                        <nav className="flex justify-between items-center p-4" aria-label="Table navigation">
-                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstItem + 1}-{Math.min(indexOfLastItem, doctorReports.length)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{doctorReports.length}</span></span>
-                            <ul className="inline-flex items-stretch -space-x-px">
-                                <li>
+                        {/* PAGINATION SECTION */}
+                        <div className="flex justify-end items-center p-4">
+                            <div className="flex items-center space-x-3">
+                                <button
+                                    onClick={() => paginate(currentPage - 1)}
+                                    disabled={currentPage === 1}
+                                    className={`px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700'}`}
+                                >
+                                    Previous
+                                </button>
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
                                     <button
-                                        className="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                        onClick={() => paginate(currentPage - 1)}
-                                        disabled={currentPage === 1}
+                                        key={page}
+                                        onClick={() => paginate(page)}
+                                        className={`px-4 py-2 text-sm font-medium ${page === currentPage ? 'text-primary-600 bg-gray-100' : 'text-gray-700 bg-white hover:bg-gray-100'}`}
                                     >
-                                        Previous
+                                        {page}
                                     </button>
-                                </li>
-                                {Array.from({ length: totalPages }, (_, index) => (
-                                    <li key={index}>
-                                        <button
-                                            className={`px-3 py-2 leading-tight border ${currentPage === index + 1 ? 'text-primary-600 bg-primary-50 border-primary-300 hover:bg-primary-100 hover:text-primary-700 dark:bg-gray-700 dark:border-gray-600 dark:text-white' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'}`}
-                                            onClick={() => paginate(index + 1)}
-                                        >
-                                            {index + 1}
-                                        </button>
-                                    </li>
                                 ))}
-                                <li>
-                                    <button
-                                        className="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                        onClick={() => paginate(currentPage + 1)}
-                                        disabled={currentPage === totalPages}
-                                    >
-                                        Next
-                                    </button>
-                                </li>
-                            </ul>
-                        </nav>
-
+                                <button
+                                    onClick={() => paginate(currentPage + 1)}
+                                    disabled={currentPage === totalPages}
+                                    className={`px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-md ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary-700'}`}
+                                >
+                                    Next
+                                </button>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </section>
 
-                </div >
-            </section >
 
             {/* Update modal */}
             <ModalEdit
@@ -264,11 +294,12 @@ function Table() {
                 onClose={closePreview}
                 apiEndpoint="http://127.0.0.1:8080/doctor-report"
                 medicineId={previewId}
+                apiMedicine="http://127.0.0.1:8080"
                 token={token}
             />
+
         </>
     );
 }
-
 
 export default Table;
