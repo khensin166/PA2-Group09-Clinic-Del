@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:clinicapp/Constants/url.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
+import 'package:clinicapp/Screens/Reminder/reminder.dart';
+import 'package:clinicapp/Utils/router.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -21,32 +23,29 @@ class AddReminderProvider extends ChangeNotifier {
     required String third_time,
     required DateTime start_date,
     required int duration,
-    BuildContext? context,
+    required BuildContext context,
   }) async {
     final token = await DatabaseProvider().getToken();
-    final user_id = await DatabaseProvider().getUserId();
+    final user_id_string = await DatabaseProvider().getUserId();
+    final user_id = int.parse(user_id_string);
+    final start_datee = DateFormat('yyyy-MM-dd').format(start_date).toString();
     _status = true;
     notifyListeners();
 
-    final body = {
+    final body = jsonEncode({
       "first_time": first_time,
       "second_time": second_time,
       "third_time": third_time,
-      "start_date": DateFormat('yyyy-MM-dd').format(start_date),
+      "start_date": start_datee,
       "duration": duration,
-      "user_id": user_id,
+      "user_id": user_id, // Pastikan user_id dikirim sebagai integer
       "name": name,
-    };
-
-    final headers = {
-      'Authorization': '$token',
-      'Content-Type': 'application/json',
-    };
+    });
 
     final result = await http.post(
       Uri.parse(url),
-      headers: headers,
-      body: json.encode(body),
+      headers: {'Authorization': '$token', 'Content-Type': 'application/json'},
+      body: body,
     );
 
     print(result.statusCode);
@@ -57,14 +56,12 @@ class AddReminderProvider extends ChangeNotifier {
       _status = false;
       _response = res['message'];
       notifyListeners();
-      if (context != null) {
-        Navigator.pop(context);
-      }
+      PageNavigator(ctx: context!).nextPageOnly(page: ReminderPage());
     } else {
-      final res = result.body;
+      final res = json.decode(result.body);
       print(res);
 
-      _response = json.decode(res)['message'];
+      _response = res['message'];
 
       _status = false;
 

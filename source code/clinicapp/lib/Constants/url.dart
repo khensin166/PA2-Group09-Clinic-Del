@@ -1,5 +1,5 @@
 class AppUrl {
-  static String baseUrl = 'http://192.168.31.133:8080';
+  static String baseUrl = 'http://192.168.135.133:8080';
 
   // Profile
   static String userProfilePhotoUrl = '${baseUrl}/user/image';
@@ -12,6 +12,7 @@ class AppUrl {
   // Reminder
   static String ReminderUrl = '${baseUrl}/reminder';
 
+  // News
   static String NEWS_API_KEY = "6824d273d6be40e8b656abb2e39c349e";
 
   static String PLACEHOLDER_IMAGE_LINK =

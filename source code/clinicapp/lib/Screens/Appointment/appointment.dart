@@ -22,7 +22,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
       appBar: AppBarCustom(
         title: 'Daftar Janji Temu',
         backgroundColor: primaryColor,
-        nextPage: HomePage(),
+        nextPage: const HomePage(),
         leadingIcon: Icons.arrow_back_ios_outlined,
       ),
       body: Container(
@@ -95,7 +95,7 @@ class _AppointmentPageState extends State<AppointmentPage> {
         label: const Text(
           'Buat Janji Temu',
         ),
-        icon: Icon(Icons.add),
+        icon: const Icon(Icons.add),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );

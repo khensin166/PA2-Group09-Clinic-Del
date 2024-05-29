@@ -5,6 +5,8 @@ import 'package:clinicapp/Provider/Provider_Auth/auth_provider.dart';
 import 'package:clinicapp/Provider/Database/db_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/image_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Reminder/add_reminder.dart';
+import 'package:clinicapp/Provider/Provider_Reminder/delete_reminder.dart';
+import 'package:clinicapp/Provider/Provider_Reminder/edit_reminder.dart';
 import 'package:clinicapp/Provider/Provider_Reminder/local_notification_service.dart';
 import 'package:clinicapp/Provider/view_models.dart/photo_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/update_profile_provider.dart';
@@ -44,6 +46,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileImageProvider()),
         ChangeNotifierProvider(create: (_) => UserProfileProvider()),
         ChangeNotifierProvider(create: (_) => AddReminderProvider()),
+        ChangeNotifierProvider(create: (_) => EditReminderProvider()),
+        ChangeNotifierProvider(create: (_) => DeleteReminderProvider()),
       ],
       child: MaterialApp(
         title: 'Clinic App',

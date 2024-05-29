@@ -69,8 +69,8 @@ func RouteInit(r *fiber.App) {
 	r.Post("/medical-history", middleware.StaffAuth, handler.CreateMedicalHistory)
 
 	// REMINDER
-	r.Get("/reminders", middleware.Auth, handler.ReminderGetAll)
-	r.Post("/reminder", middleware.Auth, handler.CreateReminder)
+	r.Get("/reminders-auth/:date", middleware.Auth, handler.ReminderGetByAuth)
+	r.Post("/reminder", handler.CreateReminder)
 	r.Put("/reminder/:id", middleware.Auth, handler.UpdateReminder)
 	r.Delete("/reminder/:id", middleware.Auth, handler.DeleteReminder)
 
