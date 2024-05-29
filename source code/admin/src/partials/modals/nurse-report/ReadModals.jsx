@@ -45,8 +45,6 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
         if (isOpen) {
             fetchProductDetails();
             window.addEventListener('keydown', handleEsc);
-        } else {
-            window.removeEventListener('keydown', handleEsc);
         }
 
         return () => {
@@ -87,7 +85,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                     <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <div className="flex justify-between mb-4 rounded-t sm:mb-5">
                             <div className="text-lg text-gray-900 md:text-xl dark:text-white">
-                                <h3 className="font-semibold">MEDICINE</h3>
+                                <h3 className="font-semibold">Nurse Report</h3>
                             </div>
                             <div>
                                 <button
@@ -116,26 +114,57 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                             <div>Loading...</div>
                         ) : (
                             <dl>
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Medicine Name</dt>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Patient Name</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.name || 'Product Name'}
+                                    {productDetails?.patient.name || 'none'}
                                 </dd>
 
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Amount</dt>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Approved By</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.amount || 'Product amount'}
+                                    {productDetails?.staff.name || 'none'}
                                 </dd>
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Expired</dt>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Temprature</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.expired || 'Product expiry date'}
+                                    {productDetails?.temprature || 'none'}
                                 </dd>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Systole</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.systole || 'none'}
+                                </dd>
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Diastole</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.diastole || 'none'}
+                                </dd>
+
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Pulse</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.pulse || 'none'}
+                                </dd>
+
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Respiration</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.respiration || 'none'}
+                                </dd>
+
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Abdominal Circuference</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.SizeCircumference || 'none'}
+                                </dd>
+
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Allergy</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.allergy || 'none'}
+                                </dd>
+
+                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Is Checked</dt>
+                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
+                                    {productDetails?.is_checked ? 'True' : 'False'}
+
+                                </dd>
+
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Created at</dt>
                                 <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.created_at || 'Product details here...'}
-                                </dd>
-                                <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Image</dt>
-                                <dd className="mb-4 font-light text-gray-500 sm:mb-5 dark:text-gray-400">
-                                    {productDetails?.image || 'Product image'}
+                                    {productDetails?.created_at || 'none'}
                                 </dd>
 
                                 <dt className="mb-2 font-semibold leading-none text-gray-900 dark:text-white">Updated at</dt>
@@ -196,7 +225,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                apiEndpoint="http://127.0.0.1:8080/nurse-reports"
                 medicineId={editId}
                 token={token}
             />
@@ -204,7 +233,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
             <DeleteProductModel
                 isOpen={isDeleteOpen}
                 onClose={closeDelete}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                apiEndpoint="http://127.0.0.1:8080/nurse-reports"
                 medicineId={deleteId}
                 token={token}
             />

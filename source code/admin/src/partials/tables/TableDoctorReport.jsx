@@ -1,16 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ModalCreate from "../modals/doctor-report/CreateModals";
 import ModalEdit from '../modals/doctor-report/EditModals';
 import ReadProductModal from '../modals/doctor-report/ReadModals';
-import DeleteProductModel from '../modals/doctor-report/DeleteModals';
 
 function Table() {
-    // ACTION DROPDOWN IN HEADER
-    const [isOpen, setIsOpen] = useState(false);
-    const toggleDropdown = () => {
-        setIsOpen(!isOpen);
-    };
-
     // ADD
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
@@ -45,7 +37,7 @@ function Table() {
     };
     const closeDelete = () => setIsDeleteOpen(false);
 
-    const token = localStorage.getItem('token'); // Mendapatkan token dari localStorage
+    const token = localStorage.getItem('token'); 
 
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +46,7 @@ function Table() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8080/doctor-reports', {
+                const response = await fetch('http://127.0.0.1:8080/doctor-report-approved', {
                     method: 'GET',
                     headers: {
                         'Authorization': `${token}`,
@@ -88,7 +80,7 @@ function Table() {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 2;
+    const itemsPerPage = 5;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = doctorReports.slice(indexOfFirstItem, indexOfLastItem);
@@ -139,70 +131,6 @@ function Table() {
                                     </div>
                                 </form>
                             </div>
-
-
-                            {/* HEADER TABLE */}
-                            <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-
-                                {/* ADD PRODUCT */}
-                                <button
-                                    type="button"
-                                    id="createProductModalButton"
-                                    onClick={openModal}
-                                    className="flex items-center justify-center text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800"
-                                >
-                                    <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                        <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
-                                    </svg>
-                                    Add Doctor Report
-                                </button>
-
-                                {/* ACTION */}
-                                <div className="relative inline-block">
-                                    <button
-                                        id="actionsDropdownButton"
-                                        onClick={toggleDropdown}
-                                        className="w-full flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
-                                        type="button"
-                                    >
-                                        <svg
-                                            className="-ml-1 mr-1.5 w-5 h-5"
-                                            fill="currentColor"
-                                            viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            aria-hidden="true"
-                                        >
-                                            <path
-                                                clipRule="evenodd"
-                                                fillRule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                            />
-                                        </svg>
-                                        Actions
-                                    </button>
-                                    {isOpen && (
-                                        <div
-                                            id="actionsDropdown"
-                                            className="origin-top-right absolute right-0 mt-2 w-44 bg-white rounded-lg border border-gray-200 divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600"
-                                        >
-                                            <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
-                                                <li>
-                                                    <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                        Mass Edit
-                                                    </a>
-                                                </li>
-                                            </ul>
-
-                                            <div className="py-1">
-                                                <a href="#" className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                    Delete all
-                                                </a>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
                         </div>
 
                         {/* MAIN TABLE SECTION */}
@@ -214,7 +142,7 @@ function Table() {
                                         <th scope="col" className="p-4">Amount</th>
                                         <th scope="col" className="p-4">Disease</th>
                                         <th scope="col" className="p-4">Medicine</th>
-                                        <th scope="col" className="p-4">Nurse Report ID</th>
+                                        <th scope="col" className="p-4">Nurse Report For</th>
                                         <th scope="col" className="p-4">Doctor Name</th>
                                         <th scope="col" className="text-center p-4">Action</th>
                                     </tr>
@@ -244,10 +172,10 @@ function Table() {
                                                     kosong
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                   <a href="" className='text-blue-500 justify-center'>{report.nurse_report_id}</a> 
+                                                   <a href="" className='text-blue-500 justify-center'>{report.nurse_report.patient.name}</a> 
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {report.staffDoctor.name}
+                                                    {/* {report.staffDoctor.name} */}
                                                 </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                                     <div className="flex items-center space-x-4 justify-center">
@@ -324,14 +252,7 @@ function Table() {
             {/* End block */}
 
 
-            {/* Create modal */}
-            <ModalCreate
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
-                token={token}
-            />
-
+       
             {/* Update modal */}
             <ModalEdit
                 isOpen={isEditOpen}
@@ -351,15 +272,7 @@ function Table() {
                 token={token}
             />
 
-            {/* Delete modal */}
-            < DeleteProductModel
-                isOpen={isDeleteOpen}
-                onClose={closeDelete}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
-                medicineId={deleteId}
-                token={token}
-            />
-
+        
 
         </>
     );

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [productDetails, setProductDetails] = useState(null);
+    const [isChecked, setIsChecked] = useState(false);
 
     const fetchProductDetails = async () => {
         setIsLoading(true);
@@ -15,10 +16,14 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
             const response = await fetch(url, {
                 method: 'GET',
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `${token}`,
                     'Content-Type': 'application/json'
                 }
             });
+
+            if (response.status === 401) {
+                throw new Error('Unauthorized access. Please check your token.');
+            }
 
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
@@ -57,19 +62,29 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
     }, [isOpen, medicineId]);
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
-        if (name === "image") {
-            setProductDetails((prevDetails) => ({
+        const { name, value } = e.target;
+        setProductDetails((prevDetails) => {
+            let newValue = value;
+
+            const [mainKey, subKey] = name.split(".");
+            if (subKey) {
+                return {
+                    ...prevDetails,
+                    [mainKey]: {
+                        ...prevDetails[mainKey],
+                        [subKey]: newValue,
+                    },
+                };
+            }
+
+            return {
                 ...prevDetails,
-                image: files[0],
-            }));
-        } else {
-            setProductDetails((prevDetails) => ({
-                ...prevDetails,
-                [name]: value,
-            }));
-        }
+                [name]: newValue,
+            };
+        });
     };
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -85,7 +100,8 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': token,
+                    'Authorization': `${token}`,
+                    'Content-Type': 'application/json'
                 },
                 body: formData,
             });
@@ -98,13 +114,15 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
             console.log('Product updated:', data);
             onClose();
             window.location.reload();
-
         } catch (error) {
             console.error('Error updating product details:', error.message);
         } finally {
             setIsLoading(false);
         }
     };
+
+
+
 
     if (!isOpen) return null;
 
@@ -119,7 +137,7 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                     <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            Update Product
+                            Update Nurse Report : {productDetails?.patient?.name}
                         </h3>
                         <button
                             type="button"
@@ -151,69 +169,126 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                             <div className="grid gap-4 mb-4 sm:grid-cols-2">
                                 <div>
                                     <label
-                                        htmlFor="name"
+                                        htmlFor="temperature"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
-                                        Name
+                                        Temperature
                                     </label>
                                     <input
                                         type="text"
-                                        name="name"
-                                        id="name"
-                                        defaultValue={productDetails?.name || ""}
+                                        name="temperature"
+                                        id="temperature"
+                                        defaultValue={productDetails?.temperature || ""}
                                         onChange={handleChange}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="Ex. Apple iMac 27“"
+                                        placeholder="none"
                                     />
                                 </div>
                                 <div>
                                     <label
-                                        htmlFor="amount"
+                                        htmlFor="systole"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
-                                        Amount
+                                        Systole
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="systole"
+                                        id="systole"
+                                        defaultValue={productDetails?.systole || ""}
+                                        onChange={handleChange}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="none"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="diastole"
+                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    >
+                                        Diastole
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="diastole"
+                                        id="diastole"
+                                        defaultValue={productDetails?.diastole || ""}
+                                        onChange={handleChange}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus
+                                        dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="none"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="pulse"
+                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    >
+                                        Pulse
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="pulse"
+                                        id="pulse"
+                                        defaultValue={productDetails?.pulse || ""}
+                                        onChange={handleChange}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="none"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="respiration"
+                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    >
+                                        Respiration
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="respiration"
+                                        id="respiration"
+                                        defaultValue={productDetails?.respiration || ""}
+                                        onChange={handleChange}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="none"
+                                    />
+                                </div>
+                                <div>
+                                    <label
+                                        htmlFor="abdominal_circumference"
+                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                    >
+                                        Abdominal Circumference
                                     </label>
                                     <input
                                         type="number"
-                                        defaultValue={productDetails?.amount || 0}
-                                        name="amount"
-                                        id="amount"
+                                        value={productDetails?.SizeCircumference || 0}
+                                        name="SizeCircumference"
+                                        id="SizeCircumference"
                                         onChange={handleChange}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                        placeholder="$299"
+                                        placeholder="none"
                                     />
                                 </div>
                                 <div>
                                     <label
-                                        htmlFor="image"
+                                        htmlFor="allergy"
                                         className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                                     >
-                                        Image
+                                        Allergy
                                     </label>
                                     <input
-                                        type="file"
-                                        name="image"
-                                        id="image"
+                                        type="text"
+                                        name="allergy"
+                                        id="allergy"
+                                        defaultValue={productDetails?.allergy || ""}
                                         onChange={handleChange}
                                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                        placeholder="none"
                                     />
                                 </div>
-                                <div>
-                                    <label
-                                        htmlFor="expired"
-                                        className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                                    >
-                                        Expired Date
-                                    </label>
-                                    <input
-                                        type="date"
-                                        defaultValue={productDetails?.expired || ""}
-                                        name="expired"
-                                        id="expired"
-                                        onChange={handleChange}
-                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                    />
-                                </div>
+                                
+
                             </div>
                             <div className="flex items-center space-x-4">
                                 <button
@@ -226,7 +301,6 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                                     type="button"
                                     className="text-red-600 inline-flex items-center hover:text-white border border-red-600 hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
                                     onClick={() => {
-                                        // handle delete functionality here
                                     }}
                                 >
                                     <svg
@@ -244,6 +318,7 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
                                     Delete
                                 </button>
                             </div>
+
                         </form>
                     )}
                 </div>
@@ -253,4 +328,3 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
 };
 
 export default ModalEdit;
-

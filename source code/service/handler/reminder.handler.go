@@ -21,10 +21,8 @@ func ReminderGetAll(ctx *fiber.Ctx) error {
 			"id":        reminder.ID,
 			"date_time": reminder.DateTime,
 			"name":      reminder.Name,
-			//"time":      reminder.Time,
 			"frequency": reminder.Frequency,
 			"duration":  reminder.Frequency,
-			//"medicine_id": reminder.MedicineID,
 		}
 	}
 

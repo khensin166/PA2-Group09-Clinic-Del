@@ -50,7 +50,7 @@ function Table() {
                 const response = await fetch('http://127.0.0.1:8080/medicines', {
                     method: 'GET',
                     headers: {
-                        'Authorization': ` ${token}`, // Add 'Bearer' before token
+                        'Authorization': ` ${token}`,
                         'Content-Type': 'application/json',
                     }
                 });
@@ -63,7 +63,9 @@ function Table() {
 
                 if (data.medicine) {
                     setMedicines(data.medicine);
+
                 } else {
+
                     throw new Error('Invalid data format');
                 }
 
@@ -74,12 +76,13 @@ function Table() {
             }
         };
 
+
         fetchData();
     }, [token]);
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 2;
+    const itemsPerPage = 5;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = medicines.slice(indexOfFirstItem, indexOfLastItem);
@@ -113,30 +116,6 @@ function Table() {
                                     </svg>
                                     Add Medicine
                                 </button>
-                                <div className="relative inline-block">
-                                    <button id="actionsDropdownButton" onClick={toggleDropdown} className="w-full flex items-center justify-center py-2 px-4 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" type="button">
-                                        <svg className="-ml-1 mr-1.5 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                                            <path clipRule="evenodd" fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                        </svg>
-                                        Actions
-                                    </button>
-                                    {isOpen && (
-                                        <div id="actionsDropdown" className="origin-top-right absolute right-0 mt-2 w-44 bg-white rounded-lg border border-gray-200 divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600">
-                                            <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
-                                                <li>
-                                                    <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                        Mass Edit
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                            <div className="py-1">
-                                                <a href="#" className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                    Delete all
-                                                </a>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
                             </div>
                         </div>
                         <div className="overflow-x-auto">
@@ -144,8 +123,8 @@ function Table() {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" className="px-4 py-3">ID</th>
-                                        <th scope="col" className="px-4 py-3">Appointment Name</th>
-                                        <th scope="col" className="px-4 py-3">Description</th>
+                                        <th scope="col" className="px-4 py-3">Medicine Image</th>
+                                        <th scope="col" className="px-4 py-3">Medicine Name</th>
                                         <th scope="col" className="px-4 py-3">Date</th>
                                         <th scope="col" className="px-4 py-3">Time</th>
                                         <th scope="col" className="px-4 py-3 text-center">Action</th>
@@ -164,7 +143,7 @@ function Table() {
                                         currentItems.map((medicine, index) => (
                                             <tr className="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" key={medicine.id}>
                                                 <td className="px-6 py-4">
-                                                    {indexOfFirstItem + index + 1}
+                                                {medicine.id}
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     {medicine.image}

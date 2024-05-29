@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import ModalCreate from '../modals/doctor-report/CreateModals';
-import ReadProductModal from '../modals/doctor-report/ReadModals';
-import DeleteProductModel from '../modals/doctor-report/DeleteModals';
-import ModalEdit from '../modals/doctor-report/EditModals';
-import { jwtDecode } from 'jwt-decode';
+import ModalCreate from '../modals/nurse-report/CreateModals';
+import ModalEdit from '../modals/nurse-report/EditModals';
+import ReadProductModal from '../modals/nurse-report/ReadModals';
+import DeleteProductModel from '../modals/nurse-report/DeleteModals';
 
 function Table() {
     // ACTION DROPDOWN IN HEADER
@@ -12,12 +11,10 @@ function Table() {
         setIsOpen(!isOpen);
     };
 
-    // ADD
     const [isModalOpen, setIsModalOpen] = useState(false);
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
 
-    // EDIT
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editId, setEditId] = useState(null);
     const openEdit = (id) => {
@@ -26,7 +23,6 @@ function Table() {
     };
     const closeEdit = () => setIsEditOpen(false);
 
-    // PREVIEW
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
     const [previewId, setPreviewId] = useState(null);
     const openPreview = (id) => {
@@ -35,7 +31,6 @@ function Table() {
     };
     const closePreview = () => setIsPreviewOpen(false);
 
-    // DELETE
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
     const openDelete = (id) => {
@@ -45,8 +40,6 @@ function Table() {
     const closeDelete = () => setIsDeleteOpen(false);
 
     const token = localStorage.getItem('token');
-    const decodedToken = jwtDecode(token);
-    const approvingNurse = decodedToken.id
 
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +48,7 @@ function Table() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8080/doctor-reports', {
+                const response = await fetch('http://127.0.0.1:8080/medicines', {
                     method: 'GET',
                     headers: {
                         'Authorization': `${token}`,
@@ -68,11 +61,13 @@ function Table() {
                 }
 
                 const data = await response.json();
-                console.log(data); // Display data in the console
+                console.log(data); // Tampilkan data di console
 
-                // Flattening the medicines from each doctor report into one array
-                const allMedicines = data.doctor_reports.flatMap(report => report.Medicines);
-                setMedicines(allMedicines);
+                if (data.nurse_reports) {
+                    setMedicines(data.nurse_reports);
+                } else {
+                    throw new Error('Invalid data format');
+                }
 
                 setIsLoading(false);
             } catch (error) {
@@ -152,7 +147,7 @@ function Table() {
                                     <svg className="h-3.5 w-3.5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                         <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" />
                                     </svg>
-                                    Add Final Report
+                                    Add Nurse Report
                                 </button>
 
                                 {/* ACTION */}
@@ -173,115 +168,151 @@ function Table() {
                                             <path
                                                 clipRule="evenodd"
                                                 fillRule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                             />
                                         </svg>
-                                        Actions
+                                        Action
                                     </button>
+                                    {/* Dropdown menu */}
                                     {isOpen && (
                                         <div
                                             id="actionsDropdown"
-                                            className="origin-top-right absolute right-0 mt-2 w-44 bg-white rounded-lg border border-gray-200 divide-y divide-gray-100 shadow-lg dark:bg-gray-700 dark:divide-gray-600"
+                                            className="z-10 absolute right-0 mt-2 w-36 origin-top-right bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
                                         >
-                                            <ul className="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="actionsDropdownButton">
-                                                <li>
-                                                    <a href="#" className="block py-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">
-                                                        Mass Edit
-                                                    </a>
-                                                </li>
-                                            </ul>
-
                                             <div className="py-1">
-                                                <a href="#" className="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                                                    Delete all
+                                                <a
+                                                    href="#"
+                                                    className="flex items-center py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                                                >
+                                                    <svg
+                                                        className="mr-2 w-4 h-4"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            strokeWidth="2"
+                                                            d="M11 17a4 4 0 100-8 4 4 0 000 8zm5.657-1.657A6 6 0 1116 9m-6 6H9m0 0H8m2 0h1"
+                                                        />
+                                                    </svg>
+                                                    Placeholder
                                                 </a>
                                             </div>
                                         </div>
                                     )}
                                 </div>
+
                             </div>
 
                         </div>
 
-                        {/* MAIN TABLE SECTION */}
+                        {/* TABLE */}
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="p-4">
-                                            ID
-                                        </th>
-                                        <th scope="col" className="p-4">
-                                            Nurse Report ID
-                                        </th>
-                                        <th scope="col" className="p-4">
-                                            Medicine Name
-                                        </th>
-                                        <th scope="col" className="p-4">
-                                            Medicine Amount
-                                        </th>
-                                        <th scope="col" className="p-4">
-                                            Disease
-                                        </th>
-                                        <th></th>
-                                        <th>Action</th>
-
+                                        <th scope="col" className="px-4 py-3">ID</th>
+                                        <th scope="col" className="px-4 py-3">Patient </th>
+                                        <th scope="col" className="px-4 py-3">Approved by </th>
+                                        <th scope="col" className="px-4 py-3">Temperature</th>
+                                        <th scope="col" className="px-4 py-3">Systole</th>
+                                        <th scope="col" className="px-4 py-3">Diastole</th>
+                                        <th scope="col" className="px-4 py-3">Pulse</th>
+                                        <th scope="col" className="px-4 py-3">Oxygen Saturation</th>
+                                        <th scope="col" className="px-4 py-3">Respiration</th>
+                                        <th scope="col" className="px-4 py-3">Height</th>
+                                        <th scope="col" className="px-4 py-3">Weight</th>
+                                        <th scope="col" className="px-4 py-3">Abdominal Circumference</th>
+                                        <th scope="col" className="px-4 py-3">Allergy</th>
+                                        <th scope="col" className="px-4 py-3 text-center">Action</th>
                                     </tr>
                                 </thead>
-
                                 <tbody>
                                     {isLoading ? (
                                         <tr>
-                                            <td colSpan="6" className="px-4 py-3 text-center">Loading...</td>
+                                            <td colSpan="13" className="text-center py-4">Loading...</td>
                                         </tr>
                                     ) : error ? (
                                         <tr>
-                                            <td colSpan="6" className="px-4 py-3 text-center text-red-500">{error}</td>
+                                            <td colSpan="13" className="text-center py-4 text-red-500">{error}</td>
                                         </tr>
-                                    ) : currentItems.length > 0 ? (
-                                        currentItems.map((medicine, index) => (
-                                            <tr className="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700" key={medicine.id}>
-                                                <td className="px-6 py-4">
-                                                    {indexOfFirstItem + index + 1}
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {medicine.id}
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    <div className="flex items-center">
-                                                        <div className="h-4 w-4 rounded-full inline-block mr-2 bg-red-700" />
-                                                        {medicine.date}
-                                                    </div>
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {medicine.time}
-                                                </td>
-                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {medicine.approved ? medicine.approved.name : 'N/A'}
-                                                </td>
+                                    ) : (
+                                        currentItems.map((report, index) => (
+                                            <tr key={report.id} className="border-b dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <td className="px-4 py-3">
+                                                    {report.id}
 
-                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                                    {medicine.requested ? medicine.requested.name : 'N/A'}
                                                 </td>
-
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.patient.name}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.staff.name}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.temperature}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.systole}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.diastole}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.pulse}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.oxygen_saturation}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.respiration}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.patient.height || 'none'}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.patient.weight || 'none'}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.abdominal_circumference}
+                                                </td>
+                                                <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                                    {report.allergy}
+                                                </td>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white text-center">
                                                     <div className="flex items-center space-x-4 justify-center">
-
-
-                                                        {!medicine.approved && ( // Tambahkan kondisi disini
-                                                            <button
-                                                                onClick={() => approveAppointment(medicine.id)}
-                                                                type="button"
-                                                                className="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                                        {/* EDIT BUTTON */}
+                                                        <button
+                                                            onClick={() => openEdit(report.id)}
+                                                            type="button"
+                                                            data-drawer-target="drawer-update-product"
+                                                            data-drawer-show="drawer-update-product"
+                                                            aria-controls="drawer-update-product"
+                                                            className="py-2 px-3 flex items-center text-sm font-medium text-center text-white bg-primary-700 rounded-lg hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                                                        >
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                className="h-4 w-4 mr-2 -ml-0.5"
+                                                                viewBox="0 0 20 20"
+                                                                fill="currentColor"
+                                                                aria-hidden="true"
                                                             >
-                                                                Approve
-                                                            </button>
-                                                        )}
+                                                                <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
+                                                                <path
+                                                                    fillRule="evenodd"
+                                                                    d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"
+                                                                    clipRule="evenodd"
+                                                                />
+                                                            </svg>
+                                                            Edit
+                                                        </button>
 
                                                         {/* PREVIEW BUTTON */}
                                                         <button
-                                                            onClick={() => openPreview(medicine.id)}
+                                                            onClick={() => openPreview(report.id)}
                                                             type="button"
                                                             data-drawer-target="drawer-read-product-advanced"
                                                             data-drawer-show="drawer-read-product-advanced"
@@ -307,7 +338,7 @@ function Table() {
 
                                                         {/* DELETE BUTTON */}
                                                         <button
-                                                            onClick={() => openDelete(medicine.id)}
+                                                            onClick={() => openDelete(report.id)}
                                                             type="button"
                                                             data-modal-target="delete-modal"
                                                             data-modal-toggle="delete-modal"
@@ -322,17 +353,13 @@ function Table() {
                                                 </td>
                                             </tr>
                                         ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="6" className="px-4 py-3 text-center">No appointments found</td>
-                                        </tr>
                                     )}
                                 </tbody>
                             </table>
-
-
                         </div>
 
+
+                        {/* PAGINATION */}
                         <nav className="flex justify-between items-center p-4" aria-label="Table navigation">
                             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">Showing <span className="font-semibold text-gray-900 dark:text-white">{indexOfFirstItem + 1}-{Math.min(indexOfLastItem, medicines.length)}</span> of <span className="font-semibold text-gray-900 dark:text-white">{medicines.length}</span></span>
                             <ul className="inline-flex items-stretch -space-x-px">
@@ -367,19 +394,16 @@ function Table() {
                             </ul>
                         </nav>
 
-
                     </div>
 
                 </div>
             </section>
-            {/* End block */}
 
-
-            {/* Create modal */}
+            {/* MODALS */}
             <ModalCreate
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                apiEndpoint="http://127.0.0.1:8080/nurse-report"
                 token={token}
             />
 
@@ -387,34 +411,31 @@ function Table() {
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
-                token={token}
+                apiEndpoint="http://127.0.0.1:8080/nurse-report"
                 medicineId={editId}
+                token={token}
             >
             </ModalEdit >
 
-            {/* Read modal */}
-            < ReadProductModal
+            <ReadProductModal
                 isOpen={isPreviewOpen}
                 onClose={closePreview}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                previewId={previewId}
+                apiEndpoint="http://127.0.0.1:8080/nurse-report"
                 medicineId={previewId}
                 token={token}
             />
 
-            {/* Delete modal */}
-            < DeleteProductModel
+            <DeleteProductModel
                 isOpen={isDeleteOpen}
                 onClose={closeDelete}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
+                deleteId={deleteId}
+                apiEndpoint="http://127.0.0.1:8080/nurse-report"
                 medicineId={deleteId}
                 token={token}
             />
-
-
         </>
     );
 }
-
 
 export default Table;

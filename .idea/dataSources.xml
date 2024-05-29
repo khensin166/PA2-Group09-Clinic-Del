@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="del-clinic-app@localhost" uuid="6625539c-8cac-4310-a332-5baa9e5bddaf">
+    <data-source source="LOCAL" name="del-clinic-app@localhost [2]" uuid="9c89b0d9-3202-49cb-a65a-ff355ef4fe6d">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>

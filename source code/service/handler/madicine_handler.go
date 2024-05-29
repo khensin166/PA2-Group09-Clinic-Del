@@ -54,6 +54,7 @@ func MedicineGetAll(ctx *fiber.Ctx) error {
 			"name":    medicine.Name,
 			"amount":  medicine.Amount,
 			"expired": medicine.Expired,
+			"image":   medicine.Image,
 		}
 	}
 
@@ -61,7 +62,6 @@ func MedicineGetAll(ctx *fiber.Ctx) error {
 		"medicine": response,
 	})
 }
-
 func CreateMedicine(ctx *fiber.Ctx) error {
 	// Parse form data
 	input := new(entity.Medicine)
