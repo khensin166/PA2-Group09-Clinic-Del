@@ -124,7 +124,7 @@ class _DetailProfilePageState extends State<DetailProfilePage> {
                     readOnly: true,
                     controller: weightController,
                     icon: Icons.monitor_weight_outlined,
-                    label: 'Nomor Telefon',
+                    label: 'Berat Badan',
                   ),
                   const SizedBox(height: 20),
                   profileFieldsCustom(

@@ -50,14 +50,14 @@ class _ReminderPageState extends State<ReminderPage> {
                 Row(
                   children: [
                     Text(
-                      "Today",
+                      "Hari ini",
                       style: headingStyle,
                     ),
                     const SizedBox(
                       width: 20,
                     ),
                     Text(
-                      DateFormat.yMMMMd().format(DateTime.now()),
+                      DateFormat('d MMMM yyyy').format(DateTime.now()),
                       style: subHeadingStyle,
                     ),
                   ],

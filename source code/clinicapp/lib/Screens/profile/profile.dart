@@ -8,6 +8,7 @@ import 'package:clinicapp/Provider/Provider_Profile/get_profile_provider.dart';
 import 'package:clinicapp/Provider/Provider_Profile/image_profile_provider.dart';
 import 'package:clinicapp/Screens/Profile/detail_profile.dart';
 import 'package:clinicapp/Screens/Profile/profile.view.dart';
+
 import 'package:clinicapp/Screens/Profile/widget/view_profile.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Utils/router.dart';
@@ -219,7 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Text(
                           user.name ?? "",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10),
@@ -232,14 +233,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       child: ListTile(
-                        leading: Icon(Icons.man_sharp, color: Colors.blue),
-                        title: Text('Personal Data',
+                        leading:
+                            const Icon(Icons.man_sharp, color: Colors.blue),
+                        title: const Text('Personal Data',
                             style: TextStyle(fontWeight: FontWeight.bold)),
-                        subtitle: Text('Lihat lengkap data diri anda'),
-                        trailing: Icon(Icons.arrow_forward_ios),
+                        subtitle: const Text('Lihat lengkap data diri anda'),
+                        trailing: const Icon(Icons.arrow_forward_ios),
                         onTap: () {
                           PageNavigator(ctx: context)
-                              .nextPage(page: DetailProfilePage());
+                              .nextPage(page: const DetailProfilePage());
                         },
                       ),
                     ),
@@ -255,8 +257,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         subtitle: Text('Akses untuk ubah pengaturan'),
                         trailing: Icon(Icons.arrow_forward_ios),
                         onTap: () {
-                          PageNavigator(ctx: context)
-                              .nextPage(page: ProfileView());
+                          // PageNavigator(ctx: context)
+                          //     .nextPage(page: MeetingRequestApp());
                         },
                       ),
                     ),

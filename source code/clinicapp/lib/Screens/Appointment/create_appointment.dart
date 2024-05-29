@@ -52,9 +52,10 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
               onTap: () async {
                 final DateTime? pickedDate = await showDatePicker(
                   context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2020),
+                  initialDate: DateTime.now().subtract(Duration(days: 0)),
+                  firstDate: DateTime.now(),
                   lastDate: DateTime(2025),
+                  // initialEntryMode: DatePickerEntryMode.input
                 );
                 if (pickedDate != null) {
                   setState(() {
@@ -88,6 +89,7 @@ class _CreateAppointmentPageState extends State<CreateAppointmentPage> {
               onTap: () async {
                 final TimeOfDay? pickedTime = await showTimePicker(
                   context: context,
+                  initialEntryMode: TimePickerEntryMode.input,
                   initialTime: TimeOfDay.now(),
                 );
                 if (pickedTime != null) {

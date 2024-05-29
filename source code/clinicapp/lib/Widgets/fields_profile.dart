@@ -8,37 +8,33 @@ class profileFieldsCustom extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.readOnly,
+    this.onTap,
   });
 
   final TextEditingController controller;
   final IconData icon;
   final String label;
   final bool readOnly;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment
-          .start, // Menambahkan ini akan membuat semua anak di dalam kolom rata kiri
-      children: [
-        // Align(
-        //   alignment: Alignment.centerLeft, // Mengatur alignment ke kiri
-        //   child: Text(
-        //     label,
-        //     style: TextStyle(
-        //       fontSize: 16,
-        //       fontWeight: FontWeight.bold,
-        //     ),
-        //   ),
-        // ),
-        // const SizedBox(height: 8),
-        customTextField(
-          title: label,
-          readOnly: readOnly,
-          controller: controller,
-          prefixIcon: icon,
+    return GestureDetector(
+      onTap: onTap,
+      child: AbsorbPointer(
+        absorbing: readOnly,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            customTextField(
+              title: label,
+              readOnly: readOnly,
+              controller: controller,
+              prefixIcon: icon,
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }

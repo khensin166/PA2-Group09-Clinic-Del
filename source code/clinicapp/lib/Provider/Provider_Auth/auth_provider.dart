@@ -221,9 +221,8 @@ class AuthenticationProvider extends ChangeNotifier {
         print(responseBody['message']);
         await DatabaseProvider().removeToken();
         // Navigate to the new screen without the bottom navigation bar
-        Navigator.of(context).pushAndRemoveUntil(
+        Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => Onboarding()),
-          (route) => false,
         );
       } else {
         throw Exception('Logout failed');

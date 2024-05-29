@@ -65,16 +65,21 @@ class _AppointmentPageState extends State<AppointmentPage> {
                   itemBuilder: (context, index) {
                     final data = snapshot.data!.data![index];
 
-                    return AppointmentCard(
-                      appointmentId: data.id.toString(),
-                      appointmentDate: data.date ?? DateTime.now(),
-                      appointmentTime: data.time != null
-                          ? TimeOfDay.fromDateTime(data.time!)
-                          : TimeOfDay.now(),
-                      statusAppointment:
-                          data.approved == null ? 'waiting' : 'approved',
-                      complaint: data.complaint ?? 'No Title',
-                    );
+                    return Column(children: [
+                      AppointmentCard(
+                        appointmentId: data.id.toString(),
+                        appointmentDate: data.date ?? DateTime.now(),
+                        appointmentTime: data.time != null
+                            ? TimeOfDay.fromDateTime(data.time!)
+                            : TimeOfDay.now(),
+                        statusAppointment:
+                            data.approved == null ? 'waiting' : 'approved',
+                        complaint: data.complaint ?? 'No Title',
+                      ),
+                      SizedBox(
+                        height: 20,
+                      )
+                    ]);
                   },
                 );
               }

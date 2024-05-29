@@ -9,6 +9,7 @@ import 'package:clinicapp/Widgets/app_bar.dart';
 import 'package:clinicapp/Widgets/button.dart';
 import 'package:clinicapp/Widgets/fields_profile.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 // final imageUserProfile = ImageUserProfile();
@@ -40,6 +41,23 @@ class _EditProfilePageState extends State<EditProfilePage> {
   void initState() {
     super.initState();
     getUserProfile();
+  }
+
+  Future<void> _pickDate(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null) {
+      setState(() {
+        birthdayController.text =
+            DateFormat('d MMMM yyyy').format(selectedDate);
+        print(birthdayController);
+      });
+    }
   }
 
   Future<void> getUserProfile() async {
@@ -82,10 +100,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   const SizedBox(height: 20),
                   profileFieldsCustom(
-                    readOnly: false,
+                    readOnly: true, // Set to true to prevent manual text input
                     controller: birthdayController,
                     icon: Icons.cake,
                     label: 'Tanggal Lahir',
+                    onTap: () => _pickDate(context),
                   ),
                   const SizedBox(height: 20),
                   profileFieldsCustom(
@@ -106,7 +125,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     readOnly: false,
                     controller: weightController,
                     icon: Icons.monitor_weight_outlined,
-                    label: 'Nomor Telefon',
+                    label: 'Berat Badan',
                   ),
                   const SizedBox(height: 20),
                   profileFieldsCustom(

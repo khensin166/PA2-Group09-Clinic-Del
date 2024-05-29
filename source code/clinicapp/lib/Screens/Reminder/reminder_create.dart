@@ -73,6 +73,7 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
       void Function(TimeOfDay) onTimePicked) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
+      initialEntryMode: TimePickerEntryMode.input,
       initialTime: initialTime ?? TimeOfDay.now(),
     );
     if (picked != null) {

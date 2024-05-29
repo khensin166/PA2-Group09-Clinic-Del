@@ -73,8 +73,8 @@ class MainWrapperState extends State<MainWrapper> {
           child: IndexedStack(
             index: _selectedIndex,
             children: const <Widget>[
-              /// First Route
-              Home(), 
+              // / First Route
+              Home(),
 
               /// Second Route
               History(),

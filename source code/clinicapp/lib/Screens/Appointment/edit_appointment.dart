@@ -99,6 +99,7 @@ class _EditAppointmentPageState extends State<EditAppointmentPage> {
               onTap: () async {
                 final TimeOfDay? pickedTime = await showTimePicker(
                   context: context,
+                  initialEntryMode: TimePickerEntryMode.input,
                   initialTime: selectedTime,
                 );
                 if (pickedTime != null) {

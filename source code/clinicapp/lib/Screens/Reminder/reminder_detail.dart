@@ -102,6 +102,7 @@ class _DetailRemainderPageState extends State<DetailRemainderPage> {
   Future<void> _selectTime(BuildContext context, TimeOfDay? initialTime,
       void Function(TimeOfDay) onTimePicked) async {
     final TimeOfDay? picked = await showTimePicker(
+      initialEntryMode: TimePickerEntryMode.input,
       context: context,
       initialTime: initialTime ?? TimeOfDay.now(),
     );
