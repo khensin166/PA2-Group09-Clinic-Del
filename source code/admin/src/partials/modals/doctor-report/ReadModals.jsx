@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ModalEdit from './EditModals';
-import DeleteProductModel from './DeleteModals';
 
 const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -201,13 +200,6 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                 token={token}
             />
 
-            <DeleteProductModel
-                isOpen={isDeleteOpen}
-                onClose={closeDelete}
-                apiEndpoint="http://127.0.0.1:8080/medicine"
-                medicineId={deleteId}
-                token={token}
-            />
         </>
     );
 };

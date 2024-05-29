@@ -27,6 +27,7 @@ func RouteInit(r *fiber.App) {
 
 	// APPOINTMENT
 	r.Get("/appointments", handler.AppointmentGetAll)
+	r.Get("/appointments-approved", handler.AppointmentGetAllApproved)
 	r.Get("/appointment/:id", handler.AppointmentGetByiD)
 	r.Get("/appointments-auth", middleware.Auth, handler.AppointmentGetByAuth)
 	r.Post("/appointment", middleware.Auth, handler.CreateAppointment)
@@ -49,12 +50,15 @@ func RouteInit(r *fiber.App) {
 	r.Delete("/medicine/:id", middleware.StaffAuth, handler.DeleteMedicine)
 
 	// NURSE REPORT
-	r.Get("/nurse-reports", middleware.StaffAuth, handler.NurseReportGetAll)
+	r.Get("/nurse-report/:id", middleware.StaffAuth, handler.NurseReportGetByiD)
+	r.Get("/nurse-reports", handler.NurseReportGetAll)
 	r.Post("/nurse-report", middleware.StaffAuth, handler.CreateNurseReport)
 	r.Put("/nurse-report/:id", middleware.StaffAuth, handler.UpdateNurseReport)
 	r.Delete("/nurse-report/:id", middleware.StaffAuth, handler.DeleteNurseReport)
+	r.Get("/nurse-report-approved", middleware.StaffAuth, handler.GetUserDataForReport)
 
 	// DOCTOR REPORT
+	r.Get("/doctor-report-approved", middleware.StaffAuth, handler.GetUserDataForReportDoctor)
 	r.Get("/doctor-reports", middleware.StaffAuth, handler.DoctorReportGetAll)
 	r.Post("/doctor-report", middleware.StaffAuth, handler.CreateDoctorReport)
 	r.Put("/doctor-report/:id", middleware.StaffAuth, handler.UpdateDoctorReport)
@@ -72,6 +76,7 @@ func RouteInit(r *fiber.App) {
 	r.Post("/medical-history", middleware.StaffAuth, handler.CreateMedicalHistory)
 
 	// REMINDER
+
 	r.Get("/reminders", middleware.Auth, handler.ReminderGetAll)
 	r.Post("/reminder", middleware.Auth, handler.CreateReminder)
 	r.Put("/reminder/:id", middleware.Auth, handler.UpdateReminder)

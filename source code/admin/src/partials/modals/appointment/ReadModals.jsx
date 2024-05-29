@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ModalEdit from './EditModals';
 import DeleteProductModel from './DeleteModals';
 
 const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
@@ -91,7 +90,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                     <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <div className="flex justify-between mb-4 rounded-t sm:mb-5">
                             <div className="text-lg text-gray-900 md:text-xl dark:text-white">
-                                <h3 className="font-semibold">MEDICINE</h3>
+                                <h3 className="font-semibold">Appointment</h3>
                             </div>
                             <div>
                                 <button

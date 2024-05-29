@@ -12,8 +12,8 @@ type Appointment struct {
 	Complaint   string         `json:"complaint" form:"complaint"`
 	ApprovedID  *uint          `json:"approved_id" gorm:"default:null"` // Changed to *uint and allow null
 	RequestedID uint           `json:"requested_id" form:"requested_id"`
-	Approved    *Staff         `json:"approved" gorm:"foreignKey:ApprovedID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL"` // Set the constraint behavior
-	Requested   User           `json:"requested" gorm:"foreignKey:RequestedID"`
+	Approved    *Staff         `json:"approved" gorm:"foreignKey:ApprovedID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` // Set the constraint behavior
+	Requested   User           `json:"requested" gorm:"foreignKey:RequestedID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CreatedAt   time.Time      `json:"created_at"`
 	UpdatedAt   time.Time      `json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`
@@ -24,7 +24,7 @@ type AppointmentByAuth struct {
 	Date       string `json:"date" form:"date"`
 	Time       string `json:"time" form:"time"`
 	Complaint  string `json:"complaint" form:"complaint"`
-	ApprovedID *uint  `json:"approved_id" gorm:"default:null"` // Changed to *uint and allow null
+	ApprovedID *uint  `json:"approved_id" gorm:"default:null;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"` // Changed to *uint and allow null
 }
 
 type AppointmentResponse struct {

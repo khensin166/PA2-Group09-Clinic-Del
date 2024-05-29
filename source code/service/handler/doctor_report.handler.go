@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"errors"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/model/entity"
 	"github.com/khensin166/PA2-Kel9/utils"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+	"log"
 )
 
 func DoctorReportGetAll(ctx *fiber.Ctx) error {
@@ -62,7 +66,7 @@ func CreateDoctorReport(ctx *fiber.Ctx) error {
 	role := claims["role"].(float64)
 	if role == 1 {
 		return ctx.Status(fiber.StatusForbidden).JSON(fiber.Map{
-			"message": "Doctor can't create the data",
+			"message": "Nurse	 can't create the data",
 		})
 	}
 
@@ -132,18 +136,18 @@ func UpdateDoctorReport(ctx *fiber.Ctx) error {
 
 	// UPDATE REPORT DATA
 	if reportRequest.Disease != "" {
-		report.Disease = reportRequest.Disease
+		report.Disease = &reportRequest.Disease
 	}
 	if reportRequest.NurseReportID != 0 {
-		report.NurseReportID = reportRequest.NurseReportID
+		report.NurseReportID = &reportRequest.NurseReportID
 	}
 
 	if reportRequest.StaffDoctorID != 0 {
-		report.StaffDoctorID = reportRequest.StaffDoctorID
+		report.StaffDoctorID = &reportRequest.StaffDoctorID
 	}
 
 	if reportRequest.Disease != "" {
-		report.Disease = reportRequest.Disease
+		report.Disease = &reportRequest.Disease
 	}
 
 	errUpdate := database.DB.Save(&report).Error
@@ -178,5 +182,70 @@ func DeleteDoctorReport(ctx *fiber.Ctx) error {
 
 	return ctx.JSON(fiber.Map{
 		"message": "DoctorReport deleted successfully",
+	})
+}
+func GetUserDataForReportDoctor(ctx *fiber.Ctx) error {
+	var nurseReports []entity.NurseReport
+
+	// Fetch all nurse reports that meet the criteria
+	if err := database.DB.Where("is_checked IS NOT NULL").Preload("Patient").Preload("StaffNurse").Find(&nurseReports).Error; err != nil {
+		log.Println("Error fetching nurse reports:", err)
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error fetching nurse reports",
+		})
+	}
+
+	// Slice to hold the response data
+	var doctorReportsData []entity.DoctorReport
+
+	// Process each fetched nurse report
+	for _, nurseReport := range nurseReports {
+		// Check if the nurse report ID is valid
+		if nurseReport.ID == 0 {
+			log.Println("Skipping nurse report with invalid ID:", nurseReport)
+			continue
+		}
+
+		var existingDoctorReport entity.DoctorReport
+
+		if err := database.DB.Where("nurse_report_id = ?", nurseReport.ID).Preload(clause.Associations).Preload("NurseReport").Preload("NurseReport.Patient").Preload("NurseReport.StaffNurse").First(&existingDoctorReport).Error; err != nil {
+			if errors.Is(err, gorm.ErrRecordNotFound) {
+				// Create a new doctor report if not found
+				newDoctorReport := entity.DoctorReport{
+					NurseReportID: &nurseReport.ID,
+				}
+				if err := database.DB.Create(&newDoctorReport).Error; err != nil {
+					log.Println("Error creating doctor report:", err)
+					return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+						"message": "Error creating doctor reports",
+					})
+				}
+				doctorReportsData = append(doctorReportsData, newDoctorReport)
+			} else {
+				log.Println("Error fetching doctor report:", err)
+				return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"message": "Error fetching doctor report",
+				})
+			}
+		} else {
+			// Log the staff ID being updated
+			log.Println("Updating doctor report for staff ID:", nurseReport.StaffNurseID)
+
+			// Update the existing doctor report with the nurse report ID
+			existingDoctorReport.NurseReportID = &nurseReport.ID
+			if err := database.DB.Save(&existingDoctorReport).Error; err != nil {
+				log.Println("Error updating doctor report:", err)
+				return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+					"message": "Error updating doctor reports",
+				})
+			}
+			doctorReportsData = append(doctorReportsData, existingDoctorReport)
+		}
+	}
+
+	// Return the doctor reports data as a JSON response
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":        "Successfully fetched doctor reports",
+		"doctor_reports": doctorReportsData,
 	})
 }

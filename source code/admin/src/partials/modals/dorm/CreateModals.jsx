@@ -84,7 +84,7 @@ const ModalCreate = ({ isOpen, onClose, apiEndpoint, token }) => {
                 <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                     <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                            Add Medicine
+                            Add Dorm
                         </h3>
                         <button
                             type="button"
@@ -167,7 +167,7 @@ const ModalCreate = ({ isOpen, onClose, apiEndpoint, token }) => {
                                     clipRule="evenodd"
                                 />
                             </svg>
-                            Add new medicine
+                            Add new dorm
                         </button>
                     </form>
                 </div>

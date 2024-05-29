@@ -247,4 +247,3 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId }) => {
 };
 
 export default ModalEdit;
-    

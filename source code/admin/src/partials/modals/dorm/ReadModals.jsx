@@ -87,7 +87,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
                     <div className="relative p-4 bg-white rounded-lg shadow dark:bg-gray-800 sm:p-5">
                         <div className="flex justify-between mb-4 rounded-t sm:mb-5">
                             <div className="text-lg text-gray-900 md:text-xl dark:text-white">
-                                <h3 className="font-semibold">DORM</h3>
+                                <h3 className="font-semibold">Dorm</h3>
                             </div>
                             <div>
                                 <button

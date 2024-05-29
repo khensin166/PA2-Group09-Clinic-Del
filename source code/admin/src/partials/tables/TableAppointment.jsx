@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import ModalCreate from '../modals/appointment/CreateModals';
 import ReadProductModal from '../modals/appointment/ReadModals';
 import DeleteProductModel from '../modals/appointment/DeleteModals';
 import { jwtDecode } from 'jwt-decode';
@@ -113,7 +112,7 @@ function Table() {
 
     // Pagination
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 2;
+    const itemsPerPage = 5;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const currentItems = appointments.slice(indexOfFirstItem, indexOfLastItem);
@@ -292,13 +291,6 @@ function Table() {
                     </div>
                 </div>
             </section>
-
-            <ModalCreate
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                apiEndpoint="http://127.0.0.1:8080/appointment"
-                token={token}
-            />
 
             <ReadProductModal
                 isOpen={isPreviewOpen}
