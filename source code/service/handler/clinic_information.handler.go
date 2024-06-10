@@ -63,9 +63,10 @@ func ClinicInformationReport(ctx *fiber.Ctx) error {
 	}
 
 	response := entity.ClinicInformationResponse{
-		ID:        clinicInformation.ID,
-		GalleryID: clinicInformation.GalleryID,
-		Gallery:   clinicInformation.Gallery,
+		ID:          clinicInformation.ID,
+		GalleryID:   clinicInformation.GalleryID,
+		Gallery:     clinicInformation.Gallery,
+		Description: clinicInformation.Description,
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
