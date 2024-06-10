@@ -73,7 +73,7 @@ function WelcomeBanner({ token }) {
       </div>
 
       {/* Content */}
-      <div className="relative">
+      <div className="relative text-center">
         <h1 className="text-2xl md:text-3xl text-slate-800 dark:text-slate-100 font-bold mb-1">
           {greeting}, {userName} 👋
         </h1>

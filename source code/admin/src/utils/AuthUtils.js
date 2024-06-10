@@ -12,7 +12,7 @@ export const handleSubmit = async (
     setLoading(true);
 
     try {
-        const response = await fetch('http://127.0.0.1:8080/staffLogin', {
+        const response = await fetch('http://192.168.31.25:8080/staffLogin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const handleRegister = async (
     console.log('Request Body:', requestBody);
 
     try {
-        const response = await fetch('http://127.0.0.1:8080/staff', {
+        const response = await fetch('http://192.168.31.25:8080/staff', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

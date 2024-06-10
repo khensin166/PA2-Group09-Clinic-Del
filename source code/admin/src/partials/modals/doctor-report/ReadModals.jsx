@@ -201,7 +201,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/doctor-report"
+                apiEndpoint="http://192.168.31.25:8080/doctor-report"
                 medicineId={editId}
                 token={token}
             />

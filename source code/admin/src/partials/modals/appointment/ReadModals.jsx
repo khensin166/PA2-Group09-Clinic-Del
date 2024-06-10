@@ -182,7 +182,7 @@ const ReadProductModal = ({ isOpen, onClose, apiEndpoint, token, medicineId }) =
             <DeleteProductModel
                 isOpen={isDeleteOpen}
                 onClose={closeDelete}
-                apiEndpoint="http://127.0.0.1:8080/appointment"
+                apiEndpoint="http://192.168.31.25:8080/appointment"
                 medicineId={deleteId}
                 token={token}
             />

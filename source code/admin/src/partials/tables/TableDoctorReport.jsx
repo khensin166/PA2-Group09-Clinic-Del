@@ -47,7 +47,7 @@ function Table() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8080/doctor-report-approved', {
+                const response = await fetch('http://192.168.31.25:8080/doctor-report-approved', {
                     method: 'GET',
                     headers: {
                         'Authorization': `${token}`,
@@ -84,7 +84,7 @@ function Table() {
 
     const approveAppointment = async (id) => {
         try {
-            const response = await fetch(`http://127.0.0.1:8080/doctor-report/${id}/approve`, {
+            const response = await fetch(`http://192.168.31.25:8080/doctor-report/${id}/approve`, {
                 method: 'PUT',
                 headers: {
                     'Authorization': `${token}`,
@@ -282,7 +282,7 @@ function Table() {
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/doctor-report"
+                apiEndpoint="http://192.168.31.25:8080/doctor-report"
                 token={token}
                 medicineId={editId}
             >
@@ -292,9 +292,9 @@ function Table() {
             < ReadProductModal
                 isOpen={isPreviewOpen}
                 onClose={closePreview}
-                apiEndpoint="http://127.0.0.1:8080/doctor-report"
+                apiEndpoint="http://192.168.31.25:8080/doctor-report"
                 medicineId={previewId}
-                apiMedicine="http://127.0.0.1:8080"
+                apiMedicine="http://192.168.31.25:8080"
                 token={token}
             />
 

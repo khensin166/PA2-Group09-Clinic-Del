@@ -158,6 +158,11 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	user.Address = userRequest.Address
 
 	user.Phone = userRequest.Phone
+	user.Birthday = userRequest.Birthday
+	user.Gender = userRequest.Gender
+	user.Weight = userRequest.Weight
+	user.Height = userRequest.Height
+	user.NIK = userRequest.NIK
 
 	// Process image if provided
 	image, err := ctx.FormFile("profilePicture")

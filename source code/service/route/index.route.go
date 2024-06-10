@@ -79,10 +79,23 @@ func RouteInit(r *fiber.App) {
 	r.Get("/medical-history/:id", handler.MedicalHistoryGetById)
 
 	// REMINDER
-
 	r.Get("/reminders", middleware.Auth, handler.ReminderGetAll)
 	r.Post("/reminder", middleware.Auth, handler.CreateReminder)
 	r.Put("/reminder/:id", middleware.Auth, handler.UpdateReminder)
 	r.Delete("/reminder/:id", middleware.Auth, handler.DeleteReminder)
+
+	// GALLERY
+	r.Get("/galleries/:id", middleware.StaffAuth, handler.GalleryHandlerGetById)
+	r.Get("/galleries", middleware.StaffAuth, handler.GalleryGetAll)
+	r.Post("/gallery", middleware.StaffAuth, handler.CreateGallery)
+	r.Put("/gallery/:id", middleware.StaffAuth, handler.UpdateGallery)
+	r.Delete("/gallery/:id", middleware.StaffAuth, handler.DeleteGallery)
+
+	// CLINIC INFORMATION
+	r.Get("/clinic-informations", middleware.StaffAuth, handler.ClinicInformationGetAll)
+	r.Post("/clinic-information", middleware.StaffAuth, handler.ClinicInformationReport)
+	r.Get("/clinic-information/:id", middleware.StaffAuth, handler.ClinicInformationGetByID)
+	r.Put("/clinic-information/:id", middleware.StaffAuth, handler.UpdateClinicInformation)
+	r.Delete("/clinic-information/:id", middleware.StaffAuth, handler.DeleteReminder)
 
 }

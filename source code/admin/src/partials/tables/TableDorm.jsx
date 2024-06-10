@@ -55,7 +55,7 @@ function Table() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8080/dorms', {
+                const response = await fetch('http://192.168.31.25:8080/dorms', {
                     method: 'GET',
                     headers: {
                         'Authorization': `${token}`,
@@ -314,7 +314,7 @@ function Table() {
             <ModalCreate
                 isOpen={isModalOpen}
                 onClose={closeModal}
-                apiEndpoint="http://127.0.0.1:8080/dorm"
+                apiEndpoint="http://192.168.31.25:8080/dorm"
                 token={token}
             />
 
@@ -322,7 +322,7 @@ function Table() {
             <ModalEdit
                 isOpen={isEditOpen}
                 onClose={closeEdit}
-                apiEndpoint="http://127.0.0.1:8080/dorm"
+                apiEndpoint="http://192.168.31.25:8080/dorm"
                 token={token}
                 medicineId={editId}
             >
@@ -332,7 +332,7 @@ function Table() {
             < ReadProductModal
                 isOpen={isPreviewOpen}
                 onClose={closePreview}
-                apiEndpoint="http://127.0.0.1:8080/dorm"
+                apiEndpoint="http://192.168.31.25:8080/dorm"
                 medicineId={previewId}
                 token={token}
             />
@@ -341,7 +341,7 @@ function Table() {
             < DeleteProductModel
                 isOpen={isDeleteOpen}
                 onClose={closeDelete}
-                apiEndpoint="http://127.0.0.1:8080/dorm"
+                apiEndpoint="http://192.168.31.25:8080:8080/dorm"
                 medicineId={deleteId}
                 token={token}
             />

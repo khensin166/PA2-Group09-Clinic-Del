@@ -40,7 +40,7 @@ const ModalEdit = ({ isOpen, onClose, apiEndpoint, token, medicineId, apiMedicin
 
     const fetchMedicines = async () => {
         try {
-            const url = `http://127.0.0.1:8080/medicines`; // Ensure this URL is correct
+            const url = `http://192.168.31.25:8080/medicines`; // Ensure this URL is correct
             console.log(url)
             const response = await fetch(url, {
                 method: 'GET',

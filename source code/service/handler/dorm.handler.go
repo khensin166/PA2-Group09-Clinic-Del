@@ -107,7 +107,7 @@ func UpdateDorm(ctx *fiber.Ctx) error {
 		dorm.Name = dormRequest.Name
 	}
 
-	if dorm.Name != "" {
+	if dorm.Status != "" {
 		dorm.Status = dormRequest.Status
 	}
 
