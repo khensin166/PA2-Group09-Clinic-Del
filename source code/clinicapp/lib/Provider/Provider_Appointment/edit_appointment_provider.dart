@@ -48,7 +48,7 @@ class EditAppointmentProvider extends ChangeNotifier {
     };
 
     final result = await http.put(
-      Uri.parse('$url/update-appointment/$oldAppointmentId'),
+      Uri.parse('$url/appointment/$oldAppointmentId'),
       body: body,
       headers: {'Authorization': '$token'},
     );

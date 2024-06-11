@@ -37,6 +37,7 @@ class AuthenticationProvider extends ChangeNotifier {
   // function method untuk registerasi user
   void registerUser(
       {required String username,
+      required String registrationNumber,
       required String password,
       required String passwordConfirmation,
       required String fullname,
@@ -60,6 +61,7 @@ class AuthenticationProvider extends ChangeNotifier {
       'name': fullname,
       'username': username,
       'password': password,
+      'registration_number': registrationNumber,
       'role': 1.toString(),
       'dormID': dorm.toString()
     };

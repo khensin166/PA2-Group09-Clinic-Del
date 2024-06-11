@@ -48,6 +48,7 @@ class AddAppointmentProvider extends ChangeNotifier {
       "date": dateIsoString,
       "time": dateIsoString,
       "requested_id": userId,
+      "created_at": DateTime.now().toIso8601String(),
     };
 
     final result = await http

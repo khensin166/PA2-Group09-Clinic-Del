@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 Widget customTextField({
   String? title,
@@ -10,6 +11,7 @@ Widget customTextField({
   bool? isHidden,
   bool readOnly = false,
   bool focusBorder = true,
+  bool onlyNumbers = false, // Parameter baru untuk mengatur jenis input
   void Function()? tootleFieldView,
 }) {
   return Column(
@@ -20,6 +22,10 @@ Widget customTextField({
         controller: controller,
         maxLines: maxLines,
         obscureText: isHidden ?? false,
+        inputFormatters: onlyNumbers
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : [FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z0-9]'))],
+        keyboardType: onlyNumbers ? TextInputType.number : TextInputType.text,
         decoration: InputDecoration(
           hintText: hint,
           labelText: title,

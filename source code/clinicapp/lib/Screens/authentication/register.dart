@@ -15,6 +15,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _fullname = TextEditingController();
   final TextEditingController _username = TextEditingController();
+  final TextEditingController _registrationNumber = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _passwordConfirmation = TextEditingController();
   final TextEditingController _dormController = TextEditingController();
@@ -55,7 +56,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const  Text('Registrasi'),
+        title: const Text('Registrasi'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -82,6 +83,15 @@ class _RegisterPageState extends State<RegisterPage> {
                 hint: 'JhonDoe12',
                 obsecureText: false,
                 prefixIcon: Icons.account_circle_outlined,
+              ),
+              const SizedBox(height: 20),
+              customTextField(
+                title: 'NIP/NIM',
+                controller: _registrationNumber,
+                hint: '11322xxx',
+                obsecureText: false,
+                prefixIcon: Icons.mail,
+                onlyNumbers: true,
               ),
               const SizedBox(height: 20),
               customTextField(
@@ -139,6 +149,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         fullname: _fullname.text.trim(),
                         context: context,
                         dorm: _selectedDormId,
+                        registrationNumber: _registrationNumber.text.trim(),
                       );
                     }
                   },
