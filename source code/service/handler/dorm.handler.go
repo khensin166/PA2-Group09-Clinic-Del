@@ -31,7 +31,6 @@ func DormGetAll(ctx *fiber.Ctx) error {
 
 	database.DB.Find(&dorms)
 
-	// Create a slice to store the response data
 	response := make([]fiber.Map, len(dorms))
 
 	// Iterate through medicines and populate response with required fields
