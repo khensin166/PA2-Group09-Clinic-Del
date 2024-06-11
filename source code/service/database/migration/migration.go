@@ -18,6 +18,8 @@ func Migration() {
 		&entity.Reminder{},
 		&entity.User{},
 		&entity.Staff{},
+		&entity.ClinicInformation{},
+		&entity.Gallery{},
 	)
 
 	if err != nil {

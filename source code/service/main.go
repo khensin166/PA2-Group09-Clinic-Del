@@ -19,11 +19,12 @@ func main() {
 	// menginisialisasikan go fiber (di passing ke route)
 	app := fiber.New()
 
-	// fetching data reactjs
 	app.Use(cors.New())
-
 	// INITIAL ROUTE
 	route.RouteInit(app)
 
-	app.Listen(":8080")
+	err := app.Listen(":8080")
+	if err != nil {
+		return
+	}
 }

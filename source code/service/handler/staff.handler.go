@@ -99,7 +99,7 @@ func StaffHandlerGetById(ctx *fiber.Ctx) error {
 	var staff entity.Staff
 
 	// Query Statement dengan GORM
-	err := database.DB.First(&staff, "?", staffId).Error
+	err := database.DB.First(&staff, "id = ?", staffId).Error
 	if err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
 			"message": "staff not found",
