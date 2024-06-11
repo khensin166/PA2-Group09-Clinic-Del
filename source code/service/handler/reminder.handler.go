@@ -61,6 +61,7 @@ func ReminderGetByAuth(ctx *fiber.Ctx) error {
 			})
 		}
 
+<<<<<<< HEAD
 		// Bandingkan startDate dengan date dari parameter
 		if startDate.Equal(date) {
 			responseReminder := fiber.Map{
@@ -73,6 +74,19 @@ func ReminderGetByAuth(ctx *fiber.Ctx) error {
 				"duration":    reminder.Duration,
 			}
 			responseReminders = append(responseReminders, responseReminder)
+=======
+	// Create a slice to store the response data
+	response := make([]fiber.Map, len(reminders))
+
+	// Iterate through medicines and populate response with required fields
+	for i, reminder := range reminders {
+		response[i] = fiber.Map{
+			"id":        reminder.ID,
+			"date_time": reminder.DateTime,
+			"name":      reminder.Name,
+			"frequency": reminder.Frequency,
+			"duration":  reminder.Frequency,
+>>>>>>> main
 		}
 	}
 

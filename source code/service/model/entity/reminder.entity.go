@@ -6,6 +6,7 @@ import (
 )
 
 type Reminder struct {
+<<<<<<< HEAD
 	ID         uint           `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
 	UserID     int            `json:"user_id" form:"user_id"`
 	FirstTime  string         `json:"first_time"`
@@ -32,6 +33,16 @@ type ReminderResponse struct {
 	CreatedAt  time.Time      `json:"created_at"`
 	UpdatedAt  time.Time      `json:"updated_at"`
 	DeletedAt  gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`
+=======
+	ID        uint           `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	DateTime  string         `json:"date_time"`
+	Name      string         `json:"name"`
+	Frequency string         `json:"frequency"`
+	Duration  string         `json:"duration"`
+	CreatedAt time.Time      `json:"created_at"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	DeletedAt gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`
+>>>>>>> main
 }
 
 func (r *Reminder) TableName() string {

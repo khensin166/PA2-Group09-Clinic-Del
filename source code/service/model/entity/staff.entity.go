@@ -6,7 +6,7 @@ import (
 )
 
 type Staff struct {
-	ID             uint           `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
+	ID             *uint          `json:"id" gorm:"primaryKey;AUTO_INCREMENT"`
 	Name           string         `json:"name"`
 	Age            int            `json:"age"`
 	Weight         int            `json:"weight"`
@@ -20,9 +20,9 @@ type Staff struct {
 	Password       string         `json:"password" gorm:"column:password"`
 	Role           int            `json:"role"`
 	ProfilePicture *string        `json:"profilePicture"`
-	Appointments   *Appointment   `json:"appointments" gorm:"foreignKey:ApprovedID"`
-	NurseReports   []NurseReport  `json:"nurse_reports" gorm:"foreignKey:StaffNurseID"`
-	DoctorReport   []DoctorReport `json:"doctorReport" gorm:"foreignKey:StaffDoctorID"`
+	Appointments   *Appointment   `json:"appointments" gorm:"foreignKey:ApprovedID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	NurseReports   []NurseReport  `json:"nurse_reports" gorm:"foreignKey:StaffNurseID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	DoctorReport   []DoctorReport `json:"doctorReport" gorm:"foreignKey:StaffDoctorID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	CreatedAt      time.Time      `json:"created_at"`
 	UpdatedAt      time.Time      `json:"updated_at"`
 	DeletedAt      gorm.DeletedAt `json:"-" gorm:"index,column:deleted_at"`

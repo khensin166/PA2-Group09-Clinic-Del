@@ -116,7 +116,7 @@ func UserHandlerGetById(ctx *fiber.Ctx) error {
 	var user entity.User
 
 	// Query Statement dengan GORM
-	err := database.DB.First(&user, "?", userId).Error
+	err := database.DB.First(&user, "id = ?", userId).Error
 	if err != nil {
 		return ctx.Status(404).JSON(fiber.Map{
 			"message": "user not found",
@@ -158,11 +158,19 @@ func UpdateUser(ctx *fiber.Ctx) error {
 	user.Birthday = userRequest.Birthday
 	user.Address = userRequest.Address
 	user.Phone = userRequest.Phone
+<<<<<<< HEAD
 	user.Gender = userRequest.Gender
 	user.Height = userRequest.Height
 	user.Weight = userRequest.Weight
 	user.NIK = userRequest.NIK
 	user.Address = userRequest.Address
+=======
+	user.Birthday = userRequest.Birthday
+	user.Gender = userRequest.Gender
+	user.Weight = userRequest.Weight
+	user.Height = userRequest.Height
+	user.NIK = userRequest.NIK
+>>>>>>> main
 
 	// Process image if provided
 	image, err := ctx.FormFile("profilePicture")

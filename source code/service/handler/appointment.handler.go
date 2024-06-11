@@ -58,6 +58,27 @@ func AppointmentGetByAuth(ctx *fiber.Ctx) error {
 	})
 }
 
+func AppointmentGetByiD(ctx *fiber.Ctx) error {
+	// mencari user parameter id.
+	appointmentId := ctx.Params("id")
+
+	// mendeklarasikan variabel user dengan tipe data userEntity
+	var appointment entity.Appointment
+
+	// Query Statement dengan GORM
+	err := database.DB.Preload("Approved").Preload("Requested").First(&appointment, "id = ?", appointmentId).Error
+	if err != nil {
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "user not found",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    appointment,
+	})
+}
+
 func AppointmentGetAll(ctx *fiber.Ctx) error {
 	var appointments []entity.Appointment
 
@@ -72,6 +93,31 @@ func AppointmentGetAll(ctx *fiber.Ctx) error {
 	return ctx.Status(200).JSON(fiber.Map{
 		"success":      "get data success",
 		"appointments": appointments,
+	})
+}
+
+func AppointmentGetAllApproved(ctx *fiber.Ctx) error {
+	var appointments []entity.Appointment
+
+	/// Memuat entitas terkait menggunakan Preload
+	result := database.DB.Preload("Approved").Preload("Requested").Find(&appointments)
+	if result.Error != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch appointments",
+		})
+	}
+
+	// Mengumpulkan hanya janji yang memiliki approved_id tidak nil
+	var approvedAppointments []entity.Appointment
+	for _, appointment := range appointments {
+		if appointment.ApprovedID != nil {
+			approvedAppointments = append(approvedAppointments, appointment)
+		}
+	}
+
+	return ctx.Status(200).JSON(fiber.Map{
+		"success":      "get data success",
+		"appointments": approvedAppointments,
 	})
 }
 

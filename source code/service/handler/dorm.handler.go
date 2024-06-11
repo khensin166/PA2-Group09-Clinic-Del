@@ -7,12 +7,30 @@ import (
 	"github.com/khensin166/PA2-Kel9/model/entity"
 )
 
+func DormGetById(ctx *fiber.Ctx) error {
+	dormId := ctx.Params("id")
+	// mendeklarasikan variabel user dengan tipe data userEntity
+	var dorm entity.Dorm
+
+	// Query Statement dengan GORM
+	err := database.DB.First(&dorm, "id = ?", dormId).Error
+	if err != nil {
+		return ctx.Status(404).JSON(fiber.Map{
+			"message": "medicine not found",
+		})
+	}
+
+	return ctx.JSON(fiber.Map{
+		"message": "success",
+		"data":    dorm,
+	})
+}
+
 func DormGetAll(ctx *fiber.Ctx) error {
 	var dorms []entity.Dorm
 
 	database.DB.Find(&dorms)
 
-	// Create a slice to store the response data
 	response := make([]fiber.Map, len(dorms))
 
 	// Iterate through medicines and populate response with required fields
@@ -88,7 +106,7 @@ func UpdateDorm(ctx *fiber.Ctx) error {
 		dorm.Name = dormRequest.Name
 	}
 
-	if dorm.Name != "" {
+	if dorm.Status != "" {
 		dorm.Status = dormRequest.Status
 	}
 
