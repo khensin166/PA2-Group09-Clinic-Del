@@ -16,7 +16,7 @@ type User struct {
 	Gender             string           `json:"gender"`
 	Address            string           `json:"address"`
 	Phone              string           `json:"phone"`
-	RegistrationNumber string           `json:"registrationNumber"`
+	RegistrationNumber string           `json:"registration_number"`
 	Username           string           `json:"username" gorm:"unique"`
 	Password           string           `json:"password" gorm:"column:password"`
 	Role               int              `json:"role"`
