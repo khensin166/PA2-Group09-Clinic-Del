@@ -212,41 +212,49 @@ class _AppointmentDetailsPageState extends State<AppointmentDetailsPage> {
                           deleteAppointment.clear();
                         }
                       });
-                      return TextButton(
-                        onPressed: deleteAppointment.getStatus == true
-                            ? null
-                            : () async {
-                                final confirmed = await showConfirmationDialog(
-                                  context: context,
-                                  content:
-                                      "Apakah Anda yakin ingin membatalkan janji temu?",
-                                  onConfirm: () {
-                                    deleteAppointment.deleteAppointment(
-                                      appointmentId: widget.appointmentId,
-                                      ctx: context,
-                                    );
-                                  },
-                                );
-                                if (confirmed == true) {
-                                  // Lakukan sesuatu setelah konfirmasi
-                                }
-                              },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.highlight_remove_outlined,
-                              color: Colors.red,
-                            ),
-                            const SizedBox(width: 2),
-                            const Text(
-                              'Batalkan Janji Temu',
-                              style: TextStyle(color: Colors.red, fontSize: 17),
-                            ),
-                          ],
-                        ),
-                      );
+                      return widget.statusAppointment == "waiting"
+                          ? TextButton(
+                              onPressed: deleteAppointment.getStatus == true
+                                  ? null
+                                  : () async {
+                                      final confirmed =
+                                          await showConfirmationDialog(
+                                        context: context,
+                                        content:
+                                            "Apakah Anda yakin ingin membatalkan janji temu?",
+                                        onConfirm: () {
+                                          deleteAppointment.deleteAppointment(
+                                            appointmentId: widget.appointmentId,
+                                            ctx: context,
+                                          );
+                                        },
+                                      );
+                                      if (confirmed == true) {
+                                        // Lakukan sesuatu setelah konfirmasi
+                                      }
+                                    },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(
+                                    Icons.highlight_remove_outlined,
+                                    color: Colors.red,
+                                  ),
+                                  const SizedBox(width: 2),
+                                  const Text(
+                                    'Batalkan Janji Temu',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 17),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : Container(
+                              child: SizedBox(
+                                height: 20,
+                              ),
+                            );
                     }),
                   ),
                 ],

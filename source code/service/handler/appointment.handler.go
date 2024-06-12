@@ -1,11 +1,14 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/khensin166/PA2-Kel9/database"
 	"github.com/khensin166/PA2-Kel9/model/entity"
 	"github.com/khensin166/PA2-Kel9/utils"
+	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 func AppointmentGetByAuth(ctx *fiber.Ctx) error {
@@ -122,33 +125,71 @@ func AppointmentGetAllApproved(ctx *fiber.Ctx) error {
 }
 
 func CreateAppointment(ctx *fiber.Ctx) error {
-	appointment := new(entity.AppointmentResponse)
+	appointment := new(entity.Appointment)
 
-	//PARSE TO OBJECT STRUCT
+	// PARSE TO OBJECT STRUCT
 	if err := ctx.BodyParser(appointment); err != nil {
 		return ctx.Status(503).JSON(fiber.Map{
 			"err": err,
 		})
 	}
 
-	// VALIDATION
-	//log.Println(appointment.RequestedID)
-	if appointment.RequestedID == 0 {
-		return ctx.Status(400).JSON(fiber.Map{
-			"err": "requested_id is required",
-		})
+	// Check for the latest appointment (regardless of requested_id)
+	var lastAppointment entity.Appointment
+	if err := database.DB.Order("date desc").First(&lastAppointment).Error; err != nil {
+		if err != gorm.ErrRecordNotFound {
+			return ctx.Status(500).JSON(fiber.Map{
+				"message": "Gagal mendapatkan janji temu terakhir",
+				"error":   err.Error(),
+			})
+		}
 	}
 
+	// Parse last appointment date to time.Time if it exists
+	if lastAppointment.ID != 0 {
+		const customTimeFormat = "2006-01-02T15:04:05.000"
+		lastAppointmentTime, err := time.Parse(customTimeFormat, lastAppointment.Date)
+		if err != nil {
+			return ctx.Status(500).JSON(fiber.Map{
+				"message": "Format tanggal janji temu terakhir tidak valid",
+				"error":   err.Error(),
+			})
+		}
+
+		// Parse the appointment date input by user
+		appointmentTime, err := time.Parse(customTimeFormat, appointment.Date)
+		if err != nil {
+			return ctx.Status(400).JSON(fiber.Map{
+				"message": "Format tanggal janji temu tidak valid",
+				"error":   err.Error(),
+			})
+		}
+
+		// For debugging purposes
+		fmt.Printf("Last appointment time: %s\n", lastAppointmentTime)
+		fmt.Printf("New appointment time: %s\n", appointmentTime)
+
+		// Check the time difference
+		timeDifference := appointmentTime.Sub(lastAppointmentTime)
+		if timeDifference < 30*time.Minute {
+			nextAvailableTime := lastAppointmentTime.Add(30 * time.Minute)
+			return ctx.Status(400).JSON(fiber.Map{
+				"message": fmt.Sprintf("Anda hanya dapat membuat janji temu 30 menit setelah janji temu terakhir. Janji temu terakhir adalah pada %s. Anda dapat membuat janji temu baru setelah %s.",
+					lastAppointmentTime.Format("15:04:05"), nextAvailableTime.Format("15:04:05")),
+			})
+		}
+	}
+
+	// Create new appointment
 	if err := database.DB.Create(&appointment).Error; err != nil {
-		// Mengembalikan respon error 500 dengan pesan yang sesuai
 		return ctx.Status(500).JSON(fiber.Map{
-			"message": "failed to store data",
-			"error":   err.Error(), // Menambahkan pesan error ke respon JSON
+			"message": "Gagal menyimpan data",
+			"error":   err.Error(),
 		})
 	}
 
 	return ctx.Status(200).JSON(fiber.Map{
-		"message":     "create data successfully",
+		"message":     "Berhasil membuat janji temu",
 		"appointment": appointment,
 	})
 }

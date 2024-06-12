@@ -11,34 +11,18 @@ class NotificationPage extends StatefulWidget {
 class _NotificationPageState extends State<NotificationPage> {
   final List<Map<String, String>> notifications = [
     {
-      'title': 'Message',
-      'description': 'Notification Description',
-      'date': '23-01-2021',
+      'title': 'Izin Sakit',
+      'description':
+          'Kenan Tomfie Bukit tidak bisa mengikuti pembelajaran karena mengalami sakit perut dan dapat beristirahat selama 1 hari',
+      'date': '10-06-2024',
       'time': '07:10 am'
     },
     {
-      'title': 'Message',
-      'description': 'Notification Description',
-      'date': '23-01-2021',
-      'time': '07:10 am'
-    },
-    {
-      'title': 'Message',
-      'description': 'Notification Description',
-      'date': '23-01-2021',
-      'time': '07:10 am'
-    },
-    {
-      'title': 'Message',
-      'description': 'Notification Description',
-      'date': '23-01-2021',
-      'time': '07:10 am'
-    },
-    {
-      'title': 'Message',
-      'description': 'Notification Description',
-      'date': '23-01-2021',
-      'time': '07:10 am'
+      'title': 'Izin Sakit',
+      'description':
+          'Wahyu tidak bisa mengikuti pembelajaran karena mengalami sakit perut dan dapat beristirahat selama 1 hari',
+      'date': '09-06-2024',
+      'time': '12:10 am'
     },
   ];
 

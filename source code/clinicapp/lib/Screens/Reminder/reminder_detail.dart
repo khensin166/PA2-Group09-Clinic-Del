@@ -1,11 +1,9 @@
 import 'package:clinicapp/Provider/Provider_Reminder/delete_reminder.dart';
 import 'package:clinicapp/Provider/Provider_Reminder/edit_reminder.dart';
-import 'package:clinicapp/Provider/Provider_Reminder/local_notification_service.dart';
 import 'package:clinicapp/Widgets/confirmation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:clinicapp/Provider/Provider_Reminder/add_reminder.dart';
 import 'package:clinicapp/Styles/colors.dart';
 import 'package:clinicapp/Styles/theme.dart';
 import 'package:clinicapp/Utils/snackbar_message.dart';
@@ -387,7 +385,7 @@ class _DetailRemainderPageState extends State<DetailRemainderPage> {
                           final confirmed = await showConfirmationDialog(
                             context: context,
                             content:
-                                "Apakah Anda yakin ingin membatalkan janji temu?",
+                                "Apakah Anda yakin ingin membatalkan pengingat obat?",
                             onConfirm: () {
                               deleteReminder.deleteReminder(
                                 reminderId: widget.id,
