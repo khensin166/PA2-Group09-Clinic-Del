@@ -25,7 +25,7 @@ class _ReminderPageState extends State<ReminderPage> {
       appBar: AppBarCustom(
         title: 'Pengingat Obat',
         backgroundColor: primaryColor,
-        nextPage: HomePage(),
+        nextPage: const HomePage(),
         leadingIcon: Icons.arrow_back,
       ),
       body: Column(
@@ -63,11 +63,15 @@ class _ReminderPageState extends State<ReminderPage> {
               selectionColor: primaryColor,
               selectedTextColor: Colors.white,
               dateTextStyle: GoogleFonts.lato(
-                  textStyle: const TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w600)),
+                textStyle: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
               onDateChange: (date) {
-                // simpan date ke dalam variable
-                _selectedDate = date;
+                setState(() {
+                  _selectedDate = date;
+                });
               },
             ),
           ),
@@ -88,12 +92,18 @@ class _ReminderPageState extends State<ReminderPage> {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 15),
-                  ElevatedButton(
-                    onPressed: () {
-                      PageNavigator(ctx: context)
-                          .nextPage(page: const CreateReminderPage());
-                    },
-                    child: const Text('Tambahkan Pengingat Obat'),
+                  SizedBox(
+                    width: double.infinity, // Make the button full-width
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          PageNavigator(ctx: context)
+                              .nextPage(page: const CreateReminderPage());
+                        },
+                        child: const Text('Tambahkan Pengingat Obat'),
+                      ),
+                    ),
                   ),
                 ],
               ),

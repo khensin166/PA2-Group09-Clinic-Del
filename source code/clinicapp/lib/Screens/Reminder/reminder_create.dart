@@ -18,13 +18,6 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
   int _timesPerDay = 1;
   int _days = 1;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   selectedTime = TimeOfDay.now();
-  //   _time.text = selectedTime!.format(context); // Set initial value for _time
-  // }
-
   @override
   void dispose() {
     _medicine.dispose();
@@ -160,31 +153,33 @@ class _CreateReminderPageState extends State<CreateReminderPage> {
                 if (addReminder.getResponse != '') {
                   showMessage(
                       message: addReminder.getResponse, context: context);
-
                   // clear respon message
                   addReminder.clear();
                 }
               });
-              return customButton(
-                status: addReminder.getStatus,
-                context: context,
-                text: 'Daftar',
-                tap: () {
-                  if (_medicine.text.isEmpty) {
-                    showMessage(
-                        message: "Nama Obat Harus diisi!", context: context);
-                  } else if (selectedTime == null) {
-                    showMessage(
-                        message: "Waktu Harus diisi!", context: context);
-                  } else {
-                    addReminder.addReminder(
-                        name: _medicine.text,
-                        time: selectedTime,
-                        frequency: _days,
-                        duration: _days,
-                        context: context);
-                  }
-                },
+              return SizedBox(
+                width: double.infinity,
+                child: customButton(
+                  status: addReminder.getStatus,
+                  context: context,
+                  text: 'Daftar',
+                  tap: () {
+                    if (_medicine.text.isEmpty) {
+                      showMessage(
+                          message: "Nama Obat Harus diisi!", context: context);
+                    } else if (selectedTime == null) {
+                      showMessage(
+                          message: "Waktu Harus diisi!", context: context);
+                    } else {
+                      addReminder.addReminder(
+                          name: _medicine.text,
+                          time: selectedTime,
+                          frequency: _days,
+                          duration: _days,
+                          context: context);
+                    }
+                  },
+                ),
               );
             })
           ],

@@ -1,5 +1,5 @@
 class AppUrl {
-  static String baseUrl = 'http://192.168.76.25:8080';
+  static String baseUrl = 'http://172.20.10.4:8080';
 
   // Profile
   static String userProfilePhotoUrl = '${baseUrl}/user/image';
